@@ -9,7 +9,7 @@ import VueRouter from 'vue-router'
 import Layout from '~/pages/layout/Layout'
 
 const Login = () => import
-        ('~pages/Login' /* webpackChunkName: "chunks/Login" */)
+    ('~pages/Login' /* webpackChunkName: "chunks/Login" */)
 // 404  ok
 const page_404 = () =>
     import
@@ -20,14 +20,11 @@ const DashBoard_index = () =>
         ('~/pages/dashboard/index' /* webpackChunkName: "chunks/dashboard/index" */)
 
 // betblock 相关的东西
-const bb_withdraw = () =>
-    import
-        ('~/pages/betblock/withdraw')
+const bb_withdraw = () => import('~/pages/betblock/withdraw')
 
 // admin page
-const t_adminCenter = () =>
-    import
-        ('~/pages/adminPage/adminCenter')
+const t_adminCenter = () => import ('~/pages/adminPage/adminCenter')
+const t_setPlan = () => import ('~/pages/adminPage/setPlan')
 
 Vue.use(VueRouter)
 export default new VueRouter({
@@ -58,10 +55,10 @@ export default new VueRouter({
                     meta: {title: '店铺管理', icon: 'form'}
                 },
                 {
-                    path: 'tree',
+                    path: 'setPlan/:planId?',
                     name: 'more',
-                    component: bb_withdraw,
-                    meta: {title: 'more', icon: 'user'}
+                    component: t_setPlan,
+                    meta: {title: 'more', icon: 'tree'}
                 }
             ]
         },
@@ -79,7 +76,7 @@ export default new VueRouter({
                     meta: {title: '提款审核', icon: 'withdraw'}
                 },
                 {
-                    path: 'tree',
+                    path: 'setPlan/:planId?',
                     name: 'more',
                     component: bb_withdraw,
                     meta: {title: 'more', icon: 'tree'}

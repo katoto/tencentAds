@@ -273,7 +273,6 @@
             },
             async attentionFn(rowMsg){
                 // 关注
-                this.showAttentBox = true
             },
             async addRemarkFn(rowMsg){
                 // 添加备注
