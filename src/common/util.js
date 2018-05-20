@@ -1,6 +1,9 @@
 /**
  * Created by sampson on 2017/5/15.
  */
+
+import Cookies from 'js-cookie'
+
 export function mapActions (acts, ns) {
     const aTypes = {}
     const actions = {}
@@ -8,7 +11,7 @@ export function mapActions (acts, ns) {
         aTypes[key] = [ns, key].join('/')
         actions[aTypes[key]] = acts[key]
     })
-    return { actions, aTypes }
+    return {actions, aTypes}
 }
 
 export const platform = (function () {
@@ -24,13 +27,27 @@ export function mapMutations (muts, ns) {
         // console.log(mTypes[key])
         mutations[mTypes[key]] = muts[key]
     })
-    return { mutations, mTypes }
+    return {mutations, mTypes}
 }
 
 export function wait (time) {
     return new Promise((resolve) => {
         setTimeout(() => resolve(), time)
     })
+}
+
+const CK = 'admin_ck'
+
+export function getCK () {
+    return Cookies.get(CK)
+}
+
+export function setCK (ck) {
+    return Cookies.set(CK, ck)
+}
+
+export function removeCK () {
+    return Cookies.remove(CK)
 }
 
 export function str2Bytes (str) {

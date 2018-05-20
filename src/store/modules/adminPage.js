@@ -2,34 +2,85 @@
  * Created by xiezg on 2018/4/9.
  */
 
-import ajax from '@/utils/ajax'
-import {src, platform, mapMutations, mapActions} from '@/utils/index'
-import {Message} from 'element-ui'
-
-import {getCK, setCK, removeCK} from '@/utils/auth'
+import ajax from '~common/ajax'
+import { src, platform, mapMutations, mapActions, getCK, setCK, removeCK } from '~common/util'
+import { Message } from 'element-ui'
 
 const state = {
-    withdrawList: null
+    withdrawList: null,
 }
 
 const mutationsInfo = mapMutations({
-    setWithDrawList (state, data) {
+    setWithDrawList(state, data){
         state.withdrawList = data
     },
     setNationGetRed (state, data) {
         state.nationGetRed = data
-    }
+    },
 
 }, 'betblock')
 
 const actionsInfo = mapActions({
-    async getWithDrawMsg ({commit, dispatch}, pageData) {
+    async getWithDrawMsg({commit, dispatch}, pageData){
         try {
             let InfoData = null
             if (pageData) {
-                InfoData = await ajax.get(`http://10.0.1.167:6888/account/withdraw/approvelist?pageno=${pageData.pageNumber}&rangeno=${pageData.pageSize}&src=${src}`)
+                InfoData = await ajax.get(`http://10.0.1.167:6999/account/withdraw/approvelist?pageno=${pageData.pageNumber}&rangeno=${ pageData.pageSize }&src=${src}`)
             } else {
-                InfoData = await ajax.get(`http://10.0.1.167:6888/account/withdraw/approvelist`)
+                InfoData = await ajax.get(`http://10.0.1.167:6999/account/withdraw/approvelist`)
+            }
+            if (InfoData) {
+                commit(mTypes.setWithDrawList, InfoData)
+                Message({
+                    message: '提款审核列表更新成功',
+                    type: 'success',
+                    duration: 3000
+                })
+            }
+            return InfoData
+        } catch (e) {
+            Message({
+                message: e.message,
+                type: 'error',
+                duration: 5 * 1000
+            })
+
+        }
+    },
+
+    async setWithDrawReview({commit, dispatch}, val){
+        try {
+
+            let InfoData = await ajax.get(`http://10.0.1.167:6999/withdraw/review?ck=${getCK()}&oid=${val.oid}&result=${val.isAgree}&remark=${val.remark}`)
+            if (InfoData) {
+                Message({
+                    message: '操作成功!',
+                    type: 'success',
+                    duration: 2000
+                })
+            }
+            return InfoData
+        } catch (e) {
+            Message({
+                message: e.message,
+                type: 'error',
+                duration: 5 * 1000
+            })
+            return 0
+        }
+    },
+
+    async getWithdrawOrder({commit, dispatch}, pageData){
+        try {
+            let InfoData = null
+            if (pageData) {
+                if (pageData.uid) {
+                    InfoData = await ajax.get(`http://10.0.1.167:6999/withdraw/orders?pageno=${pageData.pageNumber}&pagesize=${ pageData.pageSize }&src=${src}&uid=${pageData.uid}`)
+                } else {
+                    InfoData = await ajax.get(`http://10.0.1.167:6999/withdraw/orders?pageno=${pageData.pageNumber}&pagesize=${ pageData.pageSize }&src=${src}`)
+                }
+            } else {
+                InfoData = await ajax.get(`http://10.0.1.167:6999/withdraw/orders`)
             }
             if (InfoData) {
                 commit(mTypes.setWithDrawList, InfoData)
@@ -49,38 +100,20 @@ const actionsInfo = mapActions({
         }
     },
 
-    async setWithDrawReview ({commit, dispatch}, val) {
-        try {
-            let InfoData = await ajax.get(`http://10.0.1.167:6888/withdraw/review?ck=${getCK()}&oid=${val.oid}&result=${val.isAgree}&remark=${val.remark}`)
-            if (InfoData) {
-                Message({
-                    message: '操作成功!',
-                    type: 'success',
-                    duration: 2000
-                })
-            }
-            return InfoData
-        } catch (e) {
-            Message({
-                message: e.message,
-                type: 'error',
-                duration: 5 * 1000
-            })
-            return 0
-        }
-    },
-
-    async getWithdrawOrder ({commit, dispatch}, pageData) {
+    /*
+     *   new  good Option
+     * */
+    async getWithdrawOrder_bar({commit, dispatch}, pageData){
         try {
             let InfoData = null
             if (pageData) {
                 if (pageData.uid) {
-                    InfoData = await ajax.get(`http://10.0.1.167:6888/withdraw/orders?pageno=${pageData.pageNumber}&pagesize=${pageData.pageSize}&src=${src}&uid=${pageData.uid}`)
+                    InfoData = await ajax.get(`http://10.0.1.167:6999/withdraw/orders?pageno=${pageData.pageNumber}&pagesize=${ pageData.pageSize }&src=${src}&uid=${pageData.uid}`)
                 } else {
-                    InfoData = await ajax.get(`http://10.0.1.167:6888/withdraw/orders?pageno=${pageData.pageNumber}&pagesize=${pageData.pageSize}&src=${src}`)
+                    InfoData = await ajax.get(`http://10.0.1.167:6999/withdraw/orders?pageno=${pageData.pageNumber}&pagesize=${ pageData.pageSize }&src=${src}`)
                 }
             } else {
-                InfoData = await ajax.get(`http://10.0.1.167:6888/withdraw/orders`)
+                InfoData = await ajax.get(`http://10.0.1.167:6999/withdraw/orders`)
             }
             if (InfoData) {
                 commit(mTypes.setWithDrawList, InfoData)
@@ -101,9 +134,9 @@ const actionsInfo = mapActions({
     },
 
     /* 历史提款盈利 */
-    async getWithdrawProfit ({commit, dispatch}, uid) {
+    async getWithdrawProfit({commit, dispatch}, uid){
         try {
-            let InfoData = await ajax.get(`http://10.0.1.167:6888/withdraw/profit?uid=${uid}`)
+            let InfoData = await ajax.get(`http://10.0.1.167:6999/withdraw/profit?uid=${uid}`)
             console.log(InfoData)
             return InfoData
         } catch (e) {
@@ -117,13 +150,13 @@ const actionsInfo = mapActions({
     },
 
     /* 账户明细  分情形 */
-    async getAccountDetail ({commit, dispatch}, pageData) {
+    async getAccountDetail({commit, dispatch}, pageData){
         try {
             let InfoData = null
             if (pageData) {
-                InfoData = await ajax.get(`http://10.0.1.167:6888/account/detail?pageno=${pageData.pageNumber}&pagesize=${pageData.pageSize}&src=${src}&uid=${pageData.uid}`)
+                InfoData = await ajax.get(`http://10.0.1.167:6999/account/detail?pageno=${pageData.pageNumber}&pagesize=${ pageData.pageSize }&src=${src}&uid=${pageData.uid}`)
             } else {
-                InfoData = await ajax.get(`http://10.0.1.167:6888/account/detail`)
+                InfoData = await ajax.get(`http://10.0.1.167:6999/account/detail`)
             }
             return InfoData
         } catch (e) {
@@ -137,13 +170,13 @@ const actionsInfo = mapActions({
     },
 
     /*  商品列表  */
-    async getGoodsList ({commit, dispatch}, pageData) {
+    async getGoodsList({commit, dispatch}, pageData){
         try {
             let InfoData = null
             if (pageData) {
-                InfoData = await ajax.get(`http://10.0.1.167:6888/bid/goods/list?pageno=${pageData.pageNumber}&pagesize=${pageData.pageSize}&src=${src}`)
+                InfoData = await ajax.get(`http://10.0.1.167:6999/bid/goods/list?pageno=${pageData.pageNumber}&pagesize=${ pageData.pageSize }&src=${src}`)
             } else {
-                InfoData = await ajax.get(`http://10.0.1.167:6888/bid/goods`)
+                InfoData = await ajax.get(`http://10.0.1.167:6999/bid/goods`)
             }
             return InfoData
         } catch (e) {
@@ -157,13 +190,13 @@ const actionsInfo = mapActions({
     },
 
     /*  商品详情  */
-    async getGoodsDetail ({commit, dispatch}, expectId) {
+    async getGoodsDetail({commit, dispatch}, expectId){
         try {
             let InfoData = null
             if (expectId) {
-                InfoData = await ajax.get(`http://10.0.1.167:6888/goods/detail?expectId=${expectId}`)
+                InfoData = await ajax.get(`http://10.0.1.167:6999/goods/detail?expectId=${expectId}`)
             } else {
-                InfoData = await ajax.get(`http://10.0.1.167:6888/goods/detail`)
+                InfoData = await ajax.get(`http://10.0.1.167:6999/goods/detail`)
             }
             return InfoData
         } catch (e) {
@@ -177,17 +210,17 @@ const actionsInfo = mapActions({
     },
 
     /*  商品添加  */
-    async goodsAdd ({commit, dispatch}, goodsData) {
+    async goodsAdd({commit, dispatch}, goodsData){
         try {
             let InfoData = null
             if (goodsData) {
-                InfoData = await ajax.get(`http://10.0.1.167:6888/goods/add?ck=${getCK()}&goodsType=${goodsData.goodsType}
+                InfoData = await ajax.get(`http://10.0.1.167:6999/goods/add?ck=${getCK()}&goodsType=${goodsData.goodsType}
 &goodsValue=${goodsData.goodsValue}&bidsTotal=${goodsData.bidsTotal}&bidValue=${goodsData.bidValue}
 &beginTime=${goodsData.beginTime}&endTime=${goodsData.endTime}&renew=${goodsData.renew}
 &robot=${goodsData.isRobot}&goodsUrl=${goodsData.goodsUrl}&goodsWeight=${goodsData.weightNum}
 `)
             } else {
-                InfoData = await ajax.get(`http://10.0.1.167:6888/goods/add`)
+                InfoData = await ajax.get(`http://10.0.1.167:6999/goods/add`)
             }
             return InfoData
         } catch (e) {
@@ -201,17 +234,17 @@ const actionsInfo = mapActions({
     },
 
     /*  商品修改  */
-    async goodsModify ({commit, dispatch}, goodsData) {
+    async goodsModify({commit, dispatch}, goodsData){
         try {
             let InfoData = null
             if (goodsData) {
-                InfoData = await ajax.get(`http://10.0.1.167:6888/goods/modify?ck=${getCK()}&goodsType=${goodsData.goodsType}
+                InfoData = await ajax.get(`http://10.0.1.167:6999/goods/modify?ck=${getCK()}&goodsType=${goodsData.goodsType}
 &goodsValue=${goodsData.goodsValue}&bidsTotal=${goodsData.bidsTotal}&bidValue=${goodsData.bidValue}
 &beginTime=${goodsData.beginTime}&endTime=${goodsData.endTime}&renew=${goodsData.renew}
 &robot=${goodsData.isRobot}&goodsUrl=${goodsData.goodsUrl}&goodsWeight=${goodsData.weightNum}&expectId=${goodsData.expectId}
 `)
             } else {
-                InfoData = await ajax.get(`http://10.0.1.167:6888/goods/modify`)
+                InfoData = await ajax.get(`http://10.0.1.167:6999/goods/modify`)
             }
             return InfoData
         } catch (e) {
@@ -225,13 +258,13 @@ const actionsInfo = mapActions({
     },
 
     /*  商品 派发审核 */
-    async setResultReview ({commit, dispatch}, data) {
+    async setResultReview({commit, dispatch}, data){
         try {
             let InfoData = null
             if (data) {
-                InfoData = await ajax.get(`http://10.0.1.167:6888/goods/result/review?ck=${getCK()}&expectId=${data.expectId}&result=${data.isAgree}`)
+                InfoData = await ajax.get(`http://10.0.1.167:6999/goods/result/review?ck=${getCK()}&expectId=${data.expectId}&result=${data.isAgree}`)
             } else {
-                InfoData = await ajax.get(`http://10.0.1.167:6888/goods/result/review`)
+                InfoData = await ajax.get(`http://10.0.1.167:6999/goods/result/review`)
             }
             return InfoData
         } catch (e) {
@@ -242,7 +275,27 @@ const actionsInfo = mapActions({
             })
             return 0
         }
-    }
+    },
+
+    /*  商品 下线 上线  */
+    async setGoodsOperate({commit, dispatch}, data){
+        try {
+            let InfoData = null
+            if (data) {
+                InfoData = await ajax.get(`http://10.0.1.167:6999/goods/operate?ck=${getCK()}&expectId=${data.expectId}&state=${data.operateState}`)
+            } else {
+                InfoData = await ajax.get(`http://10.0.1.167:6999/goods/operate`)
+            }
+            return InfoData
+        } catch (e) {
+            Message({
+                message: e.message,
+                type: 'error',
+                duration: 3000
+            })
+            return 0
+        }
+    },
 
 }, 'betblock')
 

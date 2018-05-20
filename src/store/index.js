@@ -5,9 +5,10 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import app from '~store/modules/app'
+import adminPage from '~store/modules/adminPage'
 import getters from './getters'
 
-import {wait, str2Bytes} from '../common/util'
+import { wait, str2Bytes } from '../common/util'
 import { globalWebsockUrl } from '../common/config'
 
 Vue.use(Vuex)
@@ -121,7 +122,10 @@ const actions = {
                 if (state.serverTime && state.clientTime) {
                     if (args) {
                         data = {
-                            args, method, time: (state.serverTime - state.clientTime + Date.now()), version: state.version
+                            args,
+                            method,
+                            time: (state.serverTime - state.clientTime + Date.now()),
+                            version: state.version
                         }
                     } else {
                         data = {
@@ -174,7 +178,10 @@ const actions = {
         })
     },
     async getServerTime ({dispatch, commit}) {
-        const args = await dispatch('invoke', {method: 'adminService/login_getEncrytKey', args: ['AsETVVgugYm92HxSsADoBfk7lmZRJ6vRHRKjnafEC4OY8BOu0/MSoMy2bJr2ECCXZSnFPKxW15nWvVXiNmGy0I8=']})
+        const args = await dispatch('invoke', {
+            method: 'adminService/login_getEncrytKey',
+            args: ['AsETVVgugYm92HxSsADoBfk7lmZRJ6vRHRKjnafEC4OY8BOu0/MSoMy2bJr2ECCXZSnFPKxW15nWvVXiNmGy0I8=']
+        })
         const clientTime = new Date().valueOf()
         const serverTime = args[0].time
         commit('setTime', {serverTime, clientTime})
@@ -198,7 +205,7 @@ export default () => new Vuex.Store({
     actions,
     mutations,
     modules: {
-        app
+        app, adminPage
     },
     getters
 })
