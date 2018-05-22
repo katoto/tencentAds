@@ -13,7 +13,7 @@
                     <el-option label="区域一" value="shanghai"></el-option>
                     <el-option label="区域二" value="beijing"></el-option>
                 </el-select>
-                当前UID：<span>111112312</span>
+                当前UID：<span style="color: #606266">111112312</span>
                 <el-input size="small" style="margin-left: 20px" v-model="shopIputId" placeholder="搜索店铺ID">
                     <i slot="prefix" class="el-input__icon el-icon-search"></i>
                 </el-input>
