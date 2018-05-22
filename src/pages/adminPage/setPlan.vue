@@ -67,33 +67,33 @@
                 </div>
                 <div class="contentBodyBottom">
                     <el-table
-                        border
-                        :align="center"
-                        :data="planListData"
-                        stripe
-                        highlight-current-row
-                        style="width: 100%">
+                            border
+                            :align="center"
+                            :data="planListData"
+                            stripe
+                            highlight-current-row
+                            style="width: 100%">
                         <el-table-column
-                            prop="planIndex"
-                            label="计划序号"
-                            width="90">
+                                prop="planIndex"
+                                label="计划序号"
+                                width="90">
                         </el-table-column>
                         <el-table-column
-                            prop="planPackage"
-                            label="定向">
+                                prop="planPackage"
+                                label="定向">
                         </el-table-column>
                         <el-table-column
-                            prop="res_name"
-                            label="资源位">
+                                prop="res_name"
+                                label="资源位">
                         </el-table-column>
                         <el-table-column
-                            label="创意">
+                                label="创意">
                             <template slot-scope="scope">
                                 <img class="reg_imgStyle" :src="scope.row.res_img" alt="">
                             </template>
                         </el-table-column>
                         <el-table-column
-                            label="排期与出价"
+                                label="排期与出价"
                         >
                             <template slot-scope="scope">
                                 <p>2018/05/21 - 2018/05/22</p>
@@ -101,8 +101,8 @@
                             </template>
                         </el-table-column>
                         <el-table-column
-                            label="操作"
-                            width="110"
+                                label="操作"
+                                width="110"
                         >
                             <template slot-scope="scope">
                                 <el-button @click="monitorFn( scope.row )" icon="el-icon-delete"
@@ -120,40 +120,34 @@
         </section>
         <el-dialog class="planEdit" fullscreen="true" width="85%" title="计划设置" :visible.sync="showAttentBox" center>
             <section>
-                <h3 style="margin-bottom: 20px">定向设置</h3>
-                <div v-if="false" class="" style="position: relative;">
-                    <form class="el-form el-form--label-right el-form--inline">
-                        <div class="el-form-item is-required"><label class="el-form-item__label">转换成本：</label>
-                            <div class="el-form-item__content">
-                                <div class="el-input el-input-group el-input-group--append">
-                                    <input type="text" class="el-input__inner" autocomplete="off" value="50">
-                                    <div size="small" class="el-input-group__append">元</div>
-                                </div>
+                <h4 style="margin-bottom: 20px">定向设置</h4>
+                <div v-if="true" class="planEditDX" style="position: relative;">
+                    <el-row :gutter="20">
+                        <el-col :span="13">
+                            <div class="grid-content bg-purple">
+                                <p style="padding-bottom: 10px;font-weight: bold">所选定向：<span>总群包TX</span></p>
+                                <section class="planEditDXContent"
+                                         style="width: 100%;height: 300px;overflow-y: scroll;border-top: 1px solid #ebfafa">
+                                    <p style="margin-top: 10px" v-for="item in setPlanDX">{{ item }}</p>
+                                </section>
                             </div>
-                        </div>
-                        <div class="el-form-item is-required"><label class="el-form-item__label">消耗：</label>
-                            <div class="el-form-item__content">
-                                <div class="el-input el-input-group el-input-group--append">
-                                    <input type="text" class="el-input__inner" autocomplete="off" value="2000">
-                                    <div size="small" class="el-input-group__append">元</div>
-                                </div>
+                        </el-col>
+                        <el-col :span="7">
+                            <div class="grid-content bg-purple">
+                                <el-select v-model="SearchDXval" clearable filterable placeholder="搜索定向名称">
+                                    <el-option
+                                            v-for="item in SearchDXoptions"
+                                            :key="item.value"
+                                            :label="item.label"
+                                            :value="item.value">
+                                    </el-option>
+                                </el-select>
+                                <ul class="searchDXUL">
+                                    <li v-for="item in SearchDXoptions">{{ item.label }}</li>
+                                </ul>
                             </div>
-                        </div>
-                        <div class="el-form-item is-required"><label
-                            class="el-form-item__label">浮动率&nbsp;&nbsp;：</label>
-                            <div class="el-form-item__content">
-                                <div class="el-input el-input-group el-input-group--append">
-                                    <input type="text" class="el-input__inner" autocomplete="off" value="0">
-                                    <div class="el-input-group__append">%</div>
-                                </div>
-                            </div>
-                        </div>
-                        <el-switch
-                            v-model="openAttention"
-                            active-text="关启监控"
-                            inactive-text="开启监控">
-                        </el-switch>
-                    </form>
+                        </el-col>
+                    </el-row>
                 </div>
                 <section v-else>
                     <p style="color: #9b9b9b;text-align: center;line-height: 30px;">0410筛选地区-商务政法微信</p>
@@ -161,7 +155,7 @@
                 </section>
             </section>
             <section style="margin-top: 10px;border-top: 2px solid #ccc;padding-top: 10px">
-                <h3>资源位设置</h3>
+                <h4>资源位设置</h4>
                 <div v-if="false"></div>
                 <section v-else>
                     <p style="color: #9b9b9b;text-align: center;line-height: 30px;">QQ_582×166单图(文)</p>
@@ -169,10 +163,10 @@
                 </section>
             </section>
             <section style="margin-top: 10px;border-top: 2px solid #ccc;padding-top: 10px">
-                <h3>创意设置</h3>
+                <h4>创意设置</h4>
             </section>
             <section style="margin-top: 10px;border-top: 2px solid #ccc;padding-top: 10px">
-                <h3>排期与出价设置</h3>
+                <h4>排期与出价设置</h4>
                 <div>
                     <div class="planEditBottom">
                         投放日期：
@@ -192,7 +186,7 @@
                     </div>
                     <span style="margin-left: 36px"><b style="color: red">*</b> 出价 </span>
                     <el-input style="width: 130px" size="small" v-model="formInline.user" placeholder="日限额"></el-input>
-                    元  <span style="margin-left: 20px;color: #adb6c0">建议出价<b style="color: #1f2d3d">0.58 ~ 0.81</b> 元/点击</span>
+                    元 <span style="margin-left: 20px;color: #adb6c0">建议出价<b style="color: #1f2d3d">0.58 ~ 0.81</b> 元/点击</span>
                 </div>
             </section>
             <div slot="footer" class="dialog-footer">
@@ -203,313 +197,372 @@
 </template>
 
 <script>
-    import { mTypes, aTypes } from '~/store/modules/adminPage'
-    export default {
-        data(){
-            return {
-                showAttentBox: true,
+	import {mTypes, aTypes} from '~/store/modules/adminPage'
+	export default {
+		data(){
+			return {
+				setPlanDX: ["性别：男", "年龄：大于等于41岁", "付费用户：电商交易用户", "商业兴趣：生活用品",
+					"联网方式：Wifi、4G",
+					"地理位置：（常住）中国未知（常住）中国未知、北京市、河北省、北京市、河北省（常住）中国未知、北京市、河北省（常住）中国未知、北京市、河北省"],
+				showAttentBox: true,
 
-                radio: '',
-                value3: '',
-                shopIputId: '',
-                shopSelList: '',
-                formInline: {
-                    user: '',
-                    region: ''
-                },
-                planListData: [{ //  数据模拟
-                    planIndex: '1',
-                    planPackage: '总群包WX',
-                    res_name: '腾讯新闻——230* 153',
-                    res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
-                    conversionCost: 1,
-                    shopOperate: '关注中',
-                    shopRemark: ''
-                }, { //  数据模拟
-                    planIndex: '1',
-                    planPackage: '总群包WX',
-                    res_name: '腾讯新闻——230* 153',
-                    res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
-                    conversionCost: 1,
-                    shopOperate: '关注中',
-                    shopRemark: ''
-                }
-                ],
+				SearchDXoptions: [{
+					value: '1',
+					label: '总群包TX'
+				}, {
+					value: '2',
+					label: '总群包WX'
+				}, {
+					value: '3',
+					label: '配件-TX'
+				}, {
+					value: '4',
+					label: '男鞋-TX'
+				}, {
+					value: '5',
+					label: '男鞋-TX'
+				}, {
+					value: '6',
+					label: '总群包WX'
+				}, {
+					value: '3',
+					label: '配件-TX'
+				}, {
+					value: '7',
+					label: '男鞋-TX'
+				}, {
+					value: '8',
+					label: '男鞋-TX'
+				}, {
+					value: '9',
+					label: '总群包WX'
+				}, {
+					value: '10',
+					label: '配件-TX'
+				}, {
+					value: '11',
+					label: '男鞋-TX'
+				}, {
+					value: '12',
+					label: '男鞋-TX'
+				}],
+				SearchDXval: '',
+
+
+				radio: '',
+				value3: '',
+				shopIputId: '',
+				shopSelList: '',
+				formInline: {
+					user: '',
+					region: ''
+				},
+				planListData: [{ //  数据模拟
+					planIndex: '1',
+					planPackage: '总群包WX',
+					res_name: '腾讯新闻——230* 153',
+					res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
+					conversionCost: 1,
+					shopOperate: '关注中',
+					shopRemark: ''
+				}, { //  数据模拟
+					planIndex: '1',
+					planPackage: '总群包WX',
+					res_name: '腾讯新闻——230* 153',
+					res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
+					conversionCost: 1,
+					shopOperate: '关注中',
+					shopRemark: ''
+				}
+				],
 //                planListData: [],
-                openAttention: true,
-                isMonitor: false, // 监控
-                isAttention: false, // 关注
-                shopStateVal: '',
+				openAttention: true,
+				isMonitor: false, // 监控
+				isAttention: false, // 关注
+				shopStateVal: '',
 
-                shop_remark: '',
-                remarkBoxVisible: false,
+				shop_remark: '',
+				remarkBoxVisible: false,
 
-                // new edn
-                userMsgCounts: 10,
-                userPageNumber: 1,
-                userPageSize: 30,
+				// new edn
+				userMsgCounts: 10,
+				userPageNumber: 1,
+				userPageSize: 30,
 
-                userMoreList: [],
-                userMoreMsg: [],
+				userMoreList: [],
+				userMoreMsg: [],
 
-                searchUid: null,
+				searchUid: null,
 
-                pageCounts: 10,
-                pageNumber: 1,
-                pageSize: 10,
-                currPageNumber: null,
+				pageCounts: 10,
+				pageNumber: 1,
+				pageSize: 10,
+				currPageNumber: null,
 
-                js_withdrawMsg: null,
-                currLineData: null,
-                currType: null,
+				js_withdrawMsg: null,
+				currLineData: null,
+				currType: null,
 
-                currUserUid: null
-            }
-        },
-        watch: {},
-        methods: {
-            async monitorFn(rowMsg){
+				currUserUid: null
+			}
+		},
+		watch: {},
+		methods: {
+			async monitorFn(rowMsg){
 //                监控
-                this.showAttentBox = true
-            },
-            async attentionFn(rowMsg){
-                // 关注
-            },
-            async addRemarkFn(rowMsg){
-                // 添加备注
-                this.remarkBoxVisible = true;
-            },
-            formatConsumeFn (row, column){
-                let num = Number(row.planPackage);
-                if (isNaN(num)) {
-                    return 0
-                }
-                if (num < 100) {
-                    return num
-                } else if (num < 10000) {
-                    return Math.round(num / 1000 * 10) / 10 + '千'
-                } else if (num < 100000000) {
-                    return Math.round(num / 10000 * 10) / 10 + '万'
-                } else {
-                    return Math.round(num / 100000000 * 10) / 10 + '亿'
-                }
-            },
-            // new end
-            initShopList(){
+				this.showAttentBox = true
+			},
+			async attentionFn(rowMsg){
+				// 关注
+			},
+			async addRemarkFn(rowMsg){
+				// 添加备注
+				this.remarkBoxVisible = true;
+			},
+			formatConsumeFn (row, column){
+				let num = Number(row.planPackage);
+				if (isNaN(num)) {
+					return 0
+				}
+				if (num < 100) {
+					return num
+				} else if (num < 10000) {
+					return Math.round(num / 1000 * 10) / 10 + '千'
+				} else if (num < 100000000) {
+					return Math.round(num / 10000 * 10) / 10 + '万'
+				} else {
+					return Math.round(num / 100000000 * 10) / 10 + '亿'
+				}
+			},
+			// new end
+			initShopList(){
                 /* 初始化当前列表 */
-                this.searchUid = null;
-                this.pageNumber = 1;
-                this.pageSize = 10;
-                this.handleCurrentChange(1)
-            },
-            async surePay(){
-                let surePayBack = null;
-                Object.assign(this.currLineData, {
-                    remark: this.shop_remark,
-                    isAgree: this.currType
-                })
+				this.searchUid = null;
+				this.pageNumber = 1;
+				this.pageSize = 10;
+				this.handleCurrentChange(1)
+			},
+			async surePay(){
+				let surePayBack = null;
+				Object.assign(this.currLineData, {
+					remark: this.shop_remark,
+					isAgree: this.currType
+				})
 
-                if (this.currType === '-1') {
-                    surePayBack = await this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData);
-                } else {
-                    surePayBack = await this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData);
-                }
+				if (this.currType === '-1') {
+					surePayBack = await this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData);
+				} else {
+					surePayBack = await this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData);
+				}
 
-                if (surePayBack) {
-                    this.remarkBoxVisible = false;
-                    if (this.currPageNumber) {
-                        this.$store.dispatch(aTypes.getWithdrawOrder, {
-                            'pageNumber': this.currPageNumber,
-                            'pageSize': this.pageSize
-                        });
-                    } else {
-                        this.$store.dispatch(aTypes.getWithdrawOrder)
-                    }
-                }
-            },
-            async jumpUidFn(data){
-                let msgTop = await this.$store.dispatch(aTypes.getWithdrawProfit, data.uid);
-                console.log(msgTop);
-                this.currUserUid = data.uid;
-                this.userMoreMsg = [];
-                if (msgTop) {
-                    this.userMoreMsg.push(msgTop)
-                } else {
-                    this.$message({
-                        message: 'getWithdrawProfit error' + JSON.stringify(msgTop),
-                        type: 'error',
-                        duration: 1200
-                    })
-                }
-                let msgBottom = await this.$store.dispatch(aTypes.getAccountDetail, {
-                    uid: data.uid,
-                    pageNumber: 1,
-                    pageSize: this.userPageSize
-                });
-                if (msgBottom) {
-                    this.userPageNumber = Number(msgBottom.currentPage);
-                    this.userMsgCounts = Number(msgBottom.pages);
-                    if (msgBottom.orders) {
-                        msgBottom.orders.forEach((val, index) => {
+				if (surePayBack) {
+					this.remarkBoxVisible = false;
+					if (this.currPageNumber) {
+						this.$store.dispatch(aTypes.getWithdrawOrder, {
+							'pageNumber': this.currPageNumber,
+							'pageSize': this.pageSize
+						});
+					} else {
+						this.$store.dispatch(aTypes.getWithdrawOrder)
+					}
+				}
+			},
+			async jumpUidFn(data){
+				let msgTop = await this.$store.dispatch(aTypes.getWithdrawProfit, data.uid);
+				console.log(msgTop);
+				this.currUserUid = data.uid;
+				this.userMoreMsg = [];
+				if (msgTop) {
+					this.userMoreMsg.push(msgTop)
+				} else {
+					this.$message({
+						message: 'getWithdrawProfit error' + JSON.stringify(msgTop),
+						type: 'error',
+						duration: 1200
+					})
+				}
+				let msgBottom = await this.$store.dispatch(aTypes.getAccountDetail, {
+					uid: data.uid,
+					pageNumber: 1,
+					pageSize: this.userPageSize
+				});
+				if (msgBottom) {
+					this.userPageNumber = Number(msgBottom.currentPage);
+					this.userMsgCounts = Number(msgBottom.pages);
+					if (msgBottom.orders) {
+						msgBottom.orders.forEach((val, index) => {
 
-                        })
-                    }
-                    this.userMoreList = msgBottom.orders
-                }
-                this.showAttentBox = true;
+						})
+					}
+					this.userMoreList = msgBottom.orders
+				}
+				this.showAttentBox = true;
 
-            },
-            async searchShopIdFn(){
-                if (!this.searchUid) {
-                    return false;
-                }
-                let withDrawMsg = await this.$store.dispatch(aTypes.getWithdrawOrder, {
-                    'pageNumber': 1,
-                    'pageSize': this.pageSize,
-                    'uid': this.searchUid
-                });
-                if (withDrawMsg) {
-                    this.pageCounts = Number(withDrawMsg.pages);
-                    this.pageNumber = Number(withDrawMsg.currentPage);
-                }
-            },
+			},
+			async searchShopIdFn(){
+				if (!this.searchUid) {
+					return false;
+				}
+				let withDrawMsg = await this.$store.dispatch(aTypes.getWithdrawOrder, {
+					'pageNumber': 1,
+					'pageSize': this.pageSize,
+					'uid': this.searchUid
+				});
+				if (withDrawMsg) {
+					this.pageCounts = Number(withDrawMsg.pages);
+					this.pageNumber = Number(withDrawMsg.currentPage);
+				}
+			},
 
-            confirmFn(lineData, type){
-                if (type === '-1') {
-                    this.js_withdrawMsg = '拒绝用户uid《 ' + lineData.uid + ' 》提款？'
+			confirmFn(lineData, type){
+				if (type === '-1') {
+					this.js_withdrawMsg = '拒绝用户uid《 ' + lineData.uid + ' 》提款？'
 
-                } else {
-                    this.js_withdrawMsg = '允许用户uid《 ' + lineData.uid + ' 》提款？'
-                }
-                this.remarkBoxVisible = true;
-                this.currLineData = lineData;
-                this.currType = type;
-            },
-            format (time, format = 'yyyy-MM-dd') {
-                time = +time * 1000;
-                let t = new Date(time);
-                let tf = function (i) {
-                    return (i < 10 ? '0' : '') + i
-                };
-                return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
-                    switch (a) {
-                        case 'yyyy':
-                            return tf(t.getFullYear());
-                        case 'MM':
-                            return tf(t.getMonth() + 1);
-                        case 'mm':
-                            return tf(t.getMinutes());
-                        case 'dd':
-                            return tf(t.getDate());
-                        case 'HH':
-                            return tf(t.getHours());
-                        case 'ss':
-                            return tf(t.getSeconds())
-                    }
-                })
-            },
-            lineClick(row, type){
-                this.shop_remark = '';
-                this.confirmFn(row, type)
-            },
+				} else {
+					this.js_withdrawMsg = '允许用户uid《 ' + lineData.uid + ' 》提款？'
+				}
+				this.remarkBoxVisible = true;
+				this.currLineData = lineData;
+				this.currType = type;
+			},
+			format (time, format = 'yyyy-MM-dd') {
+				time = +time * 1000;
+				let t = new Date(time);
+				let tf = function (i) {
+					return (i < 10 ? '0' : '') + i
+				};
+				return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
+					switch (a) {
+						case 'yyyy':
+							return tf(t.getFullYear());
+						case 'MM':
+							return tf(t.getMonth() + 1);
+						case 'mm':
+							return tf(t.getMinutes());
+						case 'dd':
+							return tf(t.getDate());
+						case 'HH':
+							return tf(t.getHours());
+						case 'ss':
+							return tf(t.getSeconds())
+					}
+				})
+			},
+			lineClick(row, type){
+				this.shop_remark = '';
+				this.confirmFn(row, type)
+			},
 
-            async handleCurrentChange (val) {
-                let withDrawMsg = null;
-                this.currPageNumber = Number(val)
-                if (this.searchUid !== '') {
-                    withDrawMsg = await this.$store.dispatch(aTypes.getWithdrawOrder, {
-                        'pageNumber': Number(val),
-                        'pageSize': this.pageSize,
-                        'uid': this.searchUid
-                    })
-                } else {
-                    withDrawMsg = await this.$store.dispatch(aTypes.getWithdrawOrder, {
-                        'pageNumber': Number(val),
-                        'pageSize': this.pageSize
-                    })
+			async handleCurrentChange (val) {
+				let withDrawMsg = null;
+				this.currPageNumber = Number(val)
+				if (this.searchUid !== '') {
+					withDrawMsg = await this.$store.dispatch(aTypes.getWithdrawOrder, {
+						'pageNumber': Number(val),
+						'pageSize': this.pageSize,
+						'uid': this.searchUid
+					})
+				} else {
+					withDrawMsg = await this.$store.dispatch(aTypes.getWithdrawOrder, {
+						'pageNumber': Number(val),
+						'pageSize': this.pageSize
+					})
 
-                }
-                if (withDrawMsg) {
-                    this.pageCounts = Number(withDrawMsg.pages);
-                }
-            },
-            // 弹窗里头的分页
-            async userCurrentChange (val) {
-                let msgBottom = null;
-                if (this.currUserUid !== '') {
-                    msgBottom = await this.$store.dispatch(aTypes.getAccountDetail, {
-                        'pageNumber': Number(val),
-                        'pageSize': this.userPageSize,
-                        'uid': this.currUserUid
-                    })
-                } else {
-                    msgBottom = await this.$store.dispatch(aTypes.getAccountDetail, {
-                        'pageNumber': Number(val),
-                        'pageSize': this.userPageSize
-                    })
-                }
+				}
+				if (withDrawMsg) {
+					this.pageCounts = Number(withDrawMsg.pages);
+				}
+			},
+			// 弹窗里头的分页
+			async userCurrentChange (val) {
+				let msgBottom = null;
+				if (this.currUserUid !== '') {
+					msgBottom = await this.$store.dispatch(aTypes.getAccountDetail, {
+						'pageNumber': Number(val),
+						'pageSize': this.userPageSize,
+						'uid': this.currUserUid
+					})
+				} else {
+					msgBottom = await this.$store.dispatch(aTypes.getAccountDetail, {
+						'pageNumber': Number(val),
+						'pageSize': this.userPageSize
+					})
+				}
 
-                if (msgBottom) {
-                    this.userPageNumber = Number(msgBottom.currentPage);
-                    this.userMsgCounts = Number(msgBottom.pages);
-                    if (msgBottom.orders) {
-                        msgBottom.orders.forEach((val, index) => {
+				if (msgBottom) {
+					this.userPageNumber = Number(msgBottom.currentPage);
+					this.userMsgCounts = Number(msgBottom.pages);
+					if (msgBottom.orders) {
+						msgBottom.orders.forEach((val, index) => {
 
-                        })
-                    }
-                    this.userMoreList = msgBottom.orders
-                }
+						})
+					}
+					this.userMoreList = msgBottom.orders
+				}
 
-                if (msgBottom) {
-                    this.pageCounts = Number(msgBottom.pages);
-                }
-            },
+				if (msgBottom) {
+					this.pageCounts = Number(msgBottom.pages);
+				}
+			},
 
-        },
-        computed: {
+		},
+		computed: {
 //            withdrawList(){
 //                return this.$store.state.betblock.withdrawList
 //            }
-        },
-        async mounted(){
+		},
+		async mounted(){
 
-//			let withDrawMsg = await this.$store.dispatch(aTypes.getWithdrawOrder, {
-//				'pageNumber': 1,
-//				'pageSize': this.pageSize
-//			})
-//			if (withDrawMsg) {
-//				this.pageCounts = Number(withDrawMsg.pages);
-//				this.pageNumber = Number(withDrawMsg.currentPage);
-//			}
 
-        },
-        filters: {
-            format (time, format = 'yyyy-MM-dd') {
-                let t = new Date(time)
-                let tf = function (i) {
-                    return (i < 10 ? '0' : '') + i
-                }
-                return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
-                    switch (a) {
-                        case 'yyyy':
-                            return tf(t.getFullYear())
-                        case 'MM':
-                            return tf(t.getMonth() + 1)
-                        case 'mm':
-                            return tf(t.getMinutes())
-                        case 'dd':
-                            return tf(t.getDate())
-                        case 'HH':
-                            return tf(t.getHours())
-                        case 'ss':
-                            return tf(t.getSeconds())
-                    }
-                })
-            },
-        }
-    }
+		},
+		filters: {
+			format (time, format = 'yyyy-MM-dd') {
+				let t = new Date(time)
+				let tf = function (i) {
+					return (i < 10 ? '0' : '') + i
+				}
+				return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
+					switch (a) {
+						case 'yyyy':
+							return tf(t.getFullYear())
+						case 'MM':
+							return tf(t.getMonth() + 1)
+						case 'mm':
+							return tf(t.getMinutes())
+						case 'dd':
+							return tf(t.getDate())
+						case 'HH':
+							return tf(t.getHours())
+						case 'ss':
+							return tf(t.getSeconds())
+					}
+				})
+			},
+		}
+	}
 </script>
-<style>
+<style scoped>
+    .searchDXUL{
+        width: 217px;
+        border: 1px solid #b4b4b4;
+        padding-left: 5px;
+        border-radius: 2px;
+        height: 270px;
+        overflow-y: scroll;
+    }
+    .searchDXUL li{
+        width: 100%;
+        height: 35px;
+        line-height: 35px;
+        border-bottom: 1px solid #b6b6b6;
+    }
+    .searchDXUL li:hover{
+        background-color: #e8eef3;
+    }
+    .planEditDX .el-col {
+        margin-left: 10px !important
+    }
+
     .planEdit section .el-button {
         display: block;
         margin: 0 auto;

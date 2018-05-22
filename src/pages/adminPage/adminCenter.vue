@@ -331,10 +331,10 @@
 
 				if (this.currType === '-1') {
 					surePayBack = await
-					this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData);
+						this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData);
 				} else {
 					surePayBack = await
-					this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData);
+						this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData);
 				}
 
 				if (surePayBack) {
@@ -351,7 +351,7 @@
 			},
 			async jumpUidFn(data){
 				let msgTop = await
-				this.$store.dispatch(aTypes.getWithdrawProfit, data.uid);
+					this.$store.dispatch(aTypes.getWithdrawProfit, data.uid);
 				console.log(msgTop);
 				this.currUserUid = data.uid;
 				this.userMoreMsg = [];
@@ -365,11 +365,11 @@
 					})
 				}
 				let msgBottom = await
-				this.$store.dispatch(aTypes.getAccountDetail, {
-					uid: data.uid,
-					pageNumber: 1,
-					pageSize: this.userPageSize
-				});
+					this.$store.dispatch(aTypes.getAccountDetail, {
+						uid: data.uid,
+						pageNumber: 1,
+						pageSize: this.userPageSize
+					});
 				this.showAttentBox = true;
 
 			},
@@ -378,11 +378,11 @@
 					return false;
 				}
 				let withDrawMsg = await
-				this.$store.dispatch(aTypes.getWithdrawOrder, {
-					'pageNumber': 1,
-					'pageSize': this.pageSize,
-					'uid': this.searchUid
-				});
+					this.$store.dispatch(aTypes.getWithdrawOrder, {
+						'pageNumber': 1,
+						'pageSize': this.pageSize,
+						'uid': this.searchUid
+					});
 				if (withDrawMsg) {
 					this.pageCounts = Number(withDrawMsg.pages);
 					this.pageNumber = Number(withDrawMsg.currentPage);
@@ -433,17 +433,17 @@
 				this.currPageNumber = Number(val)
 				if (this.searchUid !== '') {
 					withDrawMsg = await
-					this.$store.dispatch(aTypes.getWithdrawOrder, {
-						'pageNumber': Number(val),
-						'pageSize': this.pageSize,
-						'uid': this.searchUid
-					})
+						this.$store.dispatch(aTypes.getWithdrawOrder, {
+							'pageNumber': Number(val),
+							'pageSize': this.pageSize,
+							'uid': this.searchUid
+						})
 				} else {
 					withDrawMsg = await
-					this.$store.dispatch(aTypes.getWithdrawOrder, {
-						'pageNumber': Number(val),
-						'pageSize': this.pageSize
-					})
+						this.$store.dispatch(aTypes.getWithdrawOrder, {
+							'pageNumber': Number(val),
+							'pageSize': this.pageSize
+						})
 
 				}
 				if (withDrawMsg) {
@@ -455,17 +455,17 @@
 				let msgBottom = null;
 				if (this.currUserUid !== '') {
 					msgBottom = await
-					this.$store.dispatch(aTypes.getAccountDetail, {
-						'pageNumber': Number(val),
-						'pageSize': this.userPageSize,
-						'uid': this.currUserUid
-					})
+						this.$store.dispatch(aTypes.getAccountDetail, {
+							'pageNumber': Number(val),
+							'pageSize': this.userPageSize,
+							'uid': this.currUserUid
+						})
 				} else {
 					msgBottom = await
-					this.$store.dispatch(aTypes.getAccountDetail, {
-						'pageNumber': Number(val),
-						'pageSize': this.userPageSize
-					})
+						this.$store.dispatch(aTypes.getAccountDetail, {
+							'pageNumber': Number(val),
+							'pageSize': this.userPageSize
+						})
 				}
 
 				if (msgBottom) {
@@ -487,10 +487,10 @@
 		},
 		async mounted(){
 			let withDrawMsg = await
-			this.$store.dispatch(aTypes.getWithdrawOrder, {
-				'pageNumber': 1,
-				'pageSize': this.pageSize
-			})
+				this.$store.dispatch(aTypes.getWithdrawOrder, {
+					'pageNumber': 1,
+					'pageSize': this.pageSize
+				})
 			if (withDrawMsg) {
 				this.pageCounts = Number(withDrawMsg.pages);
 				this.pageNumber = Number(withDrawMsg.currentPage);
@@ -563,7 +563,7 @@
 		}
 	}
 </script>
-<style>
+<style scoped>
     .operateStyle .el-button:first-child {
         margin-left: 10px;
     }
