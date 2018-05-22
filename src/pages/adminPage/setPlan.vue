@@ -121,7 +121,7 @@
         <el-dialog class="planEdit" fullscreen="true" width="85%" title="计划设置" :visible.sync="showAttentBox" center>
             <section>
                 <h4 style="margin-bottom: 20px">定向设置</h4>
-                <div v-if="true" class="planEditDX" style="position: relative;">
+                <div v-if="false" class="planEditDX" style="position: relative;">
                     <el-row :gutter="20">
                         <el-col :span="13">
                             <div class="grid-content bg-purple">
@@ -156,7 +156,30 @@
             </section>
             <section style="margin-top: 10px;border-top: 2px solid #ccc;padding-top: 10px">
                 <h4>资源位设置</h4>
-                <div v-if="false"></div>
+                <div v-if="true">
+                    <el-table
+                            :data="shopListData"
+                            stripe
+                            highlight-current-row
+                            style="width: 100%">
+                        <el-table-column
+                                prop="adLocal"
+                                label="广告版位">
+                        </el-table-column>
+                        <el-table-column
+                                prop="adStyle"
+                                label="创意形式">
+                        </el-table-column>
+                        <el-table-column
+                                prop="adDesc"
+                                label="描述">
+                        </el-table-column>
+                        <el-table-column
+                                prop="adSee"
+                                label="曝光量">
+                        </el-table-column>
+                    </el-table>
+                </div>
                 <section v-else>
                     <p style="color: #9b9b9b;text-align: center;line-height: 30px;">QQ_582×166单图(文)</p>
                     <el-button size="small" type="success" icon="el-icon-edit">重新编辑</el-button>
@@ -201,6 +224,14 @@
 	export default {
 		data(){
 			return {
+
+				shopListData:[{
+					adLocal:'腾讯新闻',
+                    adStyle:'230*152单图2',
+                    adDesc:'新闻信息流，微信',
+                    adSee:'1000'
+                }],
+
 				setPlanDX: ["性别：男", "年龄：大于等于41岁", "付费用户：电商交易用户", "商业兴趣：生活用品",
 					"联网方式：Wifi、4G",
 					"地理位置：（常住）中国未知（常住）中国未知、北京市、河北省、北京市、河北省（常住）中国未知、北京市、河北省（常住）中国未知、北京市、河北省"],
@@ -542,7 +573,7 @@
 	}
 </script>
 <style scoped>
-    .searchDXUL{
+    .searchDXUL {
         width: 217px;
         border: 1px solid #b4b4b4;
         padding-left: 5px;
@@ -550,15 +581,18 @@
         height: 270px;
         overflow-y: scroll;
     }
-    .searchDXUL li{
+
+    .searchDXUL li {
         width: 100%;
         height: 35px;
         line-height: 35px;
         border-bottom: 1px solid #b6b6b6;
     }
-    .searchDXUL li:hover{
+
+    .searchDXUL li:hover {
         background-color: #e8eef3;
     }
+
     .planEditDX .el-col {
         margin-left: 10px !important
     }
