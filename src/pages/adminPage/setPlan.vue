@@ -2,7 +2,8 @@
     <div class="app-container">
         <div class="setPlanHead clear">
             <div style="float: left">
-                <button style="padding: 10px 20px;margin-top: 4px" class="el-button el-button--default" type="button">
+                <button @click="jump2adminCenter" style="padding: 10px 20px;margin-top: 4px"
+                        class="el-button el-button--default" type="button">
                     <i class="el-icon-arrow-left"></i>
                     <span>返回上一级</span>
                 </button>
@@ -438,6 +439,9 @@
 		},
 		watch: {},
 		methods: {
+			jump2adminCenter(){
+
+			},
 			async monitorFn(rowMsg){
 //                监控
 				this.showAttentBox = true

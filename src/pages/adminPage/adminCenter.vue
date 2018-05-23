@@ -1,131 +1,128 @@
 <template>
     <div class="app-container">
         <section>
-            <div>
-                <section class="clear">
-                    <div style="float: left">
-                        <span style="font-weight: 700;font-size: 20px">店铺管理中心</span>
-                        <el-select style="margin-left: 30px" size="small" v-model="shopStateVal" placeholder="所有店铺">
-                            <el-option
-                                    v-for="item in shopState"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </div>
-                    <div style="float: right">
-                        <el-input v-model="searchUid" size="small" placeholder="搜索店铺ID"></el-input>
-                        <el-button style="margin-left: 10px" @click="searchShopIdFn()" type="primary" plain
-                                   size="small">
-                            查询
-                        </el-button>
-                        <el-button @click="initShopList()" type="warning" size="small">
-                            重置
-                        </el-button>
-                    </div>
-                </section>
-                <el-table
-                        :data="shopListData"
-                        stripe
-                        highlight-current-row
-                        style="width: 100%">
-                    <el-table-column
-                            prop="shopName"
-                            label="店铺名称">
-                    </el-table-column>
-                    <el-table-column
-                            prop="totalConsume"
-                            :formatter="formatConsumeFn"
-                            label="总消耗">
-                    </el-table-column>
-                    <el-table-column
-                            prop="banlance"
-                            label="余额">
-                    </el-table-column>
-                    <el-table-column
-                            prop="conversionCost"
-                            label="转化成本">
-                    </el-table-column>
-                    <el-table-column
-                            label="关注操作"
-                            width="110"
-                    >
-                        <template slot-scope="scope">
-                            <!--el-icon-star-on-->
-                            <el-button v-if="!isAttention" @click="attentionFn( scope.row )" icon="el-icon-star-off"
-                                       type="primary"
-                                       size="small">
-                                关注
-                            </el-button>
-                            <el-button v-else @click="attentionFn( scope.row )" icon="el-icon-star-on" type="primary"
-                                       size="small">
-                                已关注
-                            </el-button>
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                            label="监控操作"
-                            width="110"
-                    >
-                        <template slot-scope="scope">
-                            <el-button v-if="!isMonitor" @click="monitorFn( scope.row )" icon="el-icon-news"
-                                       type="warning" size="small">
-                                监控
-                            </el-button>
-                            <el-button v-else @click="monitorFn( scope.row )" icon="el-icon-news" type="warning"
-                                       size="small">
-                                监控中
-                            </el-button>
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                            label="新建操作"
-                            width="110"
-                    >
-                        <template slot-scope="scope">
-                            <el-button @click="addShopFn( scope.row )" icon="el-icon-circle-plus-outline" type="primary"
-                                       size="small">
-                                新建
-                            </el-button>
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                            label="添加备注"
-                            width="110"
-                    >
-                        <template slot-scope="scope">
-                            <el-button @click="addRemarkFn( scope.row )" icon="el-icon-edit" type="primary"
-                                       size="small">
-                                备注
-                            </el-button>
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                            prop="shopOperate"
-                            label="当前店铺状态"
-                            width="130"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                            prop="shopRemark"
-                            label="备注"
-                            width="130"
-                    >
-                    </el-table-column>
-                </el-table>
-                <div class="block">
-                    <el-pagination
-                            @current-change="handleCurrentChange"
-                            background
-                            :current-page.sync="pageNumber"
-                            size="small"
-                            :page-size="pageSize"
-                            layout="prev, pager, next,jumper"
-                            :page-count="pageCounts"
-                    >
-                    </el-pagination>
+            <div class="clear">
+                <div style="float: left">
+                    <span style="font-weight: 700;font-size: 20px">店铺管理中心</span>
+                    <el-select style="margin-left: 30px" size="small" v-model="shopStateVal" placeholder="所有店铺">
+                        <el-option
+                                v-for="item in shopState"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
                 </div>
+                <div style="float: right">
+                    <el-input v-model="searchShopId" size="small" placeholder="搜索店铺ID"></el-input>
+                    <el-button style="margin-left: 10px" @click="searchShopIdFn()" type="primary" plain
+                               size="small">
+                        查询
+                    </el-button>
+                    <el-button @click="initShopList()" type="warning" size="small">
+                        重置
+                    </el-button>
+                </div>
+            </div>
+            <el-table
+                    :data="shopListData"
+                    stripe
+                    highlight-current-row
+                    style="width: 100%">
+                <el-table-column
+                        prop="shopName"
+                        label="店铺名称">
+                </el-table-column>
+                <el-table-column
+                        prop="totalConsume"
+                        :formatter="formatConsumeFn"
+                        label="总消耗">
+                </el-table-column>
+                <el-table-column
+                        prop="banlance"
+                        label="余额">
+                </el-table-column>
+                <el-table-column
+                        prop="conversionCost"
+                        label="转化成本">
+                </el-table-column>
+                <el-table-column
+                        label="关注操作"
+                        width="110"
+                >
+                    <template slot-scope="scope">
+                        <!--el-icon-star-on-->
+                        <el-button v-if="!isAttention" @click="attentionFn( scope.row ,'1' )" icon="el-icon-star-off"
+                                   type="primary"
+                                   size="small">
+                            关注
+                        </el-button>
+                        <el-button v-else @click="attentionFn( scope.row , '0' )" icon="el-icon-star-on" type="primary"
+                                   size="small">
+                            取消关注
+                        </el-button>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="监控操作"
+                        width="110"
+                >
+                    <template slot-scope="scope">
+                        <el-button v-if="!isMonitor" @click="monitorFn( scope.row )" icon="el-icon-news"
+                                   type="warning" size="small">
+                            监控
+                        </el-button>
+                        <el-button v-else @click="monitorFn( scope.row )" icon="el-icon-news" type="warning"
+                                   size="small">
+                            监控中
+                        </el-button>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="新建操作"
+                        width="110"
+                >
+                    <template slot-scope="scope">
+                        <el-button @click="addShopFn( scope.row )" icon="el-icon-circle-plus-outline" type="primary"
+                                   size="small">
+                            新建
+                        </el-button>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="添加备注"
+                        width="110"
+                >
+                    <template slot-scope="scope">
+                        <el-button @click="addRemarkFn( scope.row )" icon="el-icon-edit" type="primary"
+                                   size="small">
+                            备注
+                        </el-button>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="shopOperate"
+                        label="当前店铺状态"
+                        width="130"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="shopRemark"
+                        label="备注"
+                        width="130"
+                >
+                </el-table-column>
+            </el-table>
+            <div class="block">
+                <el-pagination
+                        @current-change="handleCurrentChange"
+                        background
+                        :current-page.sync="pageNumber"
+                        size="small"
+                        :page-size="pageSize"
+                        layout="prev, pager, next,jumper"
+                        :page-count="pageCounts"
+                >
+                </el-pagination>
             </div>
         </section>
         <!-- 提款申请 -->
@@ -136,7 +133,7 @@
                 <el-input style="margin-left: 10px" placeholder="请输入备注" v-model='shop_remark'></el-input>
             </div>
             <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="surePay">确 定</el-button>
+                <el-button type="primary" @click="sureAddRemark">确 定</el-button>
             </div>
         </el-dialog>
 
@@ -148,7 +145,8 @@
                         <div class="el-form-item is-required"><label class="el-form-item__label">转换成本：</label>
                             <div class="el-form-item__content">
                                 <div class="el-input el-input-group el-input-group--append">
-                                    <input type="text" class="el-input__inner" autocomplete="off" value="50">
+                                    <input type="text" v-model="attent_zhVal" class="el-input__inner"
+                                           autocomplete="off">
                                     <div size="small" class="el-input-group__append">元</div>
                                 </div>
                             </div>
@@ -156,7 +154,8 @@
                         <div class="el-form-item is-required"><label class="el-form-item__label">消耗：</label>
                             <div class="el-form-item__content">
                                 <div class="el-input el-input-group el-input-group--append">
-                                    <input type="text" class="el-input__inner" autocomplete="off" value="2000">
+                                    <input type="text" v-model="attent_xhVal" class="el-input__inner"
+                                           autocomplete="off">
                                     <div size="small" class="el-input-group__append">元</div>
                                 </div>
                             </div>
@@ -178,13 +177,13 @@
                     </form>
                 </div>
             </section>
-            <section style="margin-top: 10px;border-top: 2px solid #ccc;padding-top: 10px">
+            <section class="jkMsg">
                 <h2>监控消息</h2>
-                <p style="color: #9b9b9b;text-align: center;line-height: 100px;">该店铺内的新计划暂无变更</p>
+                <p class="jknoMsg">该店铺内的新计划暂无变更</p>
                 <!-- todo-->
             </section>
             <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="surePay">确 定</el-button>
+                <el-button type="primary" @click="sureAddAttent">确 定</el-button>
             </div>
         </el-dialog>
     </div>
@@ -195,11 +194,19 @@
 	export default {
 		data(){
 			return {
+				attent_zhVal: '50', // 转换成本
+				attent_xhVal: '1000', // 消耗
+
+				shopStateVal: '0',
+				searchShopId: null,
+
 				openAttention: true,
 				isMonitor: false, // 监控
 				isAttention: false, // 关注
-				shopStateVal: '',
 				shopState: [{
+					value: '0',
+					label: '所有的店铺'
+				}, {
 					value: '1',
 					label: '关注的店铺'
 				}, {
@@ -243,6 +250,7 @@
 				remarkBoxVisible: false,
 
 				// new edn
+
 				userMsgCounts: 10,
 				userPageNumber: 1,
 				userPageSize: 30,
@@ -251,7 +259,6 @@
 				userMoreMsg: [],
 				showAttentBox: false,
 
-				searchUid: null,
 
 				pageCounts: 10,
 				pageNumber: 1,
@@ -265,7 +272,13 @@
 				currUserUid: null
 			}
 		},
-		watch: {},
+		watch: {
+			shopStateVal(val){
+				let choseShopList = [];
+				console.log('====');
+				console.log(val);
+			}
+		},
 		methods: {
 			async monitorFn(rowMsg){
 //                监控
@@ -279,6 +292,7 @@
 				this.remarkBoxVisible = true;
 			},
 			formatConsumeFn (row, column){
+				// 格式化
 				let num = Number(row.totalConsume);
 				if (isNaN(num)) {
 					return 0
@@ -293,36 +307,15 @@
 					return Math.round(num / 100000000 * 10) / 10 + '亿'
 				}
 			},
-			sendEth(Msg){
-				// 发起转账
-				if (typeof web3 !== 'undefined') {
-					web3.eth.sendTransaction({
-						from: '0xFFb9511C95570F2156EeBf7371Fb0e52038B1006',
-						to: Msg.withdraw_addr,
-						value: web3.toWei(Number(Msg.amount), 'ether'),   // The value transferred for the transaction in wei
-						gas: 31000,
-						data: web3.toHex(Msg.uid + '$' + Msg.oid),
-					}, function (err, hash) {
-						console.log(hash);
-					})
-
-				} else {
-					this.$message({
-						message: '请手动调起metamask插件',
-						type: 'error',
-						duration: 1200
-					})
-				}
-			},
-			// new end
 			initShopList(){
-                /* 初始化当前列表 */
-				this.searchUid = null;
+                /* 初始化当前店铺列表 */
+				this.searchShopId = null;
 				this.pageNumber = 1;
 				this.pageSize = 10;
 				this.handleCurrentChange(1)
 			},
-			async surePay(){
+			async sureAddRemark(){
+				console.log('添加备注');
 				let surePayBack = null;
 				Object.assign(this.currLineData, {
 					remark: this.shop_remark,
@@ -349,6 +342,35 @@
 					}
 				}
 			},
+			async sureAddAttent(){
+				console.log('添加监控');
+				let surePayBack = null;
+				Object.assign(this.currLineData, {
+					remark: this.shop_remark,
+					isAgree: this.currType
+				})
+
+				if (this.currType === '-1') {
+					surePayBack = await
+						this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData);
+				} else {
+					surePayBack = await
+						this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData);
+				}
+
+				if (surePayBack) {
+					this.remarkBoxVisible = false;
+					if (this.currPageNumber) {
+						this.$store.dispatch(aTypes.getWithdrawOrder, {
+							'pageNumber': this.currPageNumber,
+							'pageSize': this.pageSize
+						});
+					} else {
+						this.$store.dispatch(aTypes.getWithdrawOrder)
+					}
+				}
+			},
+			// new end
 			async jumpUidFn(data){
 				let msgTop = await
 					this.$store.dispatch(aTypes.getWithdrawProfit, data.uid);
@@ -374,14 +396,15 @@
 
 			},
 			async searchShopIdFn(){
-				if (!this.searchUid) {
+				console.log('查询店铺')
+				if (!this.searchShopId) {
 					return false;
 				}
 				let withDrawMsg = await
 					this.$store.dispatch(aTypes.getWithdrawOrder, {
 						'pageNumber': 1,
 						'pageSize': this.pageSize,
-						'uid': this.searchUid
+						'uid': this.searchShopId
 					});
 				if (withDrawMsg) {
 					this.pageCounts = Number(withDrawMsg.pages);
@@ -389,17 +412,6 @@
 				}
 			},
 
-			confirmFn(lineData, type){
-				if (type === '-1') {
-					this.js_withdrawMsg = '拒绝用户uid《 ' + lineData.uid + ' 》提款？'
-
-				} else {
-					this.js_withdrawMsg = '允许用户uid《 ' + lineData.uid + ' 》提款？'
-				}
-				this.remarkBoxVisible = true;
-				this.currLineData = lineData;
-				this.currType = type;
-			},
 			format (time, format = 'yyyy-MM-dd') {
 				time = +time * 1000;
 				let t = new Date(time);
@@ -423,20 +435,16 @@
 					}
 				})
 			},
-			lineClick(row, type){
-				this.shop_remark = '';
-				this.confirmFn(row, type)
-			},
 
 			async handleCurrentChange (val) {
 				let withDrawMsg = null;
 				this.currPageNumber = Number(val)
-				if (this.searchUid !== '') {
+				if (this.searchShopId !== '') {
 					withDrawMsg = await
 						this.$store.dispatch(aTypes.getWithdrawOrder, {
 							'pageNumber': Number(val),
 							'pageSize': this.pageSize,
-							'uid': this.searchUid
+							'uid': this.searchShopId
 						})
 				} else {
 					withDrawMsg = await
@@ -495,47 +503,6 @@
 				this.pageCounts = Number(withDrawMsg.pages);
 				this.pageNumber = Number(withDrawMsg.currentPage);
 			}
-
-			if (typeof web3 !== 'undefined') {
-				console.log(web3.currentProvider)
-				console.log(3)
-				console.log(web3.version)
-//      区块信息
-//        web3.eth.getBlock(48, function (error, result) {
-//          if (!error)
-//            console.log(JSON.stringify(result));
-//          else
-//            console.error(error);
-//        })
-//      账号 address 0xa4B6CE77E56C10f2cAf11BaAe7416612C5EC98b0
-//				web3.eth.getAccounts(function (error, account) {
-//					if (!error) {
-//						console.log(account)
-//						console.log(JSON.stringify(account));
-//						console.log(account[0]);
-//						console.log(']]]]]]]]]]]]]]]')
-//						web3.eth.getBalance(account[0], function (err, data) {
-//							console.log(data)
-//						})
-//
-//					} else
-//						console.error(error);
-//				})
-
-//        web3.eth.sendTransaction({
-//          from: '0xa4b6ce77e56c10f2caf11baae7416612c5ec98b0',
-//          to: '0xc69c7ac91826e1146cb7740534ed554ebd0c5805',
-//          value: web3.toWei(0.01,'ether'),   // The value transferred for the transaction in wei
-//          gas: 31000,
-//          data: web3.toHex('123'),
-//        },function (err, hash) {
-//          console.log(hash);
-//        })
-
-			} else {
-				web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-			}
-
 		},
 		filters: {
 			format (time, format = 'yyyy-MM-dd') {
@@ -564,6 +531,18 @@
 	}
 </script>
 <style scoped>
+    .jkMsg {
+        margin-top: 10px;
+        border-top: 2px solid #ccc;
+        padding-top: 10px
+    }
+
+    .jkMsg .jknoMsg {
+        color: #9b9b9b;
+        text-align: center;
+        line-height: 100px;
+    }
+
     .operateStyle .el-button:first-child {
         margin-left: 10px;
     }

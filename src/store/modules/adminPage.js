@@ -18,7 +18,7 @@ const mutationsInfo = mapMutations({
         state.nationGetRed = data
     },
 
-}, 'betblock')
+}, 'adminModule')
 
 const actionsInfo = mapActions({
     async getWithDrawMsg({commit, dispatch}, pageData){
@@ -297,7 +297,7 @@ const actionsInfo = mapActions({
         }
     },
 
-}, 'betblock')
+}, 'adminModule')
 
 export const mTypes = mutationsInfo.mTypes
 const mutations = mutationsInfo.mutations
