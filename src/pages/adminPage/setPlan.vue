@@ -154,9 +154,9 @@
                     <el-button size="small" type="success" icon="el-icon-edit">重新编辑</el-button>
                 </section>
             </section>
-            <section style="margin-top: 10px;border-top: 2px solid #ccc;padding-top: 10px">
+            <section class="setPlanZY">
                 <h4>资源位设置</h4>
-                <div v-if="true">
+                <div v-if="false">
                     <el-table
                             :data="shopListData"
                             stripe
@@ -187,6 +187,88 @@
             </section>
             <section style="margin-top: 10px;border-top: 2px solid #ccc;padding-top: 10px">
                 <h4>创意设置</h4>
+                <div class="setPlanCY">
+                    <ul class="clear">
+                        <li>
+                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
+                                 alt="">
+                        </li>
+                        <li>
+                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
+                                 alt="">
+                        </li>
+                        <li>
+                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
+                                 alt="">
+                        </li>
+                        <li>
+                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
+                                 alt="">
+                        </li>
+                        <li>
+                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
+                                 alt="">
+                        </li>
+                        <li>
+                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
+                                 alt="">
+                        </li>
+                        <li>
+                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
+                                 alt="">
+                        </li>
+                        <li>
+                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
+                                 alt="">
+                        </li>
+                        <li>
+                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
+                                 alt="">
+                        </li>
+                        <li>
+                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
+                                 alt="">
+                        </li>
+                        <li>
+                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
+                                 alt="">
+                        </li>
+                        <li>
+                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
+                                 alt="">
+                        </li>
+                        <li>
+                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
+                                 alt="">
+                        </li>
+                        <li>
+                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
+                                 alt="">
+                        </li>
+                        <li>
+                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
+                                 alt="">
+                        </li>
+                        <li>
+                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
+                                 alt="">
+                        </li>
+                        <li>
+                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
+                                 alt="">
+                        </li>
+                        <li>
+                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
+                                 alt="">
+                        </li>
+                        <li>
+                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
+                                 alt="">
+                        </li>
+
+
+                    </ul>
+                </div>
             </section>
             <section style="margin-top: 10px;border-top: 2px solid #ccc;padding-top: 10px">
                 <h4>排期与出价设置</h4>
@@ -224,13 +306,22 @@
 	export default {
 		data(){
 			return {
-
-				shopListData:[{
-					adLocal:'腾讯新闻',
-                    adStyle:'230*152单图2',
-                    adDesc:'新闻信息流，微信',
-                    adSee:'1000'
-                }],
+				shopListData: [{
+					adLocal: '腾讯新闻',
+					adStyle: '230*152单图2',
+					adDesc: '新闻信息流，微信',
+					adSee: '1000'
+				}, {
+					adLocal: '腾讯新闻',
+					adStyle: '230*152单图2',
+					adDesc: '新闻信息流，微信',
+					adSee: '1000'
+				}, {
+					adLocal: '腾讯新闻',
+					adStyle: '230*152单图2',
+					adDesc: '新闻信息流，微信',
+					adSee: '1000'
+				}],
 
 				setPlanDX: ["性别：男", "年龄：大于等于41岁", "付费用户：电商交易用户", "商业兴趣：生活用品",
 					"联网方式：Wifi、4G",
@@ -298,6 +389,14 @@
 					shopRemark: ''
 				}, { //  数据模拟
 					planIndex: '1',
+					planPackage: '总群包WX',
+					res_name: '腾讯新闻——230* 153',
+					res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
+					conversionCost: 1,
+					shopOperate: '关注中',
+					shopRemark: ''
+				}, { //  数据模拟
+					planIndex: '2',
 					planPackage: '总群包WX',
 					res_name: '腾讯新闻——230* 153',
 					res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
@@ -573,6 +672,42 @@
 	}
 </script>
 <style scoped>
+    .setPlanCY {
+        margin-top: 10px;
+    }
+
+    .setPlanCY ul {
+        padding: 30px 10px;
+        border: 1px solid #d5d5d5;
+        height: 300px;
+        overflow-y: scroll;
+    }
+
+    .setPlanCY ul li {
+        width: 100px;
+        height: 100px;
+        border: 1px solid #000;
+        float: left;
+        margin-left: 20px;
+        margin-top: 10px;
+    }
+
+    .setPlanCY ul li img {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+
+    .setPlanZY {
+        margin-top: 10px;
+        border-top: 2px solid #ccc;
+        padding-top: 10px;
+    }
+
+    .setPlanZY .cell {
+        font-size: 12px !important
+    }
+
     .searchDXUL {
         width: 217px;
         border: 1px solid #b4b4b4;
