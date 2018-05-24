@@ -36,16 +36,16 @@ module.exports = {
                 test: /\.(eot|ttf|woff|woff2)(\?\S*)?$/,
                 loader: 'file-loader'
             },
-	        {
-		        test: /\.less$/,
-		        use: [{
-			        loader: "style-loader" // creates style nodes from JS strings
-		        }, {
-			        loader: "css-loader" // translates CSS into CommonJS
-		        }, {
-			        loader: "less-loader" // compiles Less to CSS
-		        }]
-	        }
+            {
+                test: /\.less$/,
+                use: [{
+                    loader: 'style-loader' // creates style nodes from JS strings
+                }, {
+                    loader: 'css-loader' // translates CSS into CommonJS
+                }, {
+                    loader: 'less-loader' // compiles Less to CSS
+                }]
+            }
         ]
     },
     resolve: {
@@ -53,7 +53,6 @@ module.exports = {
         alias: {
             '~': srcPath,
             '~common': path.join(srcPath, 'common'),
-            '~icons': path.join(srcPath, 'icons'),
             '~store': path.join(srcPath, 'store'),
             '~components': path.join(srcPath, 'components'),
             '~pages': path.join(srcPath, 'pages'),
@@ -71,9 +70,6 @@ module.exports = {
             template: path.join(srcPath, 'index.ejs'),
             chunks: ['manifest', 'vendor', 'app']
         })
-        /* new CopyWebpackPlugin([
-         {from: 'login', to: 'login'},
-         ]) */
 
     ]
 }
