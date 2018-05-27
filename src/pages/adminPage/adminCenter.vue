@@ -29,7 +29,7 @@
                     highlight-current-row
                     style="width: 100%">
                 <el-table-column
-                        prop="shopName"
+                        prop="name"
                         label="店铺名称">
                 </el-table-column>
                 <el-table-column
@@ -39,11 +39,13 @@
                 </el-table-column>
                 <el-table-column
                         prop="banlance"
-                        label="余额">
+                        label="余额"
+                        width="100">
                 </el-table-column>
                 <el-table-column
                         prop="conversionCost"
-                        label="转化成本">
+                        label="转化成本"
+                        width="100">
                 </el-table-column>
                 <el-table-column
                         label="关注操作"
@@ -192,342 +194,265 @@
 <script>
 	import {mTypes, aTypes} from '~/store/modules/adminPage'
 	export default {
-		data(){
-			return {
-				attent_zhVal: '50', // 转换成本
-				attent_xhVal: '1000', // 消耗
+	    data () {
+	        return {
+	            attent_zhVal: '50', // 转换成本
+	            attent_xhVal: '1000', // 消耗
 
-				shopStateVal: '0',
-				searchShopId: null,
+	            shopStateVal: '0',
+	            searchShopId: null,
 
-				openAttention: true,
-				isMonitor: false, // 监控
-				isAttention: false, // 关注
-				shopState: [{
-					value: '0',
-					label: '所有的店铺'
-				}, {
-					value: '1',
-					label: '关注的店铺'
-				}, {
-					value: '2',
-					label: '监控的店铺'
-				}, {
-					value: '3',
-					label: '在投的店铺'
-				}],
-				shopListData: [{ //  数据模拟
-					shopName: '宜昌小覃同学电子',
-					totalConsume: 90400,
-					banlance: 20,
-					conversionCost: 1,
-					shopOperate: '关注中',
-					shopRemark: ''
-				}, { //  数据模拟
-					shopName: '湖南省求喜茶业',
-					totalConsume: 14000,
-					banlance: 20,
-					conversionCost: 1,
-					shopOperate: '监控中',
-					shopRemark: '123'
-				}, { //  数据模拟
-					shopName: '武夷山茗掌柜茶业',
-					totalConsume: 1200,
-					banlance: 20,
-					conversionCost: 1,
-					shopOperate: '在投中',
-					shopRemark: '观察'
-				}, { //  数据模拟
-					shopName: '武夷山茗掌柜茶业',
-					totalConsume: 1200,
-					banlance: 20,
-					conversionCost: 1,
-					shopOperate: '在投中',
-					shopRemark: '观察'
-				}
-				],
-				shop_remark: '',
-				remarkBoxVisible: false,
+	            openAttention: true,
+	            isMonitor: false, // 监控
+	            isAttention: false, // 关注
+	            shopState: [{
+	                value: '0',
+	                label: '所有的店铺'
+	            }, {
+	                value: '1',
+	                label: '关注的店铺'
+	            }, {
+	                value: '2',
+	                label: '监控的店铺'
+	            }, {
+	                value: '3',
+	                label: '在投的店铺'
+	            }],
+	            shopListData: [{ //  数据模拟
+	                name: '宜昌小覃同学电子',
+	                totalConsume: 90400,
+	                banlance: 20,
+	                conversionCost: 1,
+	                shopOperate: '关注中',
+	                shopRemark: ''
+	            }, { //  数据模拟
+	                name: '湖南省求喜茶业',
+	                totalConsume: 14000,
+	                banlance: 20,
+	                conversionCost: 1,
+	                shopOperate: '监控中',
+	                shopRemark: '123'
+	            }, { //  数据模拟
+	                name: '武夷山茗掌柜茶业',
+	                totalConsume: 1200,
+	                banlance: 20,
+	                conversionCost: 1,
+	                shopOperate: '在投中',
+	                shopRemark: '观察'
+	            }, { //  数据模拟
+	                name: '武夷山茗掌柜茶业',
+	                totalConsume: 1200,
+	                banlance: 20,
+	                conversionCost: 1,
+	                shopOperate: '在投中',
+	                shopRemark: '观察'
+	            }
+	            ],
+	            shop_remark: '',
+	            remarkBoxVisible: false,
 
-				// new edn
+	            // new edn
 
-				userMsgCounts: 10,
-				userPageNumber: 1,
-				userPageSize: 30,
+	            pageCounts: 1,
+	            pageNumber: 1,
+	            pageSize: 10,
+	            currPageNumber: null,
 
-				userMoreList: [],
-				userMoreMsg: [],
-				showAttentBox: false,
+	            currLineData: null,
+	            currType: null,
+
+	        }
+	    },
+	    watch: {
+	        shopStateVal (val) {
+	            let choseShopList = []
+	            console.log('====')
+	            console.log(val)
+	        }
+	    },
+	    methods: {
+	        async monitorFn (rowMsg) {
+            //                监控
+	            this.showAttentBox = true
+	        },
+	        async attentionFn (rowMsg) {
+	            // 关注
+	        },
+	        async addRemarkFn (rowMsg) {
+	            // 添加备注
+	            this.remarkBoxVisible = true
+	        },
+	        formatConsumeFn (row, column) {
+	            // 格式化
+	            let num = Number(row.totalConsume)
+	            if (isNaN(num)) {
+	                return 0
+	            }
+	            if (num < 100) {
+	                return num
+	            } else if (num < 10000) {
+	                return Math.round(num / 1000 * 10) / 10 + '千'
+	            } else if (num < 100000000) {
+	                return Math.round(num / 10000 * 10) / 10 + '万'
+	            } else {
+	                return Math.round(num / 100000000 * 10) / 10 + '亿'
+	            }
+	        },
+	        initShopList () {
+            /* 初始化当前店铺列表 */
+	            this.searchShopId = null
+	            this.pageNumber = 1
+	            this.pageSize = 10
+	            this.handleCurrentChange(1)
+	        },
+	        async sureAddRemark () {
+	            console.log('添加备注')
+	            let surePayBack = null
+	            Object.assign(this.currLineData, {
+	                remark: this.shop_remark,
+	                isAgree: this.currType
+	            })
+
+	            if (this.currType === '-1') {
+	                surePayBack = await
+	                this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData)
+	            } else {
+	                surePayBack = await
+	                this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData)
+	            }
+
+	            if (surePayBack) {
+	                this.remarkBoxVisible = false
+	                if (this.currPageNumber) {
+	                    this.$store.dispatch(aTypes.getWithdrawOrder, {
+	                        'pageNumber': this.currPageNumber,
+	                        'pageSize': this.pageSize
+	                    })
+	                } else {
+	                    this.$store.dispatch(aTypes.getWithdrawOrder)
+	                }
+	            }
+	        },
+	        async sureAddAttent () {
+	            console.log('添加监控')
+	            let surePayBack = null
+	            Object.assign(this.currLineData, {
+	                remark: this.shop_remark,
+	                isAgree: this.currType
+	            })
+
+	            if (this.currType === '-1') {
+	                surePayBack = await
+	                this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData)
+	            } else {
+	                surePayBack = await
+	                this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData)
+	            }
+
+	            if (surePayBack) {
+	                this.remarkBoxVisible = false
+	                if (this.currPageNumber) {
+	                    this.$store.dispatch(aTypes.getWithdrawOrder, {
+	                        'pageNumber': this.currPageNumber,
+	                        'pageSize': this.pageSize
+	                    })
+	                } else {
+	                    this.$store.dispatch(aTypes.getWithdrawOrder)
+	                }
+	            }
+	        },
+	        // new end
+	        async searchShopIdFn () {
+	            console.log('查询店铺')
+	            if (!this.searchShopId) {
+	                return false
+	            }
+	            let withDrawMsg = await
+	            this.$store.dispatch(aTypes.getWithdrawOrder, {
+	                'pageNumber': 1,
+	                'pageSize': this.pageSize,
+	                'uid': this.searchShopId
+	            })
+	            if (withDrawMsg) {
+	                this.pageCounts = Number(withDrawMsg.pages)
+	                this.pageNumber = Number(withDrawMsg.currentPage)
+	            }
+	        },
+
+	        async handleCurrentChange (val) {
+	            let withDrawMsg = null
+	            this.currPageNumber = Number(val)
+	            if (this.searchShopId !== '') {
+	                withDrawMsg = await
+	                this.$store.dispatch(aTypes.getWithdrawOrder, {
+	                    'pageNumber': Number(val),
+	                    'pageSize': this.pageSize,
+	                    'uid': this.searchShopId
+	                })
+	            } else {
+	                withDrawMsg = await
+	                this.$store.dispatch(aTypes.getWithdrawOrder, {
+	                    'pageNumber': Number(val),
+	                    'pageSize': this.pageSize
+	                })
+	            }
+	            if (withDrawMsg) {
+	                this.pageCounts = Number(withDrawMsg.pages)
+	            }
+	        },
 
 
-				pageCounts: 10,
-				pageNumber: 1,
-				pageSize: 10,
-				currPageNumber: null,
-
-				js_withdrawMsg: null,
-				currLineData: null,
-				currType: null,
-
-				currUserUid: null
-			}
-		},
-		watch: {
-			shopStateVal(val){
-				let choseShopList = [];
-				console.log('====');
-				console.log(val);
-			}
-		},
-		methods: {
-			async monitorFn(rowMsg){
-//                监控
-				this.showAttentBox = true
-			},
-			async attentionFn(rowMsg){
-				// 关注
-			},
-			async addRemarkFn(rowMsg){
-				// 添加备注
-				this.remarkBoxVisible = true;
-			},
-			formatConsumeFn (row, column){
-				// 格式化
-				let num = Number(row.totalConsume);
-				if (isNaN(num)) {
-					return 0
-				}
-				if (num < 100) {
-					return num
-				} else if (num < 10000) {
-					return Math.round(num / 1000 * 10) / 10 + '千'
-				} else if (num < 100000000) {
-					return Math.round(num / 10000 * 10) / 10 + '万'
-				} else {
-					return Math.round(num / 100000000 * 10) / 10 + '亿'
-				}
-			},
-			initShopList(){
-                /* 初始化当前店铺列表 */
-				this.searchShopId = null;
-				this.pageNumber = 1;
-				this.pageSize = 10;
-				this.handleCurrentChange(1)
-			},
-			async sureAddRemark(){
-				console.log('添加备注');
-				let surePayBack = null;
-				Object.assign(this.currLineData, {
-					remark: this.shop_remark,
-					isAgree: this.currType
-				})
-
-				if (this.currType === '-1') {
-					surePayBack = await
-						this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData);
-				} else {
-					surePayBack = await
-						this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData);
-				}
-
-				if (surePayBack) {
-					this.remarkBoxVisible = false;
-					if (this.currPageNumber) {
-						this.$store.dispatch(aTypes.getWithdrawOrder, {
-							'pageNumber': this.currPageNumber,
-							'pageSize': this.pageSize
-						});
-					} else {
-						this.$store.dispatch(aTypes.getWithdrawOrder)
-					}
-				}
-			},
-			async sureAddAttent(){
-				console.log('添加监控');
-				let surePayBack = null;
-				Object.assign(this.currLineData, {
-					remark: this.shop_remark,
-					isAgree: this.currType
-				})
-
-				if (this.currType === '-1') {
-					surePayBack = await
-						this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData);
-				} else {
-					surePayBack = await
-						this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData);
-				}
-
-				if (surePayBack) {
-					this.remarkBoxVisible = false;
-					if (this.currPageNumber) {
-						this.$store.dispatch(aTypes.getWithdrawOrder, {
-							'pageNumber': this.currPageNumber,
-							'pageSize': this.pageSize
-						});
-					} else {
-						this.$store.dispatch(aTypes.getWithdrawOrder)
-					}
-				}
-			},
-			// new end
-			async jumpUidFn(data){
-				let msgTop = await
-					this.$store.dispatch(aTypes.getWithdrawProfit, data.uid);
-				console.log(msgTop);
-				this.currUserUid = data.uid;
-				this.userMoreMsg = [];
-				if (msgTop) {
-					this.userMoreMsg.push(msgTop)
-				} else {
-					this.$message({
-						message: 'getWithdrawProfit error' + JSON.stringify(msgTop),
-						type: 'error',
-						duration: 1200
-					})
-				}
-				let msgBottom = await
-					this.$store.dispatch(aTypes.getAccountDetail, {
-						uid: data.uid,
-						pageNumber: 1,
-						pageSize: this.userPageSize
-					});
-				this.showAttentBox = true;
-
-			},
-			async searchShopIdFn(){
-				console.log('查询店铺')
-				if (!this.searchShopId) {
-					return false;
-				}
-				let withDrawMsg = await
-					this.$store.dispatch(aTypes.getWithdrawOrder, {
-						'pageNumber': 1,
-						'pageSize': this.pageSize,
-						'uid': this.searchShopId
-					});
-				if (withDrawMsg) {
-					this.pageCounts = Number(withDrawMsg.pages);
-					this.pageNumber = Number(withDrawMsg.currentPage);
-				}
-			},
-
-			format (time, format = 'yyyy-MM-dd') {
-				time = +time * 1000;
-				let t = new Date(time);
-				let tf = function (i) {
-					return (i < 10 ? '0' : '') + i
-				};
-				return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
-					switch (a) {
-						case 'yyyy':
-							return tf(t.getFullYear());
-						case 'MM':
-							return tf(t.getMonth() + 1);
-						case 'mm':
-							return tf(t.getMinutes());
-						case 'dd':
-							return tf(t.getDate());
-						case 'HH':
-							return tf(t.getHours());
-						case 'ss':
-							return tf(t.getSeconds())
-					}
-				})
-			},
-
-			async handleCurrentChange (val) {
-				let withDrawMsg = null;
-				this.currPageNumber = Number(val)
-				if (this.searchShopId !== '') {
-					withDrawMsg = await
-						this.$store.dispatch(aTypes.getWithdrawOrder, {
-							'pageNumber': Number(val),
-							'pageSize': this.pageSize,
-							'uid': this.searchShopId
-						})
-				} else {
-					withDrawMsg = await
-						this.$store.dispatch(aTypes.getWithdrawOrder, {
-							'pageNumber': Number(val),
-							'pageSize': this.pageSize
-						})
-
-				}
-				if (withDrawMsg) {
-					this.pageCounts = Number(withDrawMsg.pages);
-				}
-			},
-			// 弹窗里头的分页
-			async userCurrentChange (val) {
-				let msgBottom = null;
-				if (this.currUserUid !== '') {
-					msgBottom = await
-						this.$store.dispatch(aTypes.getAccountDetail, {
-							'pageNumber': Number(val),
-							'pageSize': this.userPageSize,
-							'uid': this.currUserUid
-						})
-				} else {
-					msgBottom = await
-						this.$store.dispatch(aTypes.getAccountDetail, {
-							'pageNumber': Number(val),
-							'pageSize': this.userPageSize
-						})
-				}
-
-				if (msgBottom) {
-					this.userPageNumber = Number(msgBottom.currentPage);
-					this.userMsgCounts = Number(msgBottom.pages);
-					this.userMoreList = msgBottom.orders
-				}
-
-				if (msgBottom) {
-					this.pageCounts = Number(msgBottom.pages);
-				}
-			},
-
-		},
-		computed: {
-//            withdrawList(){
-//                return this.$store.state.betblock.withdrawList
-//            }
-		},
-		async mounted(){
-			let withDrawMsg = await
-				this.$store.dispatch(aTypes.getWithdrawOrder, {
-					'pageNumber': 1,
-					'pageSize': this.pageSize
-				})
-			if (withDrawMsg) {
-				this.pageCounts = Number(withDrawMsg.pages);
-				this.pageNumber = Number(withDrawMsg.currentPage);
-			}
-		},
-		filters: {
-			format (time, format = 'yyyy-MM-dd') {
-				let t = new Date(time)
-				let tf = function (i) {
-					return (i < 10 ? '0' : '') + i
-				}
-				return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
-					switch (a) {
-						case 'yyyy':
-							return tf(t.getFullYear())
-						case 'MM':
-							return tf(t.getMonth() + 1)
-						case 'mm':
-							return tf(t.getMinutes())
-						case 'dd':
-							return tf(t.getDate())
-						case 'HH':
-							return tf(t.getHours())
-						case 'ss':
-							return tf(t.getSeconds())
-					}
-				})
-			},
-		}
+	    },
+	    computed: {
+        //            withdrawList(){
+        //                return this.$store.state.betblock.withdrawList
+        //            }
+	    },
+	    async mounted () {
+//            ads_user_list
+	        let adsMsg = await this.$store.dispatch(aTypes.getAdsUserList, {
+	            'pageNumber': 1,
+	            'pageSize': this.pageSize
+	        })
+            console.log(adsMsg)
+            console.log('adsMsg==========')
+            // todo
+            if (adsMsg) {
+                this.$message({
+                    message: '更新列表成功',
+                    type: 'success',
+                    duration: 1200
+                })
+//                "token": "3d81a4a18c5a943303bed1c467ec9047",
+//                "account_id": "2389175",
+//                "name": "测试公司名称"
+                this.shopListData = adsMsg.data
+	        }
+	    },
+	    filters: {
+	        format (time, format = 'yyyy-MM-dd') {
+	            let t = new Date(time)
+	            let tf = function (i) {
+	                return (i < 10 ? '0' : '') + i
+	            }
+	            return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
+	                switch (a) {
+	                case 'yyyy':
+	                    return tf(t.getFullYear())
+	                case 'MM':
+	                    return tf(t.getMonth() + 1)
+	                case 'mm':
+	                    return tf(t.getMinutes())
+	                case 'dd':
+	                    return tf(t.getDate())
+	                case 'HH':
+	                    return tf(t.getHours())
+	                case 'ss':
+	                    return tf(t.getSeconds())
+	                }
+	            })
+	        }
+	    }
 	}
 </script>
 <style scoped>

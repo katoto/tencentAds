@@ -9,22 +9,22 @@ import VueRouter from 'vue-router'
 import Layout from '~/pages/layout/Layout'
 
 const Login = () => import
-    ('~pages/Login' /* webpackChunkName: "chunks/Login" */)
+('~pages/Login' /* webpackChunkName: "chunks/Login" */)
 // 404  ok
 const page_404 = () =>
     import
-        ('~/pages/404.vue' /* webpackChunkName: "chunks/page404" */)
+    ('~/pages/404.vue' /* webpackChunkName: "chunks/page404" */)
 
 const DashBoard_index = () =>
     import
-        ('~/pages/dashboard/index' /* webpackChunkName: "chunks/dashboard/index" */)
+    ('~/pages/dashboard/index' /* webpackChunkName: "chunks/dashboard/index" */)
 
 // betblock 相关的东西
 const bb_withdraw = () => import('~/pages/betblock/withdraw')
 
 // admin page
-const t_adminCenter = () => import ('~/pages/adminPage/adminCenter')
-const t_setPlan = () => import ('~/pages/adminPage/setPlan')
+const t_adminCenter = () => import('~/pages/adminPage/adminCenter' /* webpackChunkName: "chunks/adminPage/adminCenter" */)
+const t_setPlan = () => import('~/pages/adminPage/setPlan' /* webpackChunkName: "chunks/adminPage/setPlan" */)
 
 Vue.use(VueRouter)
 export default new VueRouter({

@@ -27,7 +27,7 @@
     import Hamburger from '~/components/Hamburger'
     import headImg from '~assets/head.jpg'
     export default {
-        data(){
+        data () {
             return {
                 headImg
             }

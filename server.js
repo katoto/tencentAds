@@ -31,13 +31,13 @@ if (process.env.NODE_ENV === 'production') {
         log: () => { }
     }))
     app.use((req, resp, next) => {
-        if (~req.originalUrl.indexOf('/yijia')) {
+        if (~req.originalUrl.indexOf('/ads')) {
             forward({
                 req,
                 resp,
-                host: 'weixin.yijiahx.com',
-                ip: 'weixin.yijiahx.com',
-                path: req.originalUrl.replace('/yijia', ''),
+                host: '47.96.104.111',
+                ip: '47.96.104.111',
+                path: req.originalUrl.replace('/ads', ''),
                 showLog: true
             })
         } else {

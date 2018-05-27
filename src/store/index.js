@@ -9,7 +9,6 @@ import adminPage from '~store/modules/adminPage'
 import getters from './getters'
 
 import { wait, str2Bytes } from '../common/util'
-import { globalWebsockUrl } from '../common/config'
 
 Vue.use(Vuex)
 
@@ -190,13 +189,6 @@ const actions = {
             await dispatch('invoke', {method: 'adminService/heart'})
         }
     },
-    showToast ({commit}, msg) {
-        commit('showToast', msg)
-        console.log(msg)
-        setTimeout(() => {
-            commit('hideToast')
-        }, 3000)
-    }
 
 }
 

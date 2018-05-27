@@ -5,12 +5,13 @@
 import axios from 'axios'
 
 const options = {}
-/* if (process.env.NODE_ENV === 'production') {
-    options.baseURL = 'http://weixin.yijiahx.com'
+
+if (process.env.NODE_ENV === 'production') {
+    options.baseURL = 'http://47.96.104.111/api'
 } else {
-    options.baseURL = '/yijia'
+    options.baseURL = 'http://47.96.104.111/api'
 }
-*/
+
 const _axios = axios.create(options)
 
 const ajax = function (url, config = { ignore: true }) {

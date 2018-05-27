@@ -18,7 +18,8 @@
                 <el-input size="small" style="margin-left: 20px" v-model="shopIputId" placeholder="搜索店铺ID">
                     <i slot="prefix" class="el-input__icon el-icon-search"></i>
                 </el-input>
-                <el-button size="small" style="margin-left: 10px" type="primary" @click="onSubmit">搜索</el-button>
+                <!--@click="onSubmit"-->
+                <el-button size="small" style="margin-left: 10px" type="primary" >搜索</el-button>
             </section>
         </div>
         <section class="content" style="margin: 10px 0;border:1px solid #e2e2e2;padding: 10px">
@@ -69,7 +70,6 @@
                 <div class="contentBodyBottom">
                     <el-table
                             border
-                            :align="center"
                             :data="planListData"
                             stripe
                             highlight-current-row
@@ -114,15 +114,15 @@
                         </el-table-column>
                     </el-table>
                     <div v-if="planListData.length === 0">
-                        <el-button class="addPlan" type="success" icon="el-icon-edit">设置计划</el-button>
+                        <el-button class="addPlan" @click="setPlanAds" type="success" icon="el-icon-edit">设置计划</el-button>
                     </div>
                 </div>
             </section>
         </section>
-        <el-dialog class="planEdit" fullscreen="true" width="85%" title="计划设置" :visible.sync="showAttentBox" center>
+        <el-dialog class="planEdit" fullscreen=true width="85%" title="计划设置" :visible.sync="showAttentBox" center>
             <section>
                 <h4 style="margin-bottom: 20px">定向设置</h4>
-                <div v-if="false" class="planEditDX" style="position: relative;">
+                <div v-if="true" class="planEditDX" style="position: relative;">
                     <el-row :gutter="20">
                         <el-col :span="13">
                             <div class="grid-content bg-purple">
@@ -135,16 +135,16 @@
                         </el-col>
                         <el-col :span="7">
                             <div class="grid-content bg-purple">
-                                <el-select v-model="SearchDXval" clearable filterable placeholder="搜索定向名称">
+                                <el-select style="width: 300px" v-model="SearchDXval" clearable filterable placeholder="搜索定向名称">
                                     <el-option
                                             v-for="item in SearchDXoptions"
-                                            :key="item.value"
-                                            :label="item.label"
-                                            :value="item.value">
+                                            :key="item.targeting_id"
+                                            :label="item.targeting_name"
+                                            :value="item.targeting_id">
                                     </el-option>
                                 </el-select>
-                                <ul class="searchDXUL">
-                                    <li v-for="item in SearchDXoptions">{{ item.label }}</li>
+                                <ul class="searchDXUL" style="display: none">
+                                    <li v-for="item in SearchDXoptions" :data-targetId="item.targeting_id ">{{ item.targeting_name }}</li>
                                 </ul>
                             </div>
                         </el-col>
@@ -157,7 +157,7 @@
             </section>
             <section class="setPlanZY">
                 <h4>资源位设置</h4>
-                <div v-if="false">
+                <div v-if="true">
                     <el-table
                             :data="shopListData"
                             stripe
@@ -305,374 +305,257 @@
 <script>
 	import {mTypes, aTypes} from '~/store/modules/adminPage'
 	export default {
-		data(){
-			return {
-				shopListData: [{
-					adLocal: '腾讯新闻',
-					adStyle: '230*152单图2',
-					adDesc: '新闻信息流，微信',
-					adSee: '1000'
-				}, {
-					adLocal: '腾讯新闻',
-					adStyle: '230*152单图2',
-					adDesc: '新闻信息流，微信',
-					adSee: '1000'
-				}, {
-					adLocal: '腾讯新闻',
-					adStyle: '230*152单图2',
-					adDesc: '新闻信息流，微信',
-					adSee: '1000'
-				}],
+	    data () {
+	        return {
+	            shopListData: [{
+	                adLocal: '腾讯新闻',
+	                adStyle: '230*152单图2',
+	                adDesc: '新闻信息流，微信',
+	                adSee: '1000'
+	            }, {
+	                adLocal: '腾讯新闻',
+	                adStyle: '230*152单图2',
+	                adDesc: '新闻信息流，微信',
+	                adSee: '1000'
+	            }, {
+	                adLocal: '腾讯新闻',
+	                adStyle: '230*152单图2',
+	                adDesc: '新闻信息流，微信',
+	                adSee: '1000'
+	            }],
 
-				setPlanDX: ["性别：男", "年龄：大于等于41岁", "付费用户：电商交易用户", "商业兴趣：生活用品",
-					"联网方式：Wifi、4G",
-					"地理位置：（常住）中国未知（常住）中国未知、北京市、河北省、北京市、河北省（常住）中国未知、北京市、河北省（常住）中国未知、北京市、河北省"],
-				showAttentBox: true,
+	            setPlanDX: ['性别：男', '年龄：大于等于41岁', '付费用户：电商交易用户', '商业兴趣：生活用品',
+	                '联网方式：Wifi、4G',
+	                '地理位置：（常住）中国未知（常住）中国未知、北京市、河北省、北京市、河北省（常住）中国未知、北京市、河北省（常住）中国未知、北京市、河北省'],
+	            showAttentBox: false,
 
-				SearchDXoptions: [{
-					value: '1',
-					label: '总群包TX'
-				}, {
-					value: '2',
-					label: '总群包WX'
-				}, {
-					value: '3',
-					label: '配件-TX'
-				}, {
-					value: '4',
-					label: '男鞋-TX'
-				}, {
-					value: '5',
-					label: '男鞋-TX'
-				}, {
-					value: '6',
-					label: '总群包WX'
-				}, {
-					value: '3',
-					label: '配件-TX'
-				}, {
-					value: '7',
-					label: '男鞋-TX'
-				}, {
-					value: '8',
-					label: '男鞋-TX'
-				}, {
-					value: '9',
-					label: '总群包WX'
-				}, {
-					value: '10',
-					label: '配件-TX'
-				}, {
-					value: '11',
-					label: '男鞋-TX'
-				}, {
-					value: '12',
-					label: '男鞋-TX'
-				}],
-				SearchDXval: '',
+	            SearchDXoptions: [{
+                    "targeting_id": '33212772',
+                    "targeting_name": "QQ-582×498单图(文)-2018042032965",
+                    "description": "",
+                    "targeting": {
+                    },
+                    "created_time": 1524231147,
+                    "last_modified_time": 1524231147,
+                    "ad_lock_status": "ADLOCKSTATUS_UNLOCKED"
+	            }],
+	            SearchDXval: '33212772',
 
+	            radio: '',
+	            value3: '',
+	            shopIputId: '',
+	            shopSelList: '',
+	            formInline: {
+	                user: '',
+	                region: ''
+	            },
+//	            planListData: [{ //  数据模拟
+//	                planIndex: '1',
+//	                planPackage: '总群包WX',
+//	                res_name: '腾讯新闻——230* 153',
+//	                res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
+//	                conversionCost: 1,
+//	                shopOperate: '关注中',
+//	                shopRemark: ''
+//	            }, { //  数据模拟
+//	                planIndex: '1',
+//	                planPackage: '总群包WX',
+//	                res_name: '腾讯新闻——230* 153',
+//	                res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
+//	                conversionCost: 1,
+//	                shopOperate: '关注中',
+//	                shopRemark: ''
+//	            }, { //  数据模拟
+//	                planIndex: '2',
+//	                planPackage: '总群包WX',
+//	                res_name: '腾讯新闻——230* 153',
+//	                res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
+//	                conversionCost: 1,
+//	                shopOperate: '关注中',
+//	                shopRemark: ''
+//	            }
+//	            ],
+                planListData: [],
+	            openAttention: true,
+	            isMonitor: false, // 监控
+	            isAttention: false, // 关注
+	            shopStateVal: '',
 
-				radio: '',
-				value3: '',
-				shopIputId: '',
-				shopSelList: '',
-				formInline: {
-					user: '',
-					region: ''
-				},
-				planListData: [{ //  数据模拟
-					planIndex: '1',
-					planPackage: '总群包WX',
-					res_name: '腾讯新闻——230* 153',
-					res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
-					conversionCost: 1,
-					shopOperate: '关注中',
-					shopRemark: ''
-				}, { //  数据模拟
-					planIndex: '1',
-					planPackage: '总群包WX',
-					res_name: '腾讯新闻——230* 153',
-					res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
-					conversionCost: 1,
-					shopOperate: '关注中',
-					shopRemark: ''
-				}, { //  数据模拟
-					planIndex: '2',
-					planPackage: '总群包WX',
-					res_name: '腾讯新闻——230* 153',
-					res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
-					conversionCost: 1,
-					shopOperate: '关注中',
-					shopRemark: ''
-				}
-				],
-//                planListData: [],
-				openAttention: true,
-				isMonitor: false, // 监控
-				isAttention: false, // 关注
-				shopStateVal: '',
+	            shop_remark: '',
+	            remarkBoxVisible: false,
 
-				shop_remark: '',
-				remarkBoxVisible: false,
+	            // new edn
+	            userMsgCounts: 10,
+	            userPageNumber: 1,
+	            userPageSize: 30,
 
-				// new edn
-				userMsgCounts: 10,
-				userPageNumber: 1,
-				userPageSize: 30,
+	            userMoreList: [],
+	            userMoreMsg: [],
 
-				userMoreList: [],
-				userMoreMsg: [],
+	            searchUid: null,
 
-				searchUid: null,
+	            pageCounts: 10,
+	            pageNumber: 1,
+	            pageSize: 10,
+	            currPageNumber: null,
 
-				pageCounts: 10,
-				pageNumber: 1,
-				pageSize: 10,
-				currPageNumber: null,
+	            js_withdrawMsg: null,
+	            currLineData: null,
+	            currType: null,
 
-				js_withdrawMsg: null,
-				currLineData: null,
-				currType: null,
+	            currUserUid: null
+	        }
+	    },
+	    watch: {},
+	    methods: {
+            async setPlanAds(){
+                this.showAttentBox = true;
+                let editDXMsg = await this.$store.dispatch(aTypes.getEditDXMsg )
+                console.log(editDXMsg)
+                console.log('-------editDXMsg')
 
-				currUserUid: null
-			}
-		},
-		watch: {},
-		methods: {
-			jump2adminCenter(){
-
-			},
-			async monitorFn(rowMsg){
-//                监控
-				this.showAttentBox = true
-			},
-			async attentionFn(rowMsg){
-				// 关注
-			},
-			async addRemarkFn(rowMsg){
-				// 添加备注
-				this.remarkBoxVisible = true;
-			},
-			formatConsumeFn (row, column){
-				let num = Number(row.planPackage);
-				if (isNaN(num)) {
-					return 0
-				}
-				if (num < 100) {
-					return num
-				} else if (num < 10000) {
-					return Math.round(num / 1000 * 10) / 10 + '千'
-				} else if (num < 100000000) {
-					return Math.round(num / 10000 * 10) / 10 + '万'
-				} else {
-					return Math.round(num / 100000000 * 10) / 10 + '亿'
-				}
-			},
-			// new end
-			initShopList(){
-                /* 初始化当前列表 */
-				this.searchUid = null;
-				this.pageNumber = 1;
-				this.pageSize = 10;
-				this.handleCurrentChange(1)
-			},
-			async surePay(){
-				let surePayBack = null;
-				Object.assign(this.currLineData, {
-					remark: this.shop_remark,
-					isAgree: this.currType
-				})
-
-				if (this.currType === '-1') {
-					surePayBack = await this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData);
-				} else {
-					surePayBack = await this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData);
-				}
-
-				if (surePayBack) {
-					this.remarkBoxVisible = false;
-					if (this.currPageNumber) {
-						this.$store.dispatch(aTypes.getWithdrawOrder, {
-							'pageNumber': this.currPageNumber,
-							'pageSize': this.pageSize
-						});
-					} else {
-						this.$store.dispatch(aTypes.getWithdrawOrder)
-					}
-				}
-			},
-			async jumpUidFn(data){
-				let msgTop = await this.$store.dispatch(aTypes.getWithdrawProfit, data.uid);
-				console.log(msgTop);
-				this.currUserUid = data.uid;
-				this.userMoreMsg = [];
-				if (msgTop) {
-					this.userMoreMsg.push(msgTop)
-				} else {
-					this.$message({
-						message: 'getWithdrawProfit error' + JSON.stringify(msgTop),
-						type: 'error',
-						duration: 1200
-					})
-				}
-				let msgBottom = await this.$store.dispatch(aTypes.getAccountDetail, {
-					uid: data.uid,
-					pageNumber: 1,
-					pageSize: this.userPageSize
-				});
-				if (msgBottom) {
-					this.userPageNumber = Number(msgBottom.currentPage);
-					this.userMsgCounts = Number(msgBottom.pages);
-					if (msgBottom.orders) {
-						msgBottom.orders.forEach((val, index) => {
-
-						})
-					}
-					this.userMoreList = msgBottom.orders
-				}
-				this.showAttentBox = true;
-
-			},
-			async searchShopIdFn(){
-				if (!this.searchUid) {
-					return false;
-				}
-				let withDrawMsg = await this.$store.dispatch(aTypes.getWithdrawOrder, {
-					'pageNumber': 1,
-					'pageSize': this.pageSize,
-					'uid': this.searchUid
-				});
-				if (withDrawMsg) {
-					this.pageCounts = Number(withDrawMsg.pages);
-					this.pageNumber = Number(withDrawMsg.currentPage);
-				}
-			},
-
-			confirmFn(lineData, type){
-				if (type === '-1') {
-					this.js_withdrawMsg = '拒绝用户uid《 ' + lineData.uid + ' 》提款？'
-
-				} else {
-					this.js_withdrawMsg = '允许用户uid《 ' + lineData.uid + ' 》提款？'
-				}
-				this.remarkBoxVisible = true;
-				this.currLineData = lineData;
-				this.currType = type;
-			},
-			format (time, format = 'yyyy-MM-dd') {
-				time = +time * 1000;
-				let t = new Date(time);
-				let tf = function (i) {
-					return (i < 10 ? '0' : '') + i
-				};
-				return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
-					switch (a) {
-						case 'yyyy':
-							return tf(t.getFullYear());
-						case 'MM':
-							return tf(t.getMonth() + 1);
-						case 'mm':
-							return tf(t.getMinutes());
-						case 'dd':
-							return tf(t.getDate());
-						case 'HH':
-							return tf(t.getHours());
-						case 'ss':
-							return tf(t.getSeconds())
-					}
-				})
-			},
-			lineClick(row, type){
-				this.shop_remark = '';
-				this.confirmFn(row, type)
-			},
-
-			async handleCurrentChange (val) {
-				let withDrawMsg = null;
-				this.currPageNumber = Number(val)
-				if (this.searchUid !== '') {
-					withDrawMsg = await this.$store.dispatch(aTypes.getWithdrawOrder, {
-						'pageNumber': Number(val),
-						'pageSize': this.pageSize,
-						'uid': this.searchUid
-					})
-				} else {
-					withDrawMsg = await this.$store.dispatch(aTypes.getWithdrawOrder, {
-						'pageNumber': Number(val),
-						'pageSize': this.pageSize
-					})
-
-				}
-				if (withDrawMsg) {
-					this.pageCounts = Number(withDrawMsg.pages);
-				}
-			},
-			// 弹窗里头的分页
-			async userCurrentChange (val) {
-				let msgBottom = null;
-				if (this.currUserUid !== '') {
-					msgBottom = await this.$store.dispatch(aTypes.getAccountDetail, {
-						'pageNumber': Number(val),
-						'pageSize': this.userPageSize,
-						'uid': this.currUserUid
-					})
-				} else {
-					msgBottom = await this.$store.dispatch(aTypes.getAccountDetail, {
-						'pageNumber': Number(val),
-						'pageSize': this.userPageSize
-					})
-				}
-
-				if (msgBottom) {
-					this.userPageNumber = Number(msgBottom.currentPage);
-					this.userMsgCounts = Number(msgBottom.pages);
-					if (msgBottom.orders) {
-						msgBottom.orders.forEach((val, index) => {
-
-						})
-					}
-					this.userMoreList = msgBottom.orders
-				}
-
-				if (msgBottom) {
-					this.pageCounts = Number(msgBottom.pages);
-				}
-			},
-
-		},
-		computed: {
-//            withdrawList(){
-//                return this.$store.state.betblock.withdrawList
-//            }
-		},
-		async mounted(){
+                if( editDXMsg ){
+                  this.SearchDXoptions = editDXMsg.data.list;
 
 
-		},
-		filters: {
-			format (time, format = 'yyyy-MM-dd') {
-				let t = new Date(time)
-				let tf = function (i) {
-					return (i < 10 ? '0' : '') + i
-				}
-				return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
-					switch (a) {
-						case 'yyyy':
-							return tf(t.getFullYear())
-						case 'MM':
-							return tf(t.getMonth() + 1)
-						case 'mm':
-							return tf(t.getMinutes())
-						case 'dd':
-							return tf(t.getDate())
-						case 'HH':
-							return tf(t.getHours())
-						case 'ss':
-							return tf(t.getSeconds())
-					}
-				})
-			},
-		}
+                }else{
+                    this.$message({
+                        message: '定向设置数据errror',
+                        type: 'error',
+                        duration: 1200
+                    })
+
+                }
+
+
+            },
+
+	        jump2adminCenter () {
+
+	        },
+	        async monitorFn (rowMsg) {
+            //                监控
+	            this.showAttentBox = true
+	        },
+	        async attentionFn (rowMsg) {
+	            // 关注
+	        },
+	        async addRemarkFn (rowMsg) {
+	            // 添加备注
+	            this.remarkBoxVisible = true
+	        },
+	        formatConsumeFn (row, column) {
+	            let num = Number(row.planPackage)
+	            if (isNaN(num)) {
+	                return 0
+	            }
+	            if (num < 100) {
+	                return num
+	            } else if (num < 10000) {
+	                return Math.round(num / 1000 * 10) / 10 + '千'
+	            } else if (num < 100000000) {
+	                return Math.round(num / 10000 * 10) / 10 + '万'
+	            } else {
+	                return Math.round(num / 100000000 * 10) / 10 + '亿'
+	            }
+	        },
+	        // new end
+	        initShopList () {
+            /* 初始化当前列表 */
+	            this.searchUid = null
+	            this.pageNumber = 1
+	            this.pageSize = 10
+	        },
+	        async surePay () {
+	            let surePayBack = null
+	            Object.assign(this.currLineData, {
+	                remark: this.shop_remark,
+	                isAgree: this.currType
+	            })
+
+	            if (this.currType === '-1') {
+	                surePayBack = await this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData)
+	            } else {
+	                surePayBack = await this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData)
+	            }
+
+	            if (surePayBack) {
+	                this.remarkBoxVisible = false
+	                if (this.currPageNumber) {
+	                    this.$store.dispatch(aTypes.getWithdrawOrder, {
+	                        'pageNumber': this.currPageNumber,
+	                        'pageSize': this.pageSize
+	                    })
+	                } else {
+	                    this.$store.dispatch(aTypes.getWithdrawOrder)
+	                }
+	            }
+	        },
+
+	        async searchShopIdFn () {
+	            if (!this.searchUid) {
+	                return false
+	            }
+	            let withDrawMsg = await this.$store.dispatch(aTypes.getWithdrawOrder, {
+	                'pageNumber': 1,
+	                'pageSize': this.pageSize,
+	                'uid': this.searchUid
+	            })
+	            if (withDrawMsg) {
+	                this.pageCounts = Number(withDrawMsg.pages)
+	                this.pageNumber = Number(withDrawMsg.currentPage)
+	            }
+	        },
+
+	        confirmFn (lineData, type) {
+	            if (type === '-1') {
+	                this.js_withdrawMsg = '拒绝用户uid《 ' + lineData.uid + ' 》提款？'
+	            } else {
+	                this.js_withdrawMsg = '允许用户uid《 ' + lineData.uid + ' 》提款？'
+	            }
+	            this.remarkBoxVisible = true
+	            this.currLineData = lineData
+	            this.currType = type
+	        },
+
+	        lineClick (row, type) {
+	            this.shop_remark = ''
+	            this.confirmFn(row, type)
+	        },
+
+	    },
+	    computed: {
+        //            withdrawList(){
+        //                return this.$store.state.betblock.withdrawList
+        //            }
+	    },
+	    async mounted () {
+
+	    },
+	    filters: {
+	        format (time, format = 'yyyy-MM-dd') {
+	            let t = new Date(time)
+	            let tf = function (i) {
+	                return (i < 10 ? '0' : '') + i
+	            }
+	            return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
+	                switch (a) {
+	                case 'yyyy':
+	                    return tf(t.getFullYear())
+	                case 'MM':
+	                    return tf(t.getMonth() + 1)
+	                case 'mm':
+	                    return tf(t.getMinutes())
+	                case 'dd':
+	                    return tf(t.getDate())
+	                case 'HH':
+	                    return tf(t.getHours())
+	                case 'ss':
+	                    return tf(t.getSeconds())
+	                }
+	            })
+	        }
+	    }
 	}
 </script>
 <style scoped>
@@ -713,7 +596,7 @@
     }
 
     .searchDXUL {
-        width: 217px;
+        /*width: 217px;*/
         border: 1px solid #b4b4b4;
         padding-left: 5px;
         border-radius: 2px;
