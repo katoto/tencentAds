@@ -3,7 +3,7 @@
  */
 
 import ajax from '~common/ajax'
-import { src, mapMutations, mapActions, getCK, setCK, removeCK ,access_token ,account_id } from '~common/util'
+import { src, mapMutations, mapActions, getCK, setCK, removeCK, access_token, account_id } from '~common/util'
 import { Message } from 'element-ui'
 
 const state = {
@@ -50,6 +50,42 @@ const actionsInfo = mapActions({
             } else {
                 InfoData = await ajax.get(`/tx/targeting?token=${access_token}&account_id=${account_id}`)
             }
+            return InfoData
+        } catch (e) {
+            Message({
+                message: e.message,
+                type: 'error',
+                duration: 3000
+            })
+            return 0
+        }
+    },
+
+    /* 获取 资源位数据 */
+    async getEditRes ({commit, dispatch}, data) {
+        try {
+            let InfoData = null
+            if (data) {
+                InfoData = await ajax.get(`http://10.0.1.167:6999/goods/result/review?ck=${getCK()}&expectId=${data.expectId}&result=${data.isAgree}`)
+            } else {
+                InfoData = await ajax.get(`/tx/creative_template`)
+            }
+            return InfoData
+        } catch (e) {
+            Message({
+                message: e.message,
+                type: 'error',
+                duration: 3000
+            })
+            return 0
+        }
+    },
+
+    /* 获取 过滤的图片 */
+    async getFilterImg ({commit, dispatch}, data) {
+        try {
+            let InfoData = null
+            InfoData = await ajax.get(`/tx/images?token=${access_token}&account_id=${account_id}&filtering=[{"field":"image_width","operator":"EQUALS","values":[${Number( data )}]}]`)
             return InfoData
         } catch (e) {
             Message({

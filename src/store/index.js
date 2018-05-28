@@ -188,7 +188,7 @@ const actions = {
             await wait(5000)
             await dispatch('invoke', {method: 'adminService/heart'})
         }
-    },
+    }
 
 }
 

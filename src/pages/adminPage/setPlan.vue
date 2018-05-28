@@ -19,7 +19,7 @@
                     <i slot="prefix" class="el-input__icon el-icon-search"></i>
                 </el-input>
                 <!--@click="onSubmit"-->
-                <el-button size="small" style="margin-left: 10px" type="primary" >搜索</el-button>
+                <el-button size="small" style="margin-left: 10px" type="primary">搜索</el-button>
             </section>
         </div>
         <section class="content" style="margin: 10px 0;border:1px solid #e2e2e2;padding: 10px">
@@ -69,32 +69,32 @@
                 </div>
                 <div class="contentBodyBottom">
                     <el-table
-                            border
-                            :data="planListData"
-                            stripe
-                            highlight-current-row
-                            style="width: 100%">
+                        border
+                        :data="planListData"
+                        stripe
+                        highlight-current-row
+                        style="width: 100%">
                         <el-table-column
-                                prop="planIndex"
-                                label="计划序号"
-                                width="90">
+                            prop="planIndex"
+                            label="计划序号"
+                            width="90">
                         </el-table-column>
                         <el-table-column
-                                prop="planPackage"
-                                label="定向">
+                            prop="planPackage"
+                            label="定向">
                         </el-table-column>
                         <el-table-column
-                                prop="res_name"
-                                label="资源位">
+                            prop="res_name"
+                            label="资源位">
                         </el-table-column>
                         <el-table-column
-                                label="创意">
+                            label="创意">
                             <template slot-scope="scope">
                                 <img class="reg_imgStyle" :src="scope.row.res_img" alt="">
                             </template>
                         </el-table-column>
                         <el-table-column
-                                label="排期与出价"
+                            label="排期与出价"
                         >
                             <template slot-scope="scope">
                                 <p>2018/05/21 - 2018/05/22</p>
@@ -102,8 +102,8 @@
                             </template>
                         </el-table-column>
                         <el-table-column
-                                label="操作"
-                                width="110"
+                            label="操作"
+                            width="110"
                         >
                             <template slot-scope="scope">
                                 <el-button @click="monitorFn( scope.row )" icon="el-icon-delete"
@@ -114,12 +114,13 @@
                         </el-table-column>
                     </el-table>
                     <div v-if="planListData.length === 0">
-                        <el-button class="addPlan" @click="setPlanAds" type="success" icon="el-icon-edit">设置计划</el-button>
+                        <el-button class="addPlan" @click="setPlanAds" type="success" icon="el-icon-edit">设置计划
+                        </el-button>
                     </div>
                 </div>
             </section>
         </section>
-        <el-dialog class="planEdit" fullscreen=true width="85%" title="计划设置" :visible.sync="showAttentBox" center>
+        <el-dialog class="planEdit" :fullscreen=true  width="85%" title="计划设置" :visible.sync="showAttentBox" center>
             <section>
                 <h4 style="margin-bottom: 20px">定向设置</h4>
                 <div v-if="true" class="planEditDX" style="position: relative;">
@@ -135,16 +136,19 @@
                         </el-col>
                         <el-col :span="7">
                             <div class="grid-content bg-purple">
-                                <el-select style="width: 300px" v-model="SearchDXval" clearable filterable placeholder="搜索定向名称">
+                                <el-select style="width: 300px" v-model="SearchDXval" clearable filterable
+                                           placeholder="搜索定向名称">
                                     <el-option
-                                            v-for="item in SearchDXoptions"
-                                            :key="item.targeting_id"
-                                            :label="item.targeting_name"
-                                            :value="item.targeting_id">
+                                        v-for="item in SearchDXoptions"
+                                        :key="item.targeting_id"
+                                        :label="item.targeting_name"
+                                        :value="item.targeting_id">
                                     </el-option>
                                 </el-select>
                                 <ul class="searchDXUL" style="display: none">
-                                    <li v-for="item in SearchDXoptions" :data-targetId="item.targeting_id ">{{ item.targeting_name }}</li>
+                                    <li v-for="item in SearchDXoptions" :data-targetId="item.targeting_id ">
+                                        {{ item.targeting_name }}
+                                    </li>
                                 </ul>
                             </div>
                         </el-col>
@@ -157,28 +161,30 @@
             </section>
             <section class="setPlanZY">
                 <h4>资源位设置</h4>
-                <div v-if="true">
+                <div v-if="true" class="editRes">
                     <el-table
-                            :data="shopListData"
-                            stripe
-                            highlight-current-row
-                            style="width: 100%">
+                        :data="shopListData"
+                        height="350"
+                        stripe
+                        @cell-click="listResClick"
+                        highlight-current-row
+                        style="width: 100%">
                         <el-table-column
-                                prop="adLocal"
-                                label="广告版位">
+                            prop="adcreative_template_sites[0].adcreative_template_name"
+                            label="广告版位">
                         </el-table-column>
                         <el-table-column
-                                prop="adStyle"
-                                label="创意形式">
+                            prop="adcreative_template_sites[0].adcreative_template_style"
+                            label="创意形式">
                         </el-table-column>
                         <el-table-column
-                                prop="adDesc"
-                                label="描述">
+                            prop="adcreative_template_sites[0].adcreative_template_desc"
+                            label="描述">
                         </el-table-column>
-                        <el-table-column
-                                prop="adSee"
-                                label="曝光量">
-                        </el-table-column>
+                        <!--<el-table-column-->
+                            <!--prop="adcreative_template_sites[0].adcreative_template_size"-->
+                            <!--label="曝光量">-->
+                        <!--</el-table-column>-->
                     </el-table>
                 </div>
                 <section v-else>
@@ -189,86 +195,15 @@
             <section style="margin-top: 10px;border-top: 2px solid #ccc;padding-top: 10px">
                 <h4>创意设置</h4>
                 <div class="setPlanCY">
-                    <ul class="clear">
-                        <li>
-                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
+                    <ul class="clear" v-if="filterData.length > 0">
+                        <li v-for="img in filterData">
+                            <img :src="img.preview_url"
                                  alt="">
                         </li>
-                        <li>
-                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
-                                 alt="">
-                        </li>
-                        <li>
-                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
-                                 alt="">
-                        </li>
-                        <li>
-                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
-                                 alt="">
-                        </li>
-                        <li>
-                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
-                                 alt="">
-                        </li>
-                        <li>
-                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
-                                 alt="">
-                        </li>
-                        <li>
-                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
-                                 alt="">
-                        </li>
-                        <li>
-                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
-                                 alt="">
-                        </li>
-                        <li>
-                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
-                                 alt="">
-                        </li>
-                        <li>
-                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
-                                 alt="">
-                        </li>
-                        <li>
-                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
-                                 alt="">
-                        </li>
-                        <li>
-                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
-                                 alt="">
-                        </li>
-                        <li>
-                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
-                                 alt="">
-                        </li>
-                        <li>
-                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
-                                 alt="">
-                        </li>
-                        <li>
-                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
-                                 alt="">
-                        </li>
-                        <li>
-                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
-                                 alt="">
-                        </li>
-                        <li>
-                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
-                                 alt="">
-                        </li>
-                        <li>
-                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
-                                 alt="">
-                        </li>
-                        <li>
-                            <img src="http://img3.kwcdn.kuwo.cn/star/userpl2015/10/13/1455592122915_132026710b.jpg"
-                                 alt="">
-                        </li>
-
-
                     </ul>
+                    <p v-else style="text-align: center;margin: 20px ">
+                        暂无数据~
+                    </p>
                 </div>
             </section>
             <section style="margin-top: 10px;border-top: 2px solid #ccc;padding-top: 10px">
@@ -303,251 +238,287 @@
 </template>
 
 <script>
-	import {mTypes, aTypes} from '~/store/modules/adminPage'
-	export default {
-	    data () {
-	        return {
-	            shopListData: [{
-	                adLocal: '腾讯新闻',
-	                adStyle: '230*152单图2',
-	                adDesc: '新闻信息流，微信',
-	                adSee: '1000'
-	            }],
-	            setPlanDX: ['性别：男', '年龄：大于等于41岁', '付费用户：电商交易用户', '商业兴趣：生活用品',
-	                '联网方式：Wifi、4G',
-	                '地理位置：（常住）中国未知（常住）中国未知、北京市、河北省、北京市、河北省（常住）中国未知、北京市、河北省（常住）中国未知、北京市、河北省'],
-	            showAttentBox: false,
+    import { mTypes, aTypes } from '~/store/modules/adminPage'
+    export default {
+        data () {
+            return {
 
-	            SearchDXoptions: [{
-                    "targeting_id": '33212772',
-                    "targeting_name": "QQ-582×498单图(文)-2018042032965",
-                    "description": "",
-                    "targeting": {
-                    },
-                    "created_time": 1524231147,
-                    "last_modified_time": 1524231147,
-                    "ad_lock_status": "ADLOCKSTATUS_UNLOCKED"
-	            }],
-	            SearchDXval: '33212772',
+                filterData:[],
 
-	            radio: '',
-	            value3: '',
-	            shopIputId: '',
-	            shopSelList: '',
-	            formInline: {
-	                user: '',
-	                region: ''
-	            },
-//	            planListData: [{ //  数据模拟
-//	                planIndex: '1',
-//	                planPackage: '总群包WX',
-//	                res_name: '腾讯新闻——230* 153',
-//	                res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
-//	                conversionCost: 1,
-//	                shopOperate: '关注中',
-//	                shopRemark: ''
-//	            }, { //  数据模拟
-//	                planIndex: '1',
-//	                planPackage: '总群包WX',
-//	                res_name: '腾讯新闻——230* 153',
-//	                res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
-//	                conversionCost: 1,
-//	                shopOperate: '关注中',
-//	                shopRemark: ''
-//	            }, { //  数据模拟
-//	                planIndex: '2',
-//	                planPackage: '总群包WX',
-//	                res_name: '腾讯新闻——230* 153',
-//	                res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
-//	                conversionCost: 1,
-//	                shopOperate: '关注中',
-//	                shopRemark: ''
-//	            }
-//	            ],
+                shopListData: [{
+                    adcreative_template_name: '天天快报',
+                    adcreative_template_style: '230*152单图2',
+                    adcreative_template_desc: '新闻信息流，微信',
+                    adcreative_template_size: '1000'
+                }],
+                setPlanDX: ['性别：男', '年龄：大于等于41岁', '付费用户：电商交易用户', '商业兴趣：生活用品',
+                    '联网方式：Wifi、4G',
+                    '地理位置：（常住）中国未知（常住）中国未知、北京市、河北省、北京市、河北省（常住）中国未知、北京市、河北省（常住）中国未知、北京市、河北省'],
+                showAttentBox: false,
+
+                SearchDXoptions: [{
+                    'targeting_id': '33212772',
+                    'targeting_name': 'QQ-582×498单图(文)-2018042032965',
+                    'description': '',
+                    'targeting': {},
+                    'created_time': 1524231147,
+                    'last_modified_time': 1524231147,
+                    'ad_lock_status': 'ADLOCKSTATUS_UNLOCKED'
+                }],
+                SearchDXval: '33212772',
+
+                radio: '',
+                value3: '',
+                shopIputId: '',
+                shopSelList: '',
+                formInline: {
+                    user: '',
+                    region: ''
+                },
+                //	            planListData: [{ //  数据模拟
+                //	                planIndex: '1',
+                //	                planPackage: '总群包WX',
+                //	                res_name: '腾讯新闻——230* 153',
+                //	                res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
+                //	                conversionCost: 1,
+                //	                shopOperate: '关注中',
+                //	                shopRemark: ''
+                //	            }, { //  数据模拟
+                //	                planIndex: '1',
+                //	                planPackage: '总群包WX',
+                //	                res_name: '腾讯新闻——230* 153',
+                //	                res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
+                //	                conversionCost: 1,
+                //	                shopOperate: '关注中',
+                //	                shopRemark: ''
+                //	            }, { //  数据模拟
+                //	                planIndex: '2',
+                //	                planPackage: '总群包WX',
+                //	                res_name: '腾讯新闻——230* 153',
+                //	                res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
+                //	                conversionCost: 1,
+                //	                shopOperate: '关注中',
+                //	                shopRemark: ''
+                //	            }
+                //	            ],
                 planListData: [],
-	            openAttention: true,
-	            isMonitor: false, // 监控
-	            isAttention: false, // 关注
-	            shopStateVal: '',
+                openAttention: true,
+                isMonitor: false, // 监控
+                isAttention: false, // 关注
+                shopStateVal: '',
 
-	            shop_remark: '',
-	            remarkBoxVisible: false,
+                shop_remark: '',
+                remarkBoxVisible: false,
 
-	            // new edn
-	            userMsgCounts: 10,
-	            userPageNumber: 1,
-	            userPageSize: 30,
+                // new edn
+                userMsgCounts: 10,
+                userPageNumber: 1,
+                userPageSize: 30,
 
-	            userMoreList: [],
-	            userMoreMsg: [],
+                userMoreList: [],
+                userMoreMsg: [],
 
-	            searchUid: null,
+                searchUid: null,
 
-	            pageCounts: 10,
-	            pageNumber: 1,
-	            pageSize: 10,
-	            currPageNumber: null,
+                pageCounts: 10,
+                pageNumber: 1,
+                pageSize: 10,
+                currPageNumber: null,
 
-	            js_withdrawMsg: null,
-	            currLineData: null,
-	            currType: null,
+                js_withdrawMsg: null,
+                currLineData: null,
+                currType: null,
 
-	            currUserUid: null
-	        }
-	    },
-	    watch: {},
-	    methods: {
-            async setPlanAds(){
-                this.showAttentBox = true;
-                let editDXMsg = await this.$store.dispatch(aTypes.getEditDXMsg )
+                currUserUid: null
+            }
+        },
+        watch: {},
+        methods: {
+            async listResClick( row ){
+                if( row.adcreative_template_sites[0] ){
+                    if( row.adcreative_template_sites[0].adcreative_template_size.indexOf('×')> -1 ){
+                        let currImgSize = row.adcreative_template_sites[0].adcreative_template_size.split('×')[0];
+                        console.log(currImgSize)
+                        let filterImgData = await this.$store.dispatch(aTypes.getFilterImg , currImgSize)
+                        console.log(filterImgData)
+                        console.log('===filterImgData=====')
+                        if (filterImgData.code === 0) {
+                            this.filterData = filterImgData.data.list
+                        } else {
+                            this.$message({
+                                message: filterImgData.message,
+                                type: 'error',
+                                duration: 1200
+                            })
+                        }
+                    }else{
+                      // 无数据
+                        this.filterData = []
+                    }
+                }
+            },
+            async setPlanAds () {
+                this.showAttentBox = true
+                let editDXMsg = await this.$store.dispatch(aTypes.getEditDXMsg)
                 console.log(editDXMsg)
                 console.log('-------editDXMsg')
-
-                if( editDXMsg ){
-                  this.SearchDXoptions = editDXMsg.data.list;
-
-
-                }else{
+                if (editDXMsg.code !== 11000) {
+                    this.SearchDXoptions = editDXMsg.data.list
+                } else {
                     this.$message({
-                        message: '定向设置数据errror',
+                        message: editDXMsg.message,
                         type: 'error',
                         duration: 1200
                     })
-
                 }
-
-
+                let editRes = await this.$store.dispatch(aTypes.getEditRes)
+                console.log(editRes)
+                console.log('=====editRes')
+                if (editRes.code === 0) {
+                    this.shopListData = editRes.data.list
+                } else {
+                    this.$message({
+                        message: editRes.message,
+                        type: 'error',
+                        duration: 1200
+                    })
+                }
             },
 
-	        jump2adminCenter () {
+            jump2adminCenter () {
 
-	        },
-	        async monitorFn (rowMsg) {
-            //                监控
-	            this.showAttentBox = true
-	        },
-	        async attentionFn (rowMsg) {
-	            // 关注
-	        },
-	        async addRemarkFn (rowMsg) {
-	            // 添加备注
-	            this.remarkBoxVisible = true
-	        },
-	        formatConsumeFn (row, column) {
-	            let num = Number(row.planPackage)
-	            if (isNaN(num)) {
-	                return 0
-	            }
-	            if (num < 100) {
-	                return num
-	            } else if (num < 10000) {
-	                return Math.round(num / 1000 * 10) / 10 + '千'
-	            } else if (num < 100000000) {
-	                return Math.round(num / 10000 * 10) / 10 + '万'
-	            } else {
-	                return Math.round(num / 100000000 * 10) / 10 + '亿'
-	            }
-	        },
-	        // new end
-	        initShopList () {
-            /* 初始化当前列表 */
-	            this.searchUid = null
-	            this.pageNumber = 1
-	            this.pageSize = 10
-	        },
-	        async surePay () {
-	            let surePayBack = null
-	            Object.assign(this.currLineData, {
-	                remark: this.shop_remark,
-	                isAgree: this.currType
-	            })
+            },
+            async monitorFn (rowMsg) {
+                //                监控
+                this.showAttentBox = true
+            },
+            async attentionFn (rowMsg) {
+                // 关注
+            },
+            async addRemarkFn (rowMsg) {
+                // 添加备注
+                this.remarkBoxVisible = true
+            },
+            formatConsumeFn (row, column) {
+                let num = Number(row.planPackage)
+                if (isNaN(num)) {
+                    return 0
+                }
+                if (num < 100) {
+                    return num
+                } else if (num < 10000) {
+                    return Math.round(num / 1000 * 10) / 10 + '千'
+                } else if (num < 100000000) {
+                    return Math.round(num / 10000 * 10) / 10 + '万'
+                } else {
+                    return Math.round(num / 100000000 * 10) / 10 + '亿'
+                }
+            },
+            // new end
+            initShopList () {
+                /* 初始化当前列表 */
+                this.searchUid = null
+                this.pageNumber = 1
+                this.pageSize = 10
+            },
+            async surePay () {
+                let surePayBack = null
+                Object.assign(this.currLineData, {
+                    remark: this.shop_remark,
+                    isAgree: this.currType
+                })
 
-	            if (this.currType === '-1') {
-	                surePayBack = await this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData)
-	            } else {
-	                surePayBack = await this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData)
-	            }
+                if (this.currType === '-1') {
+                    surePayBack = await this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData)
+                } else {
+                    surePayBack = await this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData)
+                }
 
-	            if (surePayBack) {
-	                this.remarkBoxVisible = false
-	                if (this.currPageNumber) {
-	                    this.$store.dispatch(aTypes.getWithdrawOrder, {
-	                        'pageNumber': this.currPageNumber,
-	                        'pageSize': this.pageSize
-	                    })
-	                } else {
-	                    this.$store.dispatch(aTypes.getWithdrawOrder)
-	                }
-	            }
-	        },
+                if (surePayBack) {
+                    this.remarkBoxVisible = false
+                    if (this.currPageNumber) {
+                        this.$store.dispatch(aTypes.getWithdrawOrder, {
+                            'pageNumber': this.currPageNumber,
+                            'pageSize': this.pageSize
+                        })
+                    } else {
+                        this.$store.dispatch(aTypes.getWithdrawOrder)
+                    }
+                }
+            },
 
-	        async searchShopIdFn () {
-	            if (!this.searchUid) {
-	                return false
-	            }
-	            let withDrawMsg = await this.$store.dispatch(aTypes.getWithdrawOrder, {
-	                'pageNumber': 1,
-	                'pageSize': this.pageSize,
-	                'uid': this.searchUid
-	            })
-	            if (withDrawMsg) {
-	                this.pageCounts = Number(withDrawMsg.pages)
-	                this.pageNumber = Number(withDrawMsg.currentPage)
-	            }
-	        },
+            async searchShopIdFn () {
+                if (!this.searchUid) {
+                    return false
+                }
+                let withDrawMsg = await this.$store.dispatch(aTypes.getWithdrawOrder, {
+                    'pageNumber': 1,
+                    'pageSize': this.pageSize,
+                    'uid': this.searchUid
+                })
+                if (withDrawMsg) {
+                    this.pageCounts = Number(withDrawMsg.pages)
+                    this.pageNumber = Number(withDrawMsg.currentPage)
+                }
+            },
 
-	        confirmFn (lineData, type) {
-	            if (type === '-1') {
-	                this.js_withdrawMsg = '拒绝用户uid《 ' + lineData.uid + ' 》提款？'
-	            } else {
-	                this.js_withdrawMsg = '允许用户uid《 ' + lineData.uid + ' 》提款？'
-	            }
-	            this.remarkBoxVisible = true
-	            this.currLineData = lineData
-	            this.currType = type
-	        },
+            confirmFn (lineData, type) {
+                if (type === '-1') {
+                    this.js_withdrawMsg = '拒绝用户uid《 ' + lineData.uid + ' 》提款？'
+                } else {
+                    this.js_withdrawMsg = '允许用户uid《 ' + lineData.uid + ' 》提款？'
+                }
+                this.remarkBoxVisible = true
+                this.currLineData = lineData
+                this.currType = type
+            },
 
-	        lineClick (row, type) {
-	            this.shop_remark = ''
-	            this.confirmFn(row, type)
-	        },
+            lineClick (row, type) {
+                this.shop_remark = ''
+                this.confirmFn(row, type)
+            }
 
-	    },
-	    computed: {
-        //            withdrawList(){
-        //                return this.$store.state.betblock.withdrawList
-        //            }
-	    },
-	    async mounted () {
+        },
+        computed: {
+            //            withdrawList(){
+            //                return this.$store.state.betblock.withdrawList
+            //            }
+        },
+        async mounted () {
 
-	    },
-	    filters: {
-	        format (time, format = 'yyyy-MM-dd') {
-	            let t = new Date(time)
-	            let tf = function (i) {
-	                return (i < 10 ? '0' : '') + i
-	            }
-	            return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
-	                switch (a) {
-	                case 'yyyy':
-	                    return tf(t.getFullYear())
-	                case 'MM':
-	                    return tf(t.getMonth() + 1)
-	                case 'mm':
-	                    return tf(t.getMinutes())
-	                case 'dd':
-	                    return tf(t.getDate())
-	                case 'HH':
-	                    return tf(t.getHours())
-	                case 'ss':
-	                    return tf(t.getSeconds())
-	                }
-	            })
-	        }
-	    }
-	}
+        },
+        filters: {
+            format (time, format = 'yyyy-MM-dd') {
+                let t = new Date(time)
+                let tf = function (i) {
+                    return (i < 10 ? '0' : '') + i
+                }
+                return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
+                    switch (a) {
+                    case 'yyyy':
+                        return tf(t.getFullYear())
+                    case 'MM':
+                        return tf(t.getMonth() + 1)
+                    case 'mm':
+                        return tf(t.getMinutes())
+                    case 'dd':
+                        return tf(t.getDate())
+                    case 'HH':
+                        return tf(t.getHours())
+                    case 'ss':
+                        return tf(t.getSeconds())
+                    }
+                })
+            }
+        }
+    }
 </script>
 <style scoped>
+
+    .editRes{
+    }
+
+
     .setPlanCY {
         margin-top: 10px;
     }
@@ -560,8 +531,8 @@
     }
 
     .setPlanCY ul li {
-        width: 100px;
-        height: 100px;
+        width: 130px;
+        height: 130px;
         border: 1px solid #000;
         float: left;
         margin-left: 20px;

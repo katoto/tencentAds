@@ -259,7 +259,7 @@
 	            currPageNumber: null,
 
 	            currLineData: null,
-	            currType: null,
+	            currType: null
 
 	        }
 	    },
@@ -399,8 +399,7 @@
 	            if (withDrawMsg) {
 	                this.pageCounts = Number(withDrawMsg.pages)
 	            }
-	        },
-
+	        }
 
 	    },
 	    computed: {
@@ -409,24 +408,24 @@
         //            }
 	    },
 	    async mounted () {
-//            ads_user_list
+        //            ads_user_list
 	        let adsMsg = await this.$store.dispatch(aTypes.getAdsUserList, {
 	            'pageNumber': 1,
 	            'pageSize': this.pageSize
 	        })
-            console.log(adsMsg)
-            console.log('adsMsg==========')
-            // todo
-            if (adsMsg) {
-                this.$message({
-                    message: '更新列表成功',
-                    type: 'success',
-                    duration: 1200
-                })
-//                "token": "3d81a4a18c5a943303bed1c467ec9047",
-//                "account_id": "2389175",
-//                "name": "测试公司名称"
-                this.shopListData = adsMsg.data
+        console.log(adsMsg)
+        console.log('adsMsg==========')
+        // todo
+        if (adsMsg) {
+            this.$message({
+                message: '更新列表成功',
+                type: 'success',
+                duration: 1200
+            })
+            //                "token": "3d81a4a18c5a943303bed1c467ec9047",
+            //                "account_id": "2389175",
+            //                "name": "测试公司名称"
+            this.shopListData = adsMsg.data
 	        }
 	    },
 	    filters: {
