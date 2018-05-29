@@ -33,7 +33,7 @@ export default new VueRouter({
         {
             path: '/',
             component: Layout,
-            redirect: '/adminPage/adminCenter',
+            redirect: '/login',
             name: 'home',
             hidden: true,
             children: [{
@@ -46,7 +46,7 @@ export default new VueRouter({
             component: Layout,
             redirect: '/adminPage/adminCenter',
             name: 'adminPage',
-            meta: {title: 'adminPage', icon: 'example'},
+            meta: {title: '飞马营销平台', icon: 'example'},
             children: [
                 {
                     path: 'adminCenter',
@@ -58,28 +58,7 @@ export default new VueRouter({
                     path: 'setPlan/:planId?',
                     name: 'more',
                     component: t_setPlan,
-                    meta: {title: 'more', icon: 'tree'}
-                }
-            ]
-        },
-        {
-            path: '/betblock',
-            component: Layout,
-            redirect: '/betblock/withdraw',
-            name: 'demo',
-            meta: {title: 'demo', icon: 'user'},
-            children: [
-                {
-                    path: 'withdraw',
-                    name: 'withdraw',
-                    component: bb_withdraw,
-                    meta: {title: '提款审核', icon: 'withdraw'}
-                },
-                {
-                    path: 'setPlan/:planId?',
-                    name: 'more',
-                    component: bb_withdraw,
-                    meta: {title: 'more', icon: 'tree'}
+                    meta: {title: '新建计划', icon: 'tree'}
                 }
             ]
         },

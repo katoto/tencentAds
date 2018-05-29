@@ -139,7 +139,7 @@
             </div>
         </el-dialog>
 
-        <el-dialog title="全店新计划监控" :visible.sync="showAttentBox" center>
+        <el-dialog title="全店新计划监控" center :visible.sync="showAttentBox" >
             <section>
                 <h2 style="margin-bottom: 20px">监控设置</h2>
                 <div class="" style="position: relative;">
@@ -259,7 +259,8 @@
 	            currPageNumber: null,
 
 	            currLineData: null,
-	            currType: null
+	            currType: null,
+                showAttentBox:false,
 
 	        }
 	    },
@@ -273,7 +274,8 @@
 	    methods: {
 	        async monitorFn (rowMsg) {
             //                监控
-	            this.showAttentBox = true
+                console.log(11)
+                this.showAttentBox = true
 	        },
 	        async attentionFn (rowMsg) {
 	            // 关注
