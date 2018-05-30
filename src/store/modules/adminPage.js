@@ -68,7 +68,7 @@ const actionsInfo = mapActions({
             if (data) {
                 InfoData = await ajax.get(`http://10.0.1.167:6999/goods/result/review?ck=${getCK()}&expectId=${data.expectId}&result=${data.isAgree}`)
             } else {
-                InfoData = await ajax.get(`/tx/creative_template`)
+                InfoData = await ajax.get(`/tx/creative_tpl`)
             }
             return InfoData
         } catch (e) {
@@ -97,8 +97,8 @@ const actionsInfo = mapActions({
         }
     },
 
-    /*  商品 下线 上线  */
-    async setGoodsOperate ({commit, dispatch}, data) {
+    /*  上传 设置数据  */
+    async updatePlanMsg ({commit, dispatch}, data) {
         try {
             let InfoData = null
             if (data) {

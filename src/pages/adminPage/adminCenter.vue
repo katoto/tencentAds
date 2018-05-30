@@ -48,7 +48,7 @@
                         width="100">
                 </el-table-column>
                 <el-table-column
-                        label="关注操作"
+                        label="关注"
                         width="110"
                 >
                     <template slot-scope="scope">
@@ -65,7 +65,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column
-                        label="监控操作"
+                        label="监控"
                         width="110"
                 >
                     <template slot-scope="scope">
@@ -80,7 +80,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column
-                        label="新建操作"
+                        label="新建"
                         width="110"
                 >
                     <template slot-scope="scope">
