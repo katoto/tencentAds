@@ -33,13 +33,13 @@ if (process.env.NODE_ENV === 'production') {
     app.use((req, resp, next) => {
         if (~req.originalUrl.indexOf('/ads')) {
             forward({
-                req,
-                resp,
-                host: '47.96.104.111',
-                ip: '47.96.104.111',
-                path: req.originalUrl.replace('/ads', ''),
-                showLog: true
-            })
+		        req,
+		        resp,
+		        host: '47.96.104.111',
+		        ip: '47.96.104.111',
+		        path: req.originalUrl.replace('/ads', ''),
+		        showLog: true
+	        })
         } else {
             next()
         }

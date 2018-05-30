@@ -211,19 +211,21 @@
                 <div>
                     <div class="planEditBottom">
                         投放日期：
-                        <el-radio v-model="radio" label="1">长期投放</el-radio>
-                        <el-radio v-model="radio" label="2">在日期范围内投放</el-radio>
+                        <el-radio v-model="js_betSetInDate" label="1">长期投放</el-radio>
+                        <el-radio v-model="js_betSetInDate" label="2">在日期范围内投放</el-radio>
                     </div>
                     <div class="planEditBottom">
                         投放时间：
-                        <el-radio v-model="radio" label="1">全天</el-radio>
-                        <el-radio v-model="radio" label="2">特定时间段</el-radio>
+                        <el-radio v-model="js_betSetInTime" label="1">全天</el-radio>
+                        <el-radio v-model="js_betSetInTime" label="2">特定时间段</el-radio>
                     </div>
                     <div class="planEditBottom">
                         出价方式：
-                        <el-radio v-model="radio" label="1">CPC</el-radio>
-                        <el-radio v-model="radio" label="2">CPM</el-radio>
-                        <el-radio v-model="radio" label="2">oCPA</el-radio>
+                        <el-radio-group v-model="js_betSetStyle">
+                            <el-radio :label="1">CPC</el-radio>
+                            <el-radio :label="2">CPM</el-radio>
+                            <el-radio :label="3">oCPA</el-radio>
+                        </el-radio-group>
                     </div>
                     <span style="margin-left: 36px"><b style="color: red">*</b> 出价 </span>
                     <el-input style="width: 130px" size="small" v-model="formInline.user" placeholder="日限额"></el-input>
@@ -242,6 +244,9 @@
     export default {
         data () {
             return {
+	            js_betSetInDate:'1',
+	            js_betSetInTime:'',
+	            js_betSetStyle:'',
 
                 filterData:[],
 
