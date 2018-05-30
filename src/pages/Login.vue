@@ -68,8 +68,8 @@
                                         duration: 1200
                                     })
                                     await wait(1200)
-                                    this.$router.replace('/adminPage/adminCenter');
-                                }else{
+                                    this.$router.replace('/adminPage/adminCenter')
+                                } else {
                                     this.$message({
                                         message: '账号或密码错误',
                                         type: 'error',

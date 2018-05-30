@@ -85,7 +85,7 @@ const actionsInfo = mapActions({
     async getFilterImg ({commit, dispatch}, data) {
         try {
             let InfoData = null
-            InfoData = await ajax.get(`/tx/images?token=${access_token}&account_id=${account_id}&filtering=[{"field":"image_width","operator":"EQUALS","values":[${Number( data )}]}]`)
+            InfoData = await ajax.get(`/tx/images?token=${access_token}&account_id=${account_id}&filtering=[{"field":"image_width","operator":"EQUALS","values":[${Number(data)}]}]`)
             return InfoData
         } catch (e) {
             Message({

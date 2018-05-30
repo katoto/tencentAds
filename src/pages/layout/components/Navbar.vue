@@ -1,13 +1,19 @@
 <template>
     <el-menu class="navbar" mode="horizontal">
         <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
-        <breadcrumb></breadcrumb>
+        <!-- 隐藏路由 -->
+        <!--<breadcrumb></breadcrumb>-->
         <el-dropdown class="avatar-container" trigger="click">
             <div class="avatar-wrapper">
                 <img class="user-avatar" :src="headImg">
                 <i class="el-icon-caret-bottom"></i>
             </div>
             <el-dropdown-menu class="user-dropdown" slot="dropdown">
+                <router-link class="inlineBlock" to="/3123">
+                    <el-dropdown-item>
+                        setting
+                    </el-dropdown-item>
+                </router-link>
                 <router-link class="inlineBlock" to="/">
                     <el-dropdown-item>
                         Home

@@ -1,7 +1,7 @@
 <template>
     <div class="app-container">
         <div class="setPlanHead clear">
-            <div style="float: left">
+            <div style="float: left" v-if="this.$route.params.planId != ':planId'">
                 <button @click="jump2adminCenter" style="padding: 10px 20px;margin-top: 4px"
                         class="el-button el-button--default" type="button">
                     <i class="el-icon-arrow-left"></i>
@@ -10,10 +10,13 @@
             </div>
             <section style="float: right;">
                 店铺名称：
-                <el-select size="small" v-model="shopSelList" placeholder="活动区域">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                </el-select>
+                <el-select size="small" v-model="shopSelListVal" placeholder="选择店铺">
+                    <el-option
+                        v-for="item in shopSelList"
+                        :label="item.name"
+                        :value="item.name">
+                    </el-option>
+                </el-select> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 当前UID：<span style="color: #606266">111112312</span>
                 <el-input size="small" style="margin-left: 20px" v-model="shopIputId" placeholder="搜索店铺ID">
                     <i slot="prefix" class="el-input__icon el-icon-search"></i>
@@ -27,7 +30,7 @@
             <div>
                 <div>
                     推广目标： <span style="color: #606266">电商网页 </span>
-                    <span style="margin-left: 36px"><b style="color: red">*</b> 日限额 </span>
+                    <span style="margin-left: 36px"><b style="color: red">*</b> 日限额 &nbsp;&nbsp;</span>
                     <el-input style="width: 130px" size="small" v-model="formInline.user" placeholder="日限额"></el-input>
                     元
                     <span style="margin-left: 30px">投放模式：</span>
@@ -41,15 +44,15 @@
                 <div style="margin-top: 10px">
                     落地页：
                     <el-radio v-model="radio" label="1">单品页</el-radio>
-                    <el-radio v-model="radio" label="2">聚合页</el-radio>
+                    <el-radio v-model="radio" disabled label="2">聚合页</el-radio>
                     <el-select style="margin-left: 10px" size="small" v-model="formInline.region" placeholder="活动区域">
                         <el-option label="区域一" value="shanghai"></el-option>
                         <el-option label="区域二" value="beijing"></el-option>
                     </el-select>
-                    <el-select style="margin-left: 10px" size="small" v-model="formInline.region" placeholder="活动区域">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
-                    </el-select>
+                    <!--<el-select style="margin-left: 10px" size="small" v-model="formInline.region" placeholder="活动区域">-->
+                    <!--<el-option label="区域一" value="shanghai"></el-option>-->
+                    <!--<el-option label="区域二" value="beijing"></el-option>-->
+                    <!--</el-select>-->
                 </div>
             </div>
             <section>
@@ -127,7 +130,8 @@
                     <el-row :gutter="20">
                         <el-col :span="13">
                             <div class="grid-content bg-purple">
-                                <p style="padding-bottom: 10px;font-weight: bold">所选定向：<span>{{ SearchDXval }}</span></p>
+                                <p style="padding-bottom: 10px;font-weight: bold">所选定向：<span>{{ SearchDXval }}</span>
+                                </p>
                                 <section class="planEditDXContent"
                                          style="width: 100%;height: 300px;overflow-y: scroll;border-top: 1px solid #ebfafa">
                                     <p style="margin-top: 10px" v-for="item in setPlanDX">{{ item }}</p>
@@ -180,6 +184,10 @@
                         <el-table-column
                             prop="adcreative_template_desc"
                             label="描述">
+                        </el-table-column>
+                        <el-table-column
+                            prop="adcreative_template_site"
+                            label="site">
                         </el-table-column>
                         <el-table-column
                             prop="adcreative_template_site"
@@ -275,7 +283,14 @@
                 radio: '',
                 value3: '',
                 shopIputId: '',
-                shopSelList: '',
+
+                shopSelList: [{
+                    account_id: '2389175',
+                    name: '深圳火腿肠店',
+                    token: 'e853d16d4f11310fbe9e4222f2830647'
+                }],
+                shopSelListVal: '深圳火腿肠店',
+
                 formInline: {
                     user: '',
                     region: ''
@@ -321,9 +336,14 @@
                 currUserUid: null
             }
         },
-        watch: {},
+        watch: {
+            shopSelListVal (val) {
+                console.log(val)
+                console.log('更新页面数据')
+            }
+        },
         methods: {
-            async listResClick(row){
+            async listResClick (row) {
                 if (row.adcreative_elements) {
                     if (row.adcreative_elements.image.width) {
                         console.log(row.adcreative_elements.image.width)
@@ -373,7 +393,8 @@
             },
 
             jump2adminCenter () {
-
+                //  返回管理
+                this.$router.push('/adminPage/adminCenter')
             },
             async monitorFn (rowMsg) {
                 //                监控
@@ -386,21 +407,21 @@
                 // 添加备注
                 this.remarkBoxVisible = true
             },
-//            formatConsumeFn (row, column) {
-////                let num = Number(row.planPackage)
-//                if (isNaN(num)) {
-//                    return 0
-//                }
-//                if (num < 100) {
-//                    return num
-//                } else if (num < 10000) {
-//                    return Math.round(num / 1000 * 10) / 10 + '千'
-//                } else if (num < 100000000) {
-//                    return Math.round(num / 10000 * 10) / 10 + '万'
-//                } else {
-//                    return Math.round(num / 100000000 * 10) / 10 + '亿'
-//                }
-//            },
+            //            formatConsumeFn (row, column) {
+            /// /                let num = Number(row.planPackage)
+            //                if (isNaN(num)) {
+            //                    return 0
+            //                }
+            //                if (num < 100) {
+            //                    return num
+            //                } else if (num < 10000) {
+            //                    return Math.round(num / 1000 * 10) / 10 + '千'
+            //                } else if (num < 100000000) {
+            //                    return Math.round(num / 10000 * 10) / 10 + '万'
+            //                } else {
+            //                    return Math.round(num / 100000000 * 10) / 10 + '亿'
+            //                }
+            //            },
             // new end
             async surePay () {
                 let surePayBack = null
@@ -408,22 +429,22 @@
                     plans: [
                         {
                             campaign_name: 'kkkkkk', // 设置计划名称
-                            daily_budget: 5000, //日消耗限额
-                            speed_mode: 'SPEED_MODE_FAST', //投放速度模式，枚举列表：{ SPEED_MODE_FAST, SPEED_MODE_STANDARD }
-                            adgroup_name: 'ddkdkdk',  // 设置组名 一般简称广告
-                            site: 'SITE_SET_MOBILE_UNION',  // 投放站点
-                            begin_date: '2018-05-10', //开始投放日期，日期格式， YYYY-mm-dd
+                            daily_budget: 5000, // 日消耗限额
+                            speed_mode: 'SPEED_MODE_FAST', // 投放速度模式，枚举列表：{ SPEED_MODE_FAST, SPEED_MODE_STANDARD }
+                            adgroup_name: 'ddkdkdk', // 设置组名 一般简称广告
+                            site: 'SITE_SET_MOBILE_UNION', // 投放站点
+                            begin_date: '2018-05-10', // 开始投放日期，日期格式， YYYY-mm-dd
                             end_date: '2018-05-11', // 结束投放日期，日期格式， YYYY-mm-dd
-                            billing_event: 'BILLINGEVENT_CLICK',  //计费类型 枚举列表：{ BILLINGEVENT_CLICK, BILLINGEVENT_APP_INSTALL, BILLINGEVENT_IMPRESSION }
-                            bid_amount: 10, //广告出价，单位为分
-                            optimization_goal: 'OPTIMIZATIONGOAL_CLICK', //广告优化目标类型 { OPTIMIZATIONGOAL_CLICK, OPTIMIZATIONGOAL_APP_INSTALL, OPTIMIZATIONGOAL_IMPRESSION, OPTIMIZATIONGOAL_APP_ACTIVATE, OPTIMIZATIONGOAL_APP_REGISTER, OPTIMIZATIONGOAL_PROMOTION_CLICK_KEY_PAGE, OPTIMIZATIONGOAL_ECOMMERCE_ORDER, OPTIMIZATIONGOAL_APP_PURCHASE, OPTIMIZATIONGOAL_ECOMMERCE_CHECKOUT, OPTIMIZATIONGOAL_PAGE_RESERVATION }
-                            targeting_id: '33422215',//定向 id
-                            adcreative_name: 'kdkdkk',  // 创意名称
+                            billing_event: 'BILLINGEVENT_CLICK', // 计费类型 枚举列表：{ BILLINGEVENT_CLICK, BILLINGEVENT_APP_INSTALL, BILLINGEVENT_IMPRESSION }
+                            bid_amount: 10, // 广告出价，单位为分
+                            optimization_goal: 'OPTIMIZATIONGOAL_CLICK', // 广告优化目标类型 { OPTIMIZATIONGOAL_CLICK, OPTIMIZATIONGOAL_APP_INSTALL, OPTIMIZATIONGOAL_IMPRESSION, OPTIMIZATIONGOAL_APP_ACTIVATE, OPTIMIZATIONGOAL_APP_REGISTER, OPTIMIZATIONGOAL_PROMOTION_CLICK_KEY_PAGE, OPTIMIZATIONGOAL_ECOMMERCE_ORDER, OPTIMIZATIONGOAL_APP_PURCHASE, OPTIMIZATIONGOAL_ECOMMERCE_CHECKOUT, OPTIMIZATIONGOAL_PAGE_RESERVATION }
+                            targeting_id: '33422215', // 定向 id
+                            adcreative_name: 'kdkdkk', // 创意名称
                             adcreative_template_id: 2, // 创意模板
                             adcreative_elements: {
-                                image: "2389175:b287b6abacdc637cecd86bb017435980",  // 图片id
-                                title: "腾讯效果推广lichun",
-                                description: "不仅有量lichun"
+                                image: '2389175:b287b6abacdc637cecd86bb017435980', // 图片id
+                                title: '腾讯效果推广lichun',
+                                description: '不仅有量lichun'
                             },
                             ad_name: '广告名字， 一般取创意'
 
@@ -459,10 +480,22 @@
                     this.pageCounts = Number(withDrawMsg.pages)
                     this.pageNumber = Number(withDrawMsg.currentPage)
                 }
-            },
+            }
         },
         computed: {},
         async mounted () {
+            if (this.$route.params.planId != '::planId') {
+                this.shopSelListVal = this.$route.params.planId
+            }
+            //   ads_user_list
+            let adsMsg = await this.$store.dispatch(aTypes.getAdsUserList, {
+                'pageNumber': 1,
+                'pageSize': this.pageSize
+            })
+
+            if (adsMsg) {
+                this.shopSelList = adsMsg.data
+            }
         },
         filters: {
             format (time, format = 'yyyy-MM-dd') {
