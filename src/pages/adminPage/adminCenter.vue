@@ -54,6 +54,7 @@
                 >
                     <template slot-scope="scope">
                         <!--el-icon-star-on-->
+                        <!--<i class="el-icon-star-off" ></i>-->
                         <el-button v-if="!isAttention" @click="attentionFn( scope.row ,'1' )" icon="el-icon-star-off"
                                    type="primary"
                                    size="small">
