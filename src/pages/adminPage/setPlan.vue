@@ -207,18 +207,22 @@
                 <div class="setPlanCY">
                     <ul class="clear" v-if="true">
                         <!--<ul class="clear" v-if="filterData.length > 0">-->
-                        <li v-for="img in filterData">
-                            <img :src="img.preview_url"
+                        <li v-for="( img ) in filterData" @click="planCYClick( img )">
+                            <img class="goodsImg" :class="{opacityImg : !!selectImgObj[img.signature] }"
+                                 :src="img.preview_url"
                                  alt="">
-                        </li>
-                        <li>
-                            <img class="goodsImg opacityImg"
-                                 src="http://api.e.qq.com/ads/v3/image/preview?advertiser_id=2389175&image_id=2389175:c9c2113903d2096c4216e74de363866c&sign=64560636e86cbcaca896956c09cddf08"
-                                 alt="">
-                            <p class="activeSelTip">
+                            <p v-if="!!selectImgObj[img.signature]" class="activeSelTip" >
                                 <img :src="selectImg" alt="">
                             </p>
                         </li>
+                        <!--<li>-->
+                        <!--<img class="goodsImg opacityImg"-->
+                        <!--src="http://api.e.qq.com/ads/v3/image/preview?advertiser_id=2389175&image_id=2389175:c9c2113903d2096c4216e74de363866c&sign=64560636e86cbcaca896956c09cddf08"-->
+                        <!--alt="">-->
+                        <!--<p class="activeSelTip">-->
+                        <!--<img :src="selectImg" alt="">-->
+                        <!--</p>-->
+                        <!--</li>-->
                     </ul>
                     <p v-else style="text-align: center;margin: 20px ">
                         暂无数据~
@@ -290,7 +294,8 @@
                 </div>
             </section>
             <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="surePay">确 定</el-button>
+                <!--<el-button type="primary" @click="surePay">确 定</el-button>-->
+                <el-button type="primary" @click="sendDemo">确 定</el-button>
             </div>
         </el-dialog>
     </div>
@@ -303,6 +308,8 @@
     export default {
         data () {
             return {
+                selectImgObj: {},  // 选者图片用
+
                 selectImg: selectImg,
                 js_showBetTime: '',
                 js_betweenStartEnd: '',
@@ -433,10 +440,12 @@
             }
         },
         methods: {
-
+            planCYClick(imgData){
+                // 选择图片
+                this.selectImgObj[imgData.signature] ? this.selectImgObj[imgData.signature] = null : this.selectImgObj[imgData.signature] = imgData
+            },
             sendDemo () {
                 let sendObj = {}
-
                 console.log('发送')
                 //                格式化处理
 
@@ -446,7 +455,7 @@
                 } else {
                     this.speed_mode_2 = 'SPEED_MODE_FAST'
                 }
-                if (this.daily_budget_1 === '' || Number(this.daily_budget_1) <= 0) {
+                if (this.daily_budget_1 === '' || Number(this.daily_budget_1) < 0) {
                     this.$message({
                         message: '请输入日限额',
                         type: 'error',
@@ -460,7 +469,8 @@
                     speed_mode: this.speed_mode_2,
                     js_ldy: this.js_ldy_3,
                     js_ldyName: this.js_ldyName_4,
-                    SearchDXval_5: this.SearchDXval_5 // 定向名称
+                    SearchDXval_5: this.SearchDXval_5 , // 定向名称
+                    selectImgObj:this.selectImgObj,
 
                 })
 
@@ -488,6 +498,12 @@
 
                 if (filterImgData.code === 0) {
                     this.filterData = filterImgData.data.list
+
+                    this.filterData.forEach(( val ,index )=>{
+                      // 设置对象的属性  这样才能双向绑定成功
+                        this.$set(this.selectImgObj, val.signature , null)
+                    })
+
                 } else {
                     this.$message({
                         message: filterImgData.message,
