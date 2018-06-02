@@ -28,29 +28,34 @@
         </div>
         <section class="content" style="margin: 10px 0;border:1px solid #e2e2e2;padding: 10px">
             <!-- 主体内容 -->
-            <div>
-                <div>
-                    推广目标： <span style="color: #606266">电商网页 </span>
-                    <span style="margin-left: 36px"><b style="color: red">*</b> 日限额 &nbsp;&nbsp;</span>
-                    <el-input style="width: 130px" size="small" v-model="daily_budget_1" placeholder="日限额"></el-input>
-                    元
-                    <span style="margin-left: 30px">投放模式：</span>
-                    <el-switch style="color: #606266"
-                               size="small"
-                               v-model="speed_mode_2"
-                               active-text="加速投放"
-                               inactive-text="标准投放">
-                    </el-switch>
+            <div class="clear">
+                <div style="float: left">
+                    <div>
+                        推广目标： <span style="color: #606266">电商网页 </span>
+                        <span style="margin-left: 36px"><b style="color: red">*</b> 日限额 &nbsp;&nbsp;</span>
+                        <el-input style="width: 130px" size="small" v-model="daily_budget_1"
+                                  placeholder="日限额"></el-input>
+                        元
+                        <span style="margin-left: 30px">投放模式：</span>
+                        <el-switch style="color: #606266"
+                                   size="small"
+                                   v-model="speed_mode_2"
+                                   active-text="加速投放"
+                                   inactive-text="标准投放">
+                        </el-switch>
+                    </div>
+                    <div style="margin-top: 10px">
+                        落地页：
+                        <el-radio v-model="js_ldy_3" label="1">单品页</el-radio>
+                        <el-radio v-model="js_ldy_3" disabled label="2">聚合页</el-radio>
+                        <el-select style="margin-left: 10px" size="small" v-model="js_ldyName_4" placeholder="活动区域">
+                            <el-option label="区域一" value="shanghai"></el-option>
+                            <el-option label="区域二" value="beijing"></el-option>
+                        </el-select>
+                    </div>
                 </div>
-                <div style="margin-top: 10px">
-                    落地页：
-                    <el-radio v-model="js_ldy_3" label="1">单品页</el-radio>
-                    <el-radio v-model="js_ldy_3" disabled label="2">聚合页</el-radio>
-                    <el-select style="margin-left: 10px" size="small" v-model="js_ldyName_4" placeholder="活动区域">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
-                    </el-select>
-
+                <div style="float: right;margin: 20px">
+                    <el-button icon="el-icon-upload" type="danger" @click="upPlan()">上传计划</el-button>
                 </div>
             </div>
             <section>
@@ -205,13 +210,13 @@
             <section style="margin-top: 10px;border-top: 2px solid #ccc;padding-top: 10px">
                 <h4>创意设置</h4>
                 <div class="setPlanCY">
-                    <ul class="clear" v-if="true">
-                        <!--<ul class="clear" v-if="filterData.length > 0">-->
+                    <!--<ul class="clear" v-if="true">-->
+                    <ul class="clear" v-if="filterData.length > 0">
                         <li v-for="( img ) in filterData" @click="planCYClick( img )">
                             <img class="goodsImg" :class="{opacityImg : !!selectImgObj[img.signature] }"
                                  :src="img.preview_url"
                                  alt="">
-                            <p v-if="!!selectImgObj[img.signature]" class="activeSelTip" >
+                            <p v-if="!!selectImgObj[img.signature]" class="activeSelTip">
                                 <img :src="selectImg" alt="">
                             </p>
                         </li>
@@ -294,8 +299,8 @@
                 </div>
             </section>
             <div slot="footer" class="dialog-footer">
-                <!--<el-button type="primary" @click="surePay">确 定</el-button>-->
-                <el-button type="primary" @click="sendDemo">确 定</el-button>
+                <el-button type="primary" @click="sureSetPlan">确 定</el-button>
+                <!--<el-button type="primary" @click="sendDemo">确 定</el-button>-->
             </div>
         </el-dialog>
     </div>
@@ -308,7 +313,9 @@
     export default {
         data () {
             return {
-                selectImgObj: {},  // 选者图片用
+                selectImgObj: {}, // 选者图片用
+
+                beforeSendPlanArr: [], // 上传之前计划数组
 
                 selectImg: selectImg,
                 js_showBetTime: '',
@@ -348,12 +355,13 @@
                     }
                 },
 
-                currSelShopListID: '',
+                currSelShopListID: '', // 选择的资源id
+                currSelShopList: '', // 选择的资源位
                 daily_budget_1: 0, // 日消耗限额
                 speed_mode_2: false, // 投放速度模式，
                 js_ldy_3: '1', // 落地页
                 js_ldyName_4: '', // ***
-                SearchDXval_5: '选择定向名称',
+                SearchDXval_5: '',
                 js_betSetInDate_6: '', //  内部限额
 
                 js_betSetInDate: '',
@@ -440,7 +448,10 @@
             }
         },
         methods: {
-            planCYClick(imgData){
+            upPlan () {
+                console.log('上传计划')
+            },
+            planCYClick (imgData) {
                 // 选择图片
                 this.selectImgObj[imgData.signature] ? this.selectImgObj[imgData.signature] = null : this.selectImgObj[imgData.signature] = imgData
             },
@@ -448,7 +459,6 @@
                 let sendObj = {}
                 console.log('发送')
                 //                格式化处理
-
                 /* 投放模式 */
                 if (this.speed_mode_2) {
                     this.speed_mode_2 = 'SPEED_MODE_STANDARD'
@@ -469,8 +479,8 @@
                     speed_mode: this.speed_mode_2,
                     js_ldy: this.js_ldy_3,
                     js_ldyName: this.js_ldyName_4,
-                    SearchDXval_5: this.SearchDXval_5 , // 定向名称
-                    selectImgObj:this.selectImgObj,
+                    SearchDXval_5: this.SearchDXval_5, // 定向名称
+                    selectImgObj: this.selectImgObj
 
                 })
 
@@ -481,6 +491,7 @@
                 let filterImgData = null
 
                 this.currSelShopListID = row.adcreative_template_id
+                this.currSelShopList = row
 
                 if (row.adcreative_template_style) {
                     if (row.adcreative_template_style.indexOf('×') > -1) {
@@ -499,11 +510,10 @@
                 if (filterImgData.code === 0) {
                     this.filterData = filterImgData.data.list
 
-                    this.filterData.forEach(( val ,index )=>{
-                      // 设置对象的属性  这样才能双向绑定成功
-                        this.$set(this.selectImgObj, val.signature , null)
+                    this.filterData.forEach((val, index) => {
+                        // 设置对象的属性  这样才能双向绑定成功
+                        this.$set(this.selectImgObj, val.signature, null)
                     })
-
                 } else {
                     this.$message({
                         message: filterImgData.message,
@@ -571,48 +581,116 @@
             //                }
             //            },
             // new end
-            async surePay () {
-                let surePayBack = null
-                Object.assign(this.currLineData, {
-                    plans: [
-                        {
-                            campaign_name: 'kkkkkk', // 设置计划名称
-                            daily_budget: 5000, // 日消耗限额
-                            speed_mode: 'SPEED_MODE_FAST', // 投放速度模式，枚举列表：{ SPEED_MODE_FAST, SPEED_MODE_STANDARD }
-                            adgroup_name: 'ddkdkdk', // 设置组名 一般简称广告
-                            site: 'SITE_SET_MOBILE_UNION', // 投放站点
-                            begin_date: '2018-05-10', // 开始投放日期，日期格式， YYYY-mm-dd
-                            end_date: '2018-05-11', // 结束投放日期，日期格式， YYYY-mm-dd
-                            billing_event: 'BILLINGEVENT_CLICK', // 计费类型 枚举列表：{ BILLINGEVENT_CLICK, BILLINGEVENT_APP_INSTALL, BILLINGEVENT_IMPRESSION }
-                            bid_amount: 10, // 广告出价，单位为分
-                            optimization_goal: 'OPTIMIZATIONGOAL_CLICK', // 广告优化目标类型 { OPTIMIZATIONGOAL_CLICK, OPTIMIZATIONGOAL_APP_INSTALL, OPTIMIZATIONGOAL_IMPRESSION, OPTIMIZATIONGOAL_APP_ACTIVATE, OPTIMIZATIONGOAL_APP_REGISTER, OPTIMIZATIONGOAL_PROMOTION_CLICK_KEY_PAGE, OPTIMIZATIONGOAL_ECOMMERCE_ORDER, OPTIMIZATIONGOAL_APP_PURCHASE, OPTIMIZATIONGOAL_ECOMMERCE_CHECKOUT, OPTIMIZATIONGOAL_PAGE_RESERVATION }
-                            targeting_id: '33422215', // 定向 id
-                            adcreative_name: 'kdkdkk', // 创意名称
-                            adcreative_template_id: 2, // 创意模板
-                            adcreative_elements: {
-                                image: '2389175:b287b6abacdc637cecd86bb017435980', // 图片id
-                                title: '腾讯效果推广lichun',
-                                description: '不仅有量lichun'
-                            },
-                            ad_name: '广告名字， 一般取创意'
+            async sureSetPlan () {
+                let currLineObj = {}
 
-                        }
-                    ]
-                })
+                if (this.SearchDXval_5 === '') {
+                    this.$message({
+                        message: '请选择定向',
+                        type: 'error',
+                        duration: 1200
+                    })
+                    // todo 移到指定锚点
+                    return false
+                }
 
-                surePayBack = await this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData)
-
-                if (surePayBack) {
-                    this.remarkBoxVisible = false
-                    if (this.currPageNumber) {
-                        this.$store.dispatch(aTypes.getWithdrawOrder, {
-                            'pageNumber': this.currPageNumber,
-                            'pageSize': this.pageSize
-                        })
-                    } else {
-                        this.$store.dispatch(aTypes.getWithdrawOrder)
+                if (this.currSelShopList === '') {
+                    this.$message({
+                        message: '请选择资源位',
+                        type: 'error',
+                        duration: 1200
+                    })
+                    return false
+                }
+                let js_selectImgArr = []
+                for (let item in this.selectImgObj) {
+                    if (this.selectImgObj[item]) {
+                        js_selectImgArr.push(this.selectImgObj[item])
                     }
                 }
+                console.log(js_selectImgArr)
+                console.log(js_selectImgArr)
+                if (js_selectImgArr.length === 0) {
+                    this.$message({
+                        message: '请选择创意图片',
+                        type: 'error',
+                        duration: 1200
+                    })
+                    return false
+                }
+                console.log(this.selectImgObj)
+
+                if (this.js_betSetInDate === '') {
+                    this.$message({
+                        message: '请选择投放日期',
+                        type: 'error',
+                        duration: 1200
+                    })
+                    return false
+                }
+                if (this.js_betSetInTime === '') {
+                    this.$message({
+                        message: '请选择投放时间',
+                        type: 'error',
+                        duration: 1200
+                    })
+                    return false
+                }
+                if (this.js_betSetStyle === '') {
+                    this.$message({
+                        message: '请选择出价方式',
+                        type: 'error',
+                        duration: 1200
+                    })
+                    return false
+                }
+                if (this.js_betSetInDate_6 === '' || !parseFloat(this.js_betSetInDate_6)) {
+                    this.$message({
+                        message: '请选择出价价格',
+                        type: 'error',
+                        duration: 1200
+                    })
+                    return false
+                }
+
+                Object.assign(currLineObj, {
+                    SearchDXval_5: this.SearchDXval_5, // 定向设置
+                    currSelShopList: this.currSelShopList, // 资源位设置
+                    selectImgObj: this.selectImgObj, // 创意设置
+                    js_betSetInDate: this.js_betSetInDate, // 投放日期
+                    js_betSetInTime: this.js_betSetInTime, // 投放时间
+                    js_betSetStyle: this.js_betSetStyle, // 出价方式
+                    js_betSetInDate_6: this.js_betSetInDate_6 // 出价价格
+                })
+
+                console.log(currLineObj)
+
+                //                Object.assign(this.currLineData, {
+                //                    plans: [
+                //                        {
+                //                            campaign_name: 'kkkkkk', // 设置计划名称
+                //                            daily_budget: 5000, // 日消耗限额
+                //                            speed_mode: 'SPEED_MODE_FAST', // 投放速度模式，枚举列表：{ SPEED_MODE_FAST, SPEED_MODE_STANDARD }
+                //                            adgroup_name: 'ddkdkdk', // 设置组名 一般简称广告
+                //                            site: 'SITE_SET_MOBILE_UNION', // 投放站点
+                //                            begin_date: '2018-05-10', // 开始投放日期，日期格式， YYYY-mm-dd
+                //                            end_date: '2018-05-11', // 结束投放日期，日期格式， YYYY-mm-dd
+                //                            billing_event: 'BILLINGEVENT_CLICK', // 计费类型 枚举列表：{ BILLINGEVENT_CLICK, BILLINGEVENT_APP_INSTALL, BILLINGEVENT_IMPRESSION }
+                //                            bid_amount: 10, // 广告出价，单位为分
+                //                            optimization_goal: 'OPTIMIZATIONGOAL_CLICK', // 广告优化目标类型 { OPTIMIZATIONGOAL_CLICK, OPTIMIZATIONGOAL_APP_INSTALL, OPTIMIZATIONGOAL_IMPRESSION, OPTIMIZATIONGOAL_APP_ACTIVATE, OPTIMIZATIONGOAL_APP_REGISTER, OPTIMIZATIONGOAL_PROMOTION_CLICK_KEY_PAGE, OPTIMIZATIONGOAL_ECOMMERCE_ORDER, OPTIMIZATIONGOAL_APP_PURCHASE, OPTIMIZATIONGOAL_ECOMMERCE_CHECKOUT, OPTIMIZATIONGOAL_PAGE_RESERVATION }
+                //                            targeting_id: '33422215', // 定向 id
+                //                            adcreative_name: 'kdkdkk', // 创意名称
+                //                            adcreative_template_id: 2, // 创意模板
+                //                            adcreative_elements: {
+                //                                image: '2389175:b287b6abacdc637cecd86bb017435980', // 图片id
+                //                                title: '腾讯效果推广lichun',
+                //                                description: '不仅有量lichun'
+                //                            },
+                //                            ad_name: '广告名字， 一般取创意'
+                //
+                //                        }
+                //                    ]
+                //                })
             },
 
             async searchShopIdFn () {
@@ -640,10 +718,10 @@
             }
             //   ads_user_list
             let adsMsg = await
-                this.$store.dispatch(aTypes.getAdsUserList, {
-                    'pageNumber': 1,
-                    'pageSize': this.pageSize
-                })
+            this.$store.dispatch(aTypes.getAdsUserList, {
+                'pageNumber': 1,
+                'pageSize': this.pageSize
+            })
             if (adsMsg) {
                 this.shopSelList = adsMsg.data
             }
@@ -656,18 +734,18 @@
                 }
                 return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
                     switch (a) {
-                        case 'yyyy':
-                            return tf(t.getFullYear())
-                        case 'MM':
-                            return tf(t.getMonth() + 1)
-                        case 'mm':
-                            return tf(t.getMinutes())
-                        case 'dd':
-                            return tf(t.getDate())
-                        case 'HH':
-                            return tf(t.getHours())
-                        case 'ss':
-                            return tf(t.getSeconds())
+                    case 'yyyy':
+                        return tf(t.getFullYear())
+                    case 'MM':
+                        return tf(t.getMonth() + 1)
+                    case 'mm':
+                        return tf(t.getMinutes())
+                    case 'dd':
+                        return tf(t.getDate())
+                    case 'HH':
+                        return tf(t.getHours())
+                    case 'ss':
+                        return tf(t.getSeconds())
                     }
                 })
             }
