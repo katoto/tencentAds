@@ -32,10 +32,7 @@
                 <div style="float: left">
                     <div>
                         推广目标： <span style="color: #606266">电商网页 </span>
-                        <span style="margin-left: 36px"><b style="color: red">*</b> 日限额 &nbsp;&nbsp;</span>
-                        <el-input style="width: 130px" size="small" v-model="daily_budget_1"
-                                  placeholder="日限额"></el-input>
-                        元
+
                         <span style="margin-left: 30px">投放模式：</span>
                         <el-switch style="color: #606266"
                                    size="small"
@@ -55,19 +52,19 @@
                     </div>
                 </div>
                 <div style="float: right;margin: 20px">
-                    <el-button icon="el-icon-upload" type="danger" @click="upPlan()">上传计划</el-button>
+                    <el-button icon="el-icon-upload" type="danger" @click="upPlan">上传计划</el-button>
                 </div>
             </div>
             <section>
                 <div class="contentBodyTop">
                     <el-row :gutter="20">
                         <el-col :span="15">
-                            <div class="grid-content bg-contentTop">
+                            <div @click="copyNewPlan" class="grid-content bg-contentTop">
                                 复制最新计划
                             </div>
                         </el-col>
                         <el-col :span="9">
-                            <div class="grid-content bg-contentTop">
+                            <div @click="copyNewAllPlan" class="grid-content bg-contentTop">
                                 批量复制
                             </div>
                         </el-col>
@@ -81,30 +78,39 @@
                         highlight-current-row
                         style="width: 100%">
                         <el-table-column
-                            prop="planIndex"
-                            label="计划序号"
+                            type="index"
                             width="90">
                         </el-table-column>
                         <el-table-column
-                            prop="adgroup_name"
-                            label="定向">
+                            prop="SearchDXval_5"
+                            label="定向包">
                         </el-table-column>
                         <el-table-column
-                            prop="res_name"
+                            prop="adcreative_template_id"
                             label="资源位">
                         </el-table-column>
                         <el-table-column
                             label="创意">
                             <template slot-scope="scope">
-                                <img class="reg_imgStyle" :src="scope.row.res_img" alt="">
+                                <section style="display: inline-block;margin: 0 5px"
+                                         v-for="item of scope.row.selectImgObj" v-if="item">
+                                    <img v-if="item" class="reg_imgStyle" :src="item.preview_url" alt="">
+                                </section>
                             </template>
                         </el-table-column>
                         <el-table-column
                             label="排期与出价"
                         >
                             <template slot-scope="scope">
-                                <p>2018/05/21 - 2018/05/22</p>
-                                <p>全天CPC 1.4元</p>
+                                <p v-if="scope.row.js_betSetInDate === '1'">长期投放，{{ scope.row.js_longStart }}开始</p>
+                                <p v-if="js_betSetInDate === '2'">{{ scope.row.js_betweenStartEnd[0]
+                                    }} - {{ scope.row.js_betweenStartEnd[1] }}</p>
+                                <p>
+                                    <span v-if="scope.row.js_betSetInTime ==='1'">全天投放</span>
+                                    <span v-if="scope.row.js_betSetInTime ==='2'">在{{ scope.row.js_showBetTime[0]
+                                        }} - {{ scope.row.js_showBetTime[1] }}投放</span>
+                                    <span>{{ scope.row.js_betSetStyle | formateBetSetStyle }}</span>
+                                    {{ scope.row.js_betSetInDate_6 }}元</p>
                             </template>
                         </el-table-column>
                         <el-table-column
@@ -112,7 +118,11 @@
                             width="110"
                         >
                             <template slot-scope="scope">
-                                <el-button @click="monitorFn( scope.row )" icon="el-icon-delete"
+                                <el-button style="margin-left: 5px" @click="reBuildFn( scope.row )" icon="el-icon-edit"
+                                           type="primary" size="small">
+                                    编辑
+                                </el-button>
+                                <el-button @click="delBeforPlan( scope.row , scope.$index )" icon="el-icon-delete"
                                            type="danger" size="small">
                                     删除
                                 </el-button>
@@ -149,7 +159,7 @@
                                         v-for="item in SearchDXoptions"
                                         :key="item.targeting_id"
                                         :label="item.targeting_name"
-                                        :value="item.targeting_name">
+                                        :value="item.targeting_id">
                                     </el-option>
                                 </el-select>
                                 <ul class="searchDXUL" style="display: none">
@@ -210,29 +220,56 @@
             <section style="margin-top: 10px;border-top: 2px solid #ccc;padding-top: 10px">
                 <h4>创意设置</h4>
                 <div class="setPlanCY">
-                    <!--<ul class="clear" v-if="true">-->
-                    <ul class="clear" v-if="filterData.length > 0">
-                        <li v-for="( img ) in filterData" @click="planCYClick( img )">
-                            <img class="goodsImg" :class="{opacityImg : !!selectImgObj[img.signature] }"
-                                 :src="img.preview_url"
-                                 alt="">
-                            <p v-if="!!selectImgObj[img.signature]" class="activeSelTip">
-                                <img :src="selectImg" alt="">
-                            </p>
-                        </li>
-                        <!--<li>-->
-                        <!--<img class="goodsImg opacityImg"-->
-                        <!--src="http://api.e.qq.com/ads/v3/image/preview?advertiser_id=2389175&image_id=2389175:c9c2113903d2096c4216e74de363866c&sign=64560636e86cbcaca896956c09cddf08"-->
-                        <!--alt="">-->
-                        <!--<p class="activeSelTip">-->
-                        <!--<img :src="selectImg" alt="">-->
-                        <!--</p>-->
-                        <!--</li>-->
-                    </ul>
-                    <p v-else style="text-align: center;margin: 20px ">
-                        暂无数据~
-                    </p>
+                    <section>
+                        <span v-if="filterData.length > 0"><i style="color: red">*</i> 请选择{{ js_isSureImgNum
+                            }}张图：</span>
+                        <ul class="clear" v-if="filterData.length > 0">
+                            <li v-for="( img ) in filterData" @click="planCYClick( img )">
+                                <img class="goodsImg" :class="{opacityImg : !!selectImgObj[img.signature] }"
+                                     :src="img.preview_url"
+                                     alt="">
+                                <p v-if="!!selectImgObj[img.signature]" class="activeSelTip">
+                                    <img :src="selectImg" alt="">
+                                </p>
+                            </li>
+                        </ul>
+                        <p v-else style="text-align: center;margin: 20px ">
+                            暂无数据~
+                        </p>
+                    </section>
+                    <section>
+                        <!-- 要求输入的文本 -->
+                        <div v-if="js_text.length>0">
+                            <section v-for="item in js_text" :class="item.id">
+                                <span><b style="color: red">*</b> <span class="js_desc">{{ item.desc }}</span> &nbsp;&nbsp;</span>
+                                <el-input style="width: 280px" size="small" :placeholder="item.desc"></el-input>
+                                <br/>
+                            </section>
+                        </div>
+                        <!-- 要求输入的url -->
+                        <div v-if="js_url.length>0">
+                            <section v-for="item in js_url" :class="item.id">
+                                <span><b style="color: red">*</b> <span class="js_desc">{{ item.desc }}</span> &nbsp;&nbsp;</span>
+                                <el-input style="width: 280px" size="small" :placeholder="item.desc"></el-input>
+                                <br/>
+                            </section>
+                        </div>
+                        <!-- 要求的选择 -->
+                        <div v-if="js_enumOption.length>0">
+                            <section v-for="item in js_enumOption" :class="item.id">
+                                <span><b style="color: red">*</b> <span class="js_desc">{{ item.desc }}</span> &nbsp;&nbsp;</span>
+                                <el-select v-model="js_test" :placeholder="item.desc">
+                                    <el-option
+                                        v-for="op in item.options"
+                                        :label="op.desc"
+                                        :value="op.value">
+                                    </el-option>
+                                </el-select>
+                            </section>
+                        </div>
+                    </section>
                 </div>
+
             </section>
             <section style="margin-top: 10px;border-top: 2px solid #ccc;padding-top: 10px">
                 <h4>排期与出价设置</h4>
@@ -249,6 +286,7 @@
                                 v-model="js_longStart"
                                 type="date"
                                 size="small"
+                                value-format="yyyy-MM-dd"
                                 :picker-options="pickerOptions_Long"
                                 placeholder="选择投放开始日期">
                             </el-date-picker>
@@ -260,6 +298,7 @@
                                 type="daterange"
                                 align="right"
                                 unlink-panels
+                                value-format="yyyy-MM-dd"
                                 range-separator="至"
                                 start-placeholder="开始日期"
                                 end-placeholder="结束日期"
@@ -267,7 +306,7 @@
                             </el-date-picker>
                         </div>
                     </section>
-                    <div class="planEditBottom">
+                    <div class="planEditBottom" style="display: none">
                         投放时间：
                         <el-radio v-model="js_betSetInTime" label="1">全天</el-radio>
                         <el-radio v-model="js_betSetInTime" label="2">特定时间段</el-radio>
@@ -275,6 +314,7 @@
                             <el-time-picker
                                 is-range
                                 size="small"
+                                value-format="HH:mm:ss"
                                 v-model="js_showBetTime"
                                 range-separator="至"
                                 start-placeholder="开始时间"
@@ -292,15 +332,20 @@
                             <el-radio :label="3">oCPA</el-radio>
                         </el-radio-group>
                     </div>
-                    <span style="margin-left: 36px"><b style="color: red">*</b> 出价 </span>
-                    <el-input style="width: 130px" size="small" v-model="js_betSetInDate_6"
+                    <span style="margin-left: 36px"><b style="color: red">*</b> 日限额度 &nbsp;&nbsp;</span>
+                    <el-input style="width: 130px" size="small" v-model="daily_budget_1"
                               placeholder="日限额"></el-input>
+                    元<br/>
+                    <span style="margin-left: 36px"><b style="color: red">*</b> 出价额度 &nbsp;&nbsp;</span>
+                    <el-input style="width: 130px" size="small" v-model="js_betSetInDate_6"
+                              placeholder="出价"></el-input>
+
                     元 <span style="margin-left: 20px;color: #adb6c0">建议出价<b style="color: #1f2d3d">0.58 ~ 0.81</b> 元/点击</span>
                 </div>
             </section>
             <div slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="sureSetPlan">确 定</el-button>
-                <!--<el-button type="primary" @click="sendDemo">确 定</el-button>-->
+                <el-button @click="showAttentBox=false">取 消</el-button>
             </div>
         </el-dialog>
     </div>
@@ -313,8 +358,11 @@
     export default {
         data () {
             return {
+                js_isSureImgNum: 0,
+                js_enumOption: [],
+                js_text: [],
+                js_url: [],
                 selectImgObj: {}, // 选者图片用
-
                 beforeSendPlanArr: [], // 上传之前计划数组
 
                 selectImg: selectImg,
@@ -402,18 +450,17 @@
                     token: 'e853d16d4f11310fbe9e4222f2830647'
                 }],
                 shopSelListVal: '选择店铺',
-
-                planListData: [{ //  数据模拟
-                    planIndex: '1',
-                    adgroup_name: '总群包WX',
-                    res_name: '腾讯新闻——230* 153',
-                    res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
-                    conversionCost: 1,
-                    shopOperate: '关注中',
-                    shopRemark: ''
-                }
-                ],
-                planListData: [],
+                //                planListData: [{ //  数据模拟
+                //                    planIndex: '1',
+                //                    adgroup_name: '总群包WX',
+                //                    res_name: '腾讯新闻——230* 153',
+                //                    res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
+                //                    conversionCost: 1,
+                //                    shopOperate: '关注中',
+                //                    shopRemark: ''
+                //                }
+                //                ],
+                planListData: [], // 计划列表
                 openAttention: true,
                 isMonitor: false, // 监控
                 isAttention: false, // 关注
@@ -438,7 +485,11 @@
                 currLineData: null,
                 currType: null,
 
-                currUserUid: null
+                currUserUid: null,
+
+                js_test: '',
+                js_templateVal: '',
+                end_date: ''
             }
         },
         watch: {
@@ -448,8 +499,76 @@
             }
         },
         methods: {
-            upPlan () {
+            replaceMsg (list, domName) {
+                let flag = 1
+                list.forEach((val, index) => {
+                    let currDomName = '.\\#' + domName + index + ' input'
+                    let currDomDesc = '.\\#' + domName + index + ' .js_desc'
+                    if (document.querySelector(currDomName).value === '') {
+                        this.$message({
+                            message: '请输入' + document.querySelector(currDomDesc).innerHTML,
+                            type: 'error',
+                            duration: 1200
+                        })
+                        flag = 0
+                    }
+                    if (document.querySelector(currDomName) && this.js_templateVal) {
+                        this.js_templateVal = this.js_templateVal.replace('#' + domName + index, document.querySelector(currDomName).value)
+                    }
+                })
+                return flag
+            },
+            copyNewPlan () {
+                if (this.planListData.length > 0) {
+                    this.planListData.push(this.planListData[this.planListData.length - 1])
+                }
+            },
+            copyNewAllPlan () {
+                if (this.planListData.length > 0 && this.planListData.length < 30) {
+                    this.planListData = this.planListData.concat(this.planListData)
+                }
+            },
+            delBeforPlan (lineData, index) {
+                // 删除 某一列
+                console.log(index)
+                if (Number(index) >= 0) {
+                    this.planListData.splice(index, 1)
+                }
+            },
+            async upPlan () {
                 console.log('上传计划')
+                //                let data = {
+                //                    plans: [{
+                //                        'daily_budget': 3000,
+                //                        'speed_mode': 'SPEED_MODE_FAST',
+                //                        'begin_date': '2018-05-10',
+                //                        'end_date': '2018-05-11',
+                //                        'billing_event': 'BILLINGEVENT_CLICK',
+                //                        'bid_amount': 30,
+                //                        'optimization_goal': 'OPTIMIZATIONGOAL_CLICK',
+                //                        'targeting_id': '21316264',
+                //                        'adcreative_name': 'kdkdkk',
+                //                        'adcreative_template_id': 79,
+                //                        'destination_url': 'http://ec.flzhan.cn/?r_id=117575582_b5b9cb0df&pagetype=SINGLE&_bid=2759&qz_gdt=__tracestring__',
+                //                        'adcreative_elements': {
+                //                            'image': '4909742:8edb646a9fbeab563ea8cbb245336937'
+                //
+                //                        }
+                //                    }]
+                //                }
+                let data = {}
+                data.plans = this.planListData
+                if (data.plans.length > 0) {
+                    let upPlanMsg = await this.$store.dispatch(aTypes.updatePlanMsg, data)
+                    console.log(upPlanMsg)
+                    console.log('-------upPlanMsg ')
+                } else {
+                    this.$message({
+                        message: '请创建计划',
+                        type: 'error',
+                        duration: 1200
+                    })
+                }
             },
             planCYClick (imgData) {
                 // 选择图片
@@ -472,7 +591,6 @@
                         duration: 1200
                     })
                 }
-
                 Object.assign(sendObj, {
                     shopSelListVal: this.shopSelListVal, // 店铺名称
                     daily_budget: Number(this.daily_budget_1),
@@ -483,7 +601,6 @@
                     selectImgObj: this.selectImgObj
 
                 })
-
                 console.log(sendObj)
             },
 
@@ -501,19 +618,38 @@
                     // 无数据
                     this.filterData = []
                 }
-                //                if (row.adcreative_elements.image) {
-                //                } else if (row.adcreative_elements['corporate_name.corporate_img']) {
-                //                    filterImgData = await this.$store.dispatch(aTypes.getFilterImg, row.adcreative_elements['corporate_name.corporate_img'].width)
-                //                    console.log(filterImgData)
-                //                }
 
                 if (filterImgData.code === 0) {
                     this.filterData = filterImgData.data.list
-
                     this.filterData.forEach((val, index) => {
                         // 设置对象的属性  这样才能双向绑定成功
                         this.$set(this.selectImgObj, val.signature, null)
                     })
+                    /* 动态生成结构 */
+                    if (row.adcreative_elements) {
+                        // 初始化
+                        this.js_isSureImgNum = 0
+                        this.js_text = []
+                        this.js_url = []
+                        this.js_enumOption = []
+
+                        /* 图片要求 */
+                        if (row.adcreative_elements.images && row.adcreative_elements.images.length > 0) {
+                            this.js_isSureImgNum = row.adcreative_elements.images.length
+                        }
+                        /* 输入框要求 */
+                        if (row.adcreative_elements.text && row.adcreative_elements.text.length > 0) {
+                            this.js_text = row.adcreative_elements.text
+                        }
+                        /* url要求 */
+                        if (row.adcreative_elements.url && row.adcreative_elements.url.length > 0) {
+                            this.js_url = row.adcreative_elements.url
+                        }
+                        /* option要求 */
+                        if (row.adcreative_elements.enum && row.adcreative_elements.enum.length > 0) {
+                            this.js_enumOption = row.adcreative_elements.enum
+                        }
+                    }
                 } else {
                     this.$message({
                         message: filterImgData.message,
@@ -554,7 +690,7 @@
                 //  返回管理
                 this.$router.push('/adminPage/adminCenter')
             },
-            async monitorFn (rowMsg) {
+            async reBuildFn (rowMsg) {
                 //                监控
                 this.showAttentBox = true
             },
@@ -565,25 +701,8 @@
                 // 添加备注
                 this.remarkBoxVisible = true
             },
-            //            formatConsumeFn (row, column) {
-            /// /                let num = Number(row.planPackage)
-            //                if (isNaN(num)) {
-            //                    return 0
-            //                }
-            //                if (num < 100) {
-            //                    return num
-            //                } else if (num < 10000) {
-            //                    return Math.round(num / 1000 * 10) / 10 + '千'
-            //                } else if (num < 100000000) {
-            //                    return Math.round(num / 10000 * 10) / 10 + '万'
-            //                } else {
-            //                    return Math.round(num / 100000000 * 10) / 10 + '亿'
-            //                }
-            //            },
-            // new end
             async sureSetPlan () {
                 let currLineObj = {}
-
                 if (this.SearchDXval_5 === '') {
                     this.$message({
                         message: '请选择定向',
@@ -609,7 +728,6 @@
                     }
                 }
                 console.log(js_selectImgArr)
-                console.log(js_selectImgArr)
                 if (js_selectImgArr.length === 0) {
                     this.$message({
                         message: '请选择创意图片',
@@ -618,8 +736,6 @@
                     })
                     return false
                 }
-                console.log(this.selectImgObj)
-
                 if (this.js_betSetInDate === '') {
                     this.$message({
                         message: '请选择投放日期',
@@ -628,14 +744,38 @@
                     })
                     return false
                 }
-                if (this.js_betSetInTime === '') {
+                if (this.js_betSetInDate === '1' && this.js_longStart === '') {
                     this.$message({
-                        message: '请选择投放时间',
+                        message: '请选择长期投放开始日期',
                         type: 'error',
                         duration: 1200
                     })
                     return false
                 }
+                if (this.js_betSetInDate === '2' && this.js_betweenStartEnd === '') {
+                    this.$message({
+                        message: '请选择日期范围',
+                        type: 'error',
+                        duration: 1200
+                    })
+                    return false
+                }
+                //                if (this.js_betSetInTime === '') {
+                //                    this.$message({
+                //                        message: '请选择投放时间',
+                //                        type: 'error',
+                //                        duration: 1200
+                //                    })
+                //                    return false
+                //                }
+                //                if (this.js_betSetInTime === '2' && this.js_showBetTime === '') {
+                //                    this.$message({
+                //                        message: '请选择时间段',
+                //                        type: 'error',
+                //                        duration: 1200
+                //                    })
+                //                    return false
+                //                }
                 if (this.js_betSetStyle === '') {
                     this.$message({
                         message: '请选择出价方式',
@@ -652,19 +792,118 @@
                     })
                     return false
                 }
+                if (this.daily_budget_1 === '' || Number(this.daily_budget_1) < 0 || isNaN(Number(this.daily_budget_1))) {
+                    this.$message({
+                        message: '请输入正确的日限额',
+                        type: 'error',
+                        duration: 1200
+                    })
+                }
+                // new  todo
+                if (this.currSelShopList && this.currSelShopList.adcreative_elements) {
+                    this.js_templateVal = this.currSelShopList.adcreative_elements.template
+                    if (Number(this.js_isSureImgNum) !== js_selectImgArr.length) {
+                        this.$message({
+                            message: '只能选择' + this.js_isSureImgNum + '张图',
+                            type: 'error',
+                            duration: 1200
+                        })
+                        return false
+                    }
+                    if (js_selectImgArr.length > 0) {
+                        js_selectImgArr.forEach((val, index) => {
+                            if (this.js_templateVal) {
+                                this.js_templateVal = this.js_templateVal.replace('#img_' + index, val.image_id)
+                            }
+                        })
+                    }
+                    if (this.js_text.length > 0) {
+                        let replaceMsgBack = this.replaceMsg(this.js_text, 'txt_')
+                        if (!replaceMsgBack) {
+                            return false
+                        }
+                    }
+                    if (this.js_url.length > 0) {
+                        let replaceMsgBack = this.replaceMsg(this.js_url, 'url_')
+                        if (!replaceMsgBack) {
+                            return false
+                        }
+                    }
+                    if (this.js_enumOption.length > 0) {
+                        let replaceMsgBack = this.replaceMsg(this.js_enumOption, 'enum_')
+                        if (!replaceMsgBack) {
+                            return false
+                        }
+                    }
+                }
+                // new end
+                //                  selectImgObj: this.selectImgObj, // 创意设置
+                console.log(this.js_templateVal)
+                console.log(this.js_templateVal)
+                /* 投放模式 */
+                if (this.speed_mode_2) {
+                    this.speed_mode_2 = 'SPEED_MODE_STANDARD'
+                } else {
+                    this.speed_mode_2 = 'SPEED_MODE_FAST'
+                }
+
+                if (this.js_betSetInDate === '1') {
+                    this.begin_date = this.js_longStart
+                    this.end_date = '2019-12-30'
+                } else if (this.js_betSetInDate === '2') {
+                    this.begin_date = this.js_betweenStartEnd[0]
+                    this.end_date = this.js_betweenStartEnd[1]
+                }
 
                 Object.assign(currLineObj, {
+                    daily_budget: this.daily_budget_1, // 日限额
+                    speed_mode: this.speed_mode,
+                    begin_date: this.begin_date,
+                    end_date: this.end_date,
+                    billing_event: 'BILLINGEVENT_CLICK',
+                    bid_amount: this.js_betSetInDate_6,
+
+                    optimization_goal: 'OPTIMIZATIONGOAL_CLICK',
+                    targeting_id: this.SearchDXval_5, // 定向设置,
+                    adcreative_template_id: this.currSelShopList.adcreative_template_id,
+
+                    destination_url: 'http://ec.flzhan.cn/?r_id=117575582_b5b9cb0df&pagetype=SINGLE&_bid=2759&qz_gdt=__tracestring__',
+                    adcreative_elements: JSON.parse(this.js_templateVal),
+
                     SearchDXval_5: this.SearchDXval_5, // 定向设置
-                    currSelShopList: this.currSelShopList, // 资源位设置
+                    //                    currSelShopList: this.currSelShopList, // 资源位设置
                     selectImgObj: this.selectImgObj, // 创意设置
+
                     js_betSetInDate: this.js_betSetInDate, // 投放日期
+                    js_longStart: this.js_longStart, // 投放开始日期
+
+                    js_betweenStartEnd: this.js_betweenStartEnd, // 投放between日期
                     js_betSetInTime: this.js_betSetInTime, // 投放时间
+                    js_showBetTime: this.js_showBetTime, // 投放范围时间
                     js_betSetStyle: this.js_betSetStyle, // 出价方式
                     js_betSetInDate_6: this.js_betSetInDate_6 // 出价价格
+                //                    js_templateVal: JSON.parse(this.js_templateVal) // 总的模板
+
                 })
-
+                //                Object.assign(currLineObj, {
+                //                    SearchDXval_5: this.SearchDXval_5, // 定向设置
+                //                    currSelShopList: this.currSelShopList, // 资源位设置
+                //                    selectImgObj: this.selectImgObj, // 创意设置
+                //                    js_betSetInDate: this.js_betSetInDate, // 投放日期
+                //                    js_longStart: this.js_longStart, // 投放开始日期
+                //                    js_betweenStartEnd: this.js_betweenStartEnd, // 投放between日期
+                //                    js_betSetInTime: this.js_betSetInTime, // 投放时间
+                //                    js_showBetTime: this.js_showBetTime, // 投放范围时间
+                //                    js_betSetStyle: this.js_betSetStyle, // 出价方式
+                //                    js_betSetInDate_6: this.js_betSetInDate_6, // 出价价格
+                //                    daily_budget_1: this.daily_budget_1, // 日限额
+                //                    js_templateVal: JSON.parse(this.js_templateVal) // 总的模板
+                //                })
+                console.log('dialong 所有数据')
                 console.log(currLineObj)
-
+                // 计划表格
+                this.planListData.push(currLineObj)
+                this.showAttentBox = false
                 //                Object.assign(this.currLineData, {
                 //                    plans: [
                 //                        {
@@ -709,8 +948,7 @@
             }
         },
         computed: {},
-        async
-        mounted () {
+        async mounted () {
             if (this.$route.params.planId != '::planId') {
                 this.shopSelListVal = this.$route.params.planId
             } else {
@@ -725,8 +963,30 @@
             if (adsMsg) {
                 this.shopSelList = adsMsg.data
             }
+
+            this.js_enumOption.forEach((val, index) => {
+                this.$set(this.js_enumOption, val.id, null)
+            })
+            // 设置对象的属性  这样才能双向绑定成功
         },
         filters: {
+            formateBetSetStyle (val) {
+                val = val.toString()
+                switch (val) {
+                case '1':
+                    return 'CPC'
+
+                    break
+                case '2':
+                    return 'CPM'
+
+                    break
+                case '3':
+                    return 'oCPA'
+
+                    break
+                }
+            },
             format (time, format = 'yyyy-MM-dd') {
                 let t = new Date(time)
                 let tf = function (i) {

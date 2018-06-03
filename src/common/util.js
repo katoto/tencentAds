@@ -5,7 +5,8 @@
 import Cookies from 'js-cookie'
 
 export const access_token = 'ab6243a5ae74aecb02ae74c221ec7fbb'
-export const account_id = '2389175'
+export const account_id = '7588414'
+export const refresh_token = '8147c7566e2347c8d24b8b5693ee048f'
 
 export const src = 'pc'
 
@@ -41,37 +42,16 @@ export function wait (time) {
     })
 }
 
-const CK = 'admin_ck'
+const CK = 'ads_token'
 
-export function getCK () {
+export function getToken () {
     return Cookies.get(CK)
 }
 
-export function setCK (ck) {
+export function setToken (ck) {
     return Cookies.set(CK, ck)
 }
 
-export function removeCK () {
+export function removeToken () {
     return Cookies.remove(CK)
-}
-
-export function str2Bytes (str) {
-    var result = new Array()
-
-    var k = 0
-    for (var i = 0; i < str.length; i++) {
-        var j = encodeURI(str[i])
-        if (j.length == 1) {
-            // 未转换的字符
-            result[k++] = j.charCodeAt(0)
-        } else {
-            // 转换成%XX形式的字符
-            var bytes = j.split('%')
-            for (var l = 1; l < bytes.length; l++) {
-                result[k++] = parseInt('0x' + bytes[l])
-            }
-        }
-    }
-
-    return result
 }

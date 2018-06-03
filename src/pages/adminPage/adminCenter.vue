@@ -26,7 +26,6 @@
             <el-table
                 :data="shopListData"
                 stripe
-                highlight-current-row
                 style="width: 100%">
                 <el-table-column
                     prop="name"
@@ -241,13 +240,6 @@
                     conversionCost: 1,
                     shopOperate: '在投中',
                     shopRemark: '观察'
-                }, { //  数据模拟
-                    name: '武夷山茗掌柜茶业',
-                    totalConsume: 1200,
-                    banlance: 20,
-                    conversionCost: 1,
-                    shopOperate: '在投中',
-                    shopRemark: '观察'
                 }
                 ],
                 shop_remark: '',
@@ -280,16 +272,15 @@
                 } else {
                     this.$router.push('/adminPage/setPlan/:planId')
                 }
-            //                if (row.account_id) {
-            //                    this.$router.push('/adminPage/setPlan/'+ row.account_id)
-            //                } else {
-            //                    this.$router.push('/adminPage/setPlan/:planId')
-            //                }
+                //                if (row.account_id) {
+                //                    this.$router.push('/adminPage/setPlan/'+ row.account_id)
+                //                } else {
+                //                    this.$router.push('/adminPage/setPlan/:planId')
+                //                }
             },
 
             async monitorFn (rowMsg) {
                 //                监控
-                console.log(11)
                 this.showAttentBox = true
             },
             async attentionFn (rowMsg) {
@@ -323,60 +314,10 @@
                 this.handleCurrentChange(1)
             },
             async sureAddRemark () {
-                console.log('添加备注')
-                let surePayBack = null
-                Object.assign(this.currLineData, {
-                    remark: this.shop_remark,
-                    isAgree: this.currType
-                })
-
-                if (this.currType === '-1') {
-                    surePayBack = await
-                    this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData)
-                } else {
-                    surePayBack = await
-                    this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData)
-                }
-
-                if (surePayBack) {
-                    this.remarkBoxVisible = false
-                    if (this.currPageNumber) {
-                        this.$store.dispatch(aTypes.getWithdrawOrder, {
-                            'pageNumber': this.currPageNumber,
-                            'pageSize': this.pageSize
-                        })
-                    } else {
-                        this.$store.dispatch(aTypes.getWithdrawOrder)
-                    }
-                }
+                console.log('确定')
             },
             async sureAddAttent () {
                 console.log('添加监控')
-                let surePayBack = null
-                Object.assign(this.currLineData, {
-                    remark: this.shop_remark,
-                    isAgree: this.currType
-                })
-
-                if (this.currType === '-1') {
-                    surePayBack = await
-                    this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData)
-                } else {
-                    surePayBack = await
-                    this.$store.dispatch(aTypes.setWithDrawReview, this.currLineData)
-                }
-
-                if (surePayBack) {
-                    this.remarkBoxVisible = false
-                    if (this.currPageNumber) {
-                        this.$store.dispatch(aTypes.getWithdrawOrder, {
-                            'pageNumber': this.currPageNumber,
-                            'pageSize': this.pageSize
-                        })
-                    } else {
-                        this.$store.dispatch(aTypes.getWithdrawOrder)
-                    }
-                }
             },
             // new end
             async searchShopIdFn () {
@@ -384,16 +325,16 @@
                 if (!this.searchShopId) {
                     return false
                 }
-                let withDrawMsg = await
-                this.$store.dispatch(aTypes.getWithdrawOrder, {
-                    'pageNumber': 1,
-                    'pageSize': this.pageSize,
-                    'uid': this.searchShopId
-                })
-                if (withDrawMsg) {
-                    this.pageCounts = Number(withDrawMsg.pages)
-                    this.pageNumber = Number(withDrawMsg.currentPage)
-                }
+                //                let withDrawMsg = await
+                //                this.$store.dispatch(aTypes.getWithdrawOrder, {
+                //                    'pageNumber': 1,
+                //                    'pageSize': this.pageSize,
+                //                    'uid': this.searchShopId
+                //                })
+                //                if (withDrawMsg) {
+                //                    this.pageCounts = Number(withDrawMsg.pages)
+                //                    this.pageNumber = Number(withDrawMsg.currentPage)
+                //                }
             },
 
             async handleCurrentChange (val) {
@@ -419,11 +360,7 @@
             }
 
         },
-        computed: {
-            //            withdrawList(){
-            //                return this.$store.state.betblock.withdrawList
-            //            }
-        },
+        computed: {},
         async mounted () {
             //            ads_user_list
             let adsMsg = await this.$store.dispatch(aTypes.getAdsUserList, {
@@ -432,16 +369,12 @@
             })
             console.log(adsMsg)
             console.log('adsMsg==========')
-            // todo
             if (adsMsg) {
                 this.$message({
                     message: '更新列表成功',
                     type: 'success',
                     duration: 1200
                 })
-                //                "token": "3d81a4a18c5a943303bed1c467ec9047",
-                //                "account_id": "2389175",
-                //                "name": "测试公司名称"
                 this.shopListData = adsMsg.data
             }
         },

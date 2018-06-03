@@ -3,7 +3,7 @@
  */
 
 import ajax from '~common/ajax'
-import { src, mapMutations, mapActions, getCK, setCK, removeCK, access_token, account_id } from '~common/util'
+import { src, mapMutations, mapActions, getCK, setCK, removeCK, getToken, account_id } from '~common/util'
 import { Message } from 'element-ui'
 
 const state = {
@@ -27,7 +27,7 @@ const actionsInfo = mapActions({
             let InfoData = null
             if (pageData) {
                 InfoData = await ajax.get(`/users/ads_user_list?pageno=${pageData.pageNumber}&rangeno=
-                ${pageData.pageSize}&src=${src}&token=${access_token}&account_id=${account_id}`)
+                ${pageData.pageSize}&src=${src}&token=${getToken()}&account_id=${account_id}`)
             } else {
                 InfoData = await ajax.get(`/users/ads_user_list`)
             }
@@ -48,7 +48,7 @@ const actionsInfo = mapActions({
             if (data) {
                 InfoData = await ajax.get(`http://10.0.1.167:6999/goods/result/review?ck=${getCK()}&expectId=${data.expectId}&result=${data.isAgree}`)
             } else {
-                InfoData = await ajax.get(`/tx/targeting?token=${access_token}&account_id=${account_id}`)
+                InfoData = await ajax.get(`/tx/targeting?token=${getToken()}&account_id=${account_id}`)
             }
             return InfoData
         } catch (e) {
@@ -68,7 +68,7 @@ const actionsInfo = mapActions({
             if (data) {
                 InfoData = await ajax.get(`http://10.0.1.167:6999/goods/result/review?ck=${getCK()}&expectId=${data.expectId}&result=${data.isAgree}`)
             } else {
-                InfoData = await ajax.get(`/tx/creative_tpl`)
+                InfoData = await ajax.get(`/tx/cy_tpl`)
             }
             return InfoData
         } catch (e) {
@@ -85,7 +85,7 @@ const actionsInfo = mapActions({
     async getFilterImg ({commit, dispatch}, data) {
         try {
             let InfoData = null
-            InfoData = await ajax.get(`/tx/images?token=${access_token}&account_id=${account_id}&filtering=[{"field":"image_width","operator":"EQUALS","values":[${Number(data)}]}]`)
+            InfoData = await ajax.get(`/tx/images?token=${getToken()}&account_id=${account_id}&filtering=[{"field":"image_width","operator":"EQUALS","values":[${Number(data)}]}]`)
             return InfoData
         } catch (e) {
             Message({
@@ -101,11 +101,14 @@ const actionsInfo = mapActions({
     async updatePlanMsg ({commit, dispatch}, data) {
         try {
             let InfoData = null
-            if (data) {
-                InfoData = await ajax.get(`http://10.0.1.167:6999/goods/operate?ck=${getCK()}&expectId=${data.expectId}&state=${data.operateState}`)
-            } else {
-                InfoData = await ajax.get(`http://10.0.1.167:6999/goods/operate`)
-            }
+            data = data || {}
+            Object.assign(data, {
+                token: getToken(),
+                account_id: account_id
+            })
+            console.log(data)
+            console.log(data)
+            InfoData = await ajax.post(`/tx/create_ad`, data)
             return InfoData
         } catch (e) {
             Message({
