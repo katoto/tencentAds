@@ -495,7 +495,8 @@
         watch: {
             shopSelListVal (val) {
                 console.log(val)
-                console.log('更新页面数据')
+                console.log('更新页面数据');
+                this.$router.push('/adminPage/setPlan/' + val)
             }
         },
         methods: {
@@ -530,7 +531,6 @@
             },
             delBeforPlan (lineData, index) {
                 // 删除 某一列
-                console.log(index)
                 if (Number(index) >= 0) {
                     this.planListData.splice(index, 1)
                 }
@@ -562,6 +562,19 @@
                     let upPlanMsg = await this.$store.dispatch(aTypes.updatePlanMsg, data)
                     console.log(upPlanMsg)
                     console.log('-------upPlanMsg ')
+                    if (upPlanMsg.ok === -2) {
+                        this.$message({
+                            message: upPlanMsg.message,
+                            type: 'error',
+                            duration: 1200
+                        })
+                    } else if (upPlanMsg.ok == 0) {
+                        this.$message({
+                            message: upPlanMsg.message,
+                            type: 'success',
+                            duration: 1200
+                        })
+                    }
                 } else {
                     this.$message({
                         message: '请创建计划',
@@ -576,7 +589,6 @@
             },
             sendDemo () {
                 let sendObj = {}
-                console.log('发送')
                 //                格式化处理
                 /* 投放模式 */
                 if (this.speed_mode_2) {
@@ -882,7 +894,7 @@
                     js_showBetTime: this.js_showBetTime, // 投放范围时间
                     js_betSetStyle: this.js_betSetStyle, // 出价方式
                     js_betSetInDate_6: this.js_betSetInDate_6 // 出价价格
-                //                    js_templateVal: JSON.parse(this.js_templateVal) // 总的模板
+                    //                    js_templateVal: JSON.parse(this.js_templateVal) // 总的模板
 
                 })
                 //                Object.assign(currLineObj, {
@@ -956,10 +968,10 @@
             }
             //   ads_user_list
             let adsMsg = await
-            this.$store.dispatch(aTypes.getAdsUserList, {
-                'pageNumber': 1,
-                'pageSize': this.pageSize
-            })
+                this.$store.dispatch(aTypes.getAdsUserList, {
+                    'pageNumber': 1,
+                    'pageSize': this.pageSize
+                })
             if (adsMsg) {
                 this.shopSelList = adsMsg.data
             }
@@ -973,18 +985,18 @@
             formateBetSetStyle (val) {
                 val = val.toString()
                 switch (val) {
-                case '1':
-                    return 'CPC'
+                    case '1':
+                        return 'CPC'
 
-                    break
-                case '2':
-                    return 'CPM'
+                        break
+                    case '2':
+                        return 'CPM'
 
-                    break
-                case '3':
-                    return 'oCPA'
+                        break
+                    case '3':
+                        return 'oCPA'
 
-                    break
+                        break
                 }
             },
             format (time, format = 'yyyy-MM-dd') {
@@ -994,18 +1006,18 @@
                 }
                 return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
                     switch (a) {
-                    case 'yyyy':
-                        return tf(t.getFullYear())
-                    case 'MM':
-                        return tf(t.getMonth() + 1)
-                    case 'mm':
-                        return tf(t.getMinutes())
-                    case 'dd':
-                        return tf(t.getDate())
-                    case 'HH':
-                        return tf(t.getHours())
-                    case 'ss':
-                        return tf(t.getSeconds())
+                        case 'yyyy':
+                            return tf(t.getFullYear())
+                        case 'MM':
+                            return tf(t.getMonth() + 1)
+                        case 'mm':
+                            return tf(t.getMinutes())
+                        case 'dd':
+                            return tf(t.getDate())
+                        case 'HH':
+                            return tf(t.getHours())
+                        case 'ss':
+                            return tf(t.getSeconds())
                     }
                 })
             }

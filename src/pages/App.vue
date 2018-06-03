@@ -4,7 +4,7 @@
     </div>
 </template>
 <script>
-    import { wait, setToken } from '../common/util'
+    import { wait, setToken, access_token } from '../common/util'
     export default {
         data () {
             return {
@@ -14,7 +14,7 @@
         computed: {},
         methods: {},
         async mounted () {
-            setToken('caa01391a04f4e983550bc1e51c0d1fc')
+            setToken(access_token)
             //            let tokenData = await this.$store.dispatch('getFreshToken')
             //            if (tokenData && tokenData.data.access_token) {
             //                setToken(tokenData.data.access_token)

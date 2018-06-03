@@ -4,7 +4,7 @@
 
 import Cookies from 'js-cookie'
 
-export const access_token = 'ab6243a5ae74aecb02ae74c221ec7fbb'
+export const access_token = 'caa01391a04f4e983550bc1e51c0d1fc'
 export const account_id = '7588414'
 export const refresh_token = '8147c7566e2347c8d24b8b5693ee048f'
 
