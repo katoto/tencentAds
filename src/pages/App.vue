@@ -14,7 +14,7 @@
         computed: {},
         methods: {},
         async mounted () {
-            setToken(access_token);
+            setToken(access_token)
 
             //            let tokenData = await this.$store.dispatch('getFreshToken')
             //            if (tokenData && tokenData.data.access_token) {

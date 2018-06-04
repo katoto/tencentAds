@@ -7,7 +7,8 @@ import { src, mapMutations, mapActions, getCK, setCK, removeCK, getToken, accoun
 import { Message } from 'element-ui'
 
 const state = {
-    withdrawList: null
+    withdrawList: null,
+    currShopList: null
 }
 
 const mutationsInfo = mapMutations({
@@ -16,6 +17,9 @@ const mutationsInfo = mapMutations({
     },
     setNationGetRed (state, data) {
         state.nationGetRed = data
+    },
+    setCurrShopList (state, data) {
+        state.currShopList = data
     }
 
 }, 'adminModule')
@@ -26,8 +30,7 @@ const actionsInfo = mapActions({
         try {
             let InfoData = null
             if (pageData) {
-                InfoData = await ajax.get(`/users/ads_user_list?pageno=${pageData.pageNumber}&rangeno=
-                ${pageData.pageSize}&src=${src}&token=${getToken()}&account_id=${account_id}`)
+                InfoData = await ajax.get(`/users/ads_user_list?pageno=${pageData.pageNumber}&rangeno=${pageData.pageSize}&src=${src}`)
             } else {
                 InfoData = await ajax.get(`/users/ads_user_list`)
             }
@@ -42,13 +45,17 @@ const actionsInfo = mapActions({
     },
 
     /* 获取定向设置 列表数据 */
-    async getEditDXMsg ({commit, dispatch}, data) {
+    async getEditDXMsg ({state, commit, dispatch}, data) {
         try {
             let InfoData = null
-            if (data) {
-                InfoData = await ajax.get(`http://10.0.1.167:6999/goods/result/review?ck=${getCK()}&expectId=${data.expectId}&result=${data.isAgree}`)
+            if (state && state.currShopList) {
+                InfoData = await ajax.get(`/tx/targeting?token=${state.currShopList.token}&account_id=${state.currShopList.account_id}`)
             } else {
-                InfoData = await ajax.get(`/tx/targeting?token=${getToken()}&account_id=${account_id}`)
+                Message({
+                    message: 'getEditDXMsg 取token error',
+                    type: 'error',
+                    duration: 3000
+                })
             }
             return InfoData
         } catch (e) {
@@ -85,7 +92,15 @@ const actionsInfo = mapActions({
     async getFilterImg ({commit, dispatch}, data) {
         try {
             let InfoData = null
-            InfoData = await ajax.get(`/tx/images?token=${getToken()}&account_id=${account_id}&filtering=[{"field":"image_width","operator":"EQUALS","values":[${Number(data)}]}]`)
+            if (state && state.currShopList) {
+                InfoData = await ajax.get(`/tx/images?token=${state.currShopList.token}&account_id=${state.currShopList.account_id}&filtering=[{"field":"image_width","operator":"EQUALS","values":[${Number(data)}]}]`)
+            } else {
+                Message({
+                    message: 'getFilterImg 取token error',
+                    type: 'error',
+                    duration: 3000
+                })
+            }
             return InfoData
         } catch (e) {
             Message({
@@ -102,12 +117,20 @@ const actionsInfo = mapActions({
         try {
             let InfoData = null
             data = data || {}
-            Object.assign(data, {
-                token: getToken(),
-                account_id: account_id
-            })
-            console.log(data)
-            console.log(data)
+
+            if (state && state.currShopList) {
+                Object.assign(data, {
+                    token: state.currShopList.token,
+                    account_id: state.currShopList.account_id
+                })
+            } else {
+                Message({
+                    message: 'getFilterImg 取token error',
+                    type: 'error',
+                    duration: 3000
+                })
+            }
+
             InfoData = await ajax.post(`/tx/create_ad`, data)
             return InfoData
         } catch (e) {

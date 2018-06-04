@@ -272,6 +272,7 @@
                 } else {
                     this.$router.push('/adminPage/setPlan/:planId')
                 }
+                this.$store.commit(mTypes.setCurrShopList, row)
                 //                if (row.account_id) {
                 //                    this.$router.push('/adminPage/setPlan/'+ row.account_id)
                 //                } else {

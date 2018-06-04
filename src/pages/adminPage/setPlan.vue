@@ -11,15 +11,15 @@
             <el-button style="display: none" @click="sendDemo">submit</el-button>
             <section style="float: right;">
                 店铺名称：
-                <el-select size="small" v-model="shopSelListVal" placeholder="选择店铺">
+                <el-select size="small" v-model="shopSelListVal" @change="choseSelList" placeholder="选择店铺">
                     <el-option
-                            v-for="item in shopSelList"
-                            :label="item.name"
-                            :value="item.name">
+                        v-for="item in shopSelList"
+                        :label="item.name"
+                        :value="item.name">
                     </el-option>
                 </el-select>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                当前UID：<span style="color: #606266">111112312</span>
+                当前UID：<span style="color: #606266" v-if="currShopList">{{ currShopList.account_id }}</span>
                 <el-input size="small" style="margin-left: 20px" v-model="shopIputId" placeholder="搜索店铺ID">
                     <i slot="prefix" class="el-input__icon el-icon-search"></i>
                 </el-input>
@@ -69,34 +69,35 @@
                             </el-button>
                         </el-col>
                         <el-col :span="9">
-                            <!--:disabled="planListData.length === 0"-->
+                            <!--"-->
                             <el-button @click="beforeCopyAllPlan"
-                                       style="width: 100%;height: 100%" type="primary">批量复制计划
+                                       style="width: 100%;height: 100%" type="primary"
+                                       :disabled="planListData.length === 0">批量复制计划
                             </el-button>
                         </el-col>
                     </el-row>
                 </div>
                 <div class="contentBodyBottom">
                     <el-table
-                            border
-                            :data="planListData"
-                            stripe
-                            highlight-current-row
-                            style="width: 100%">
+                        border
+                        :data="planListData"
+                        stripe
+                        highlight-current-row
+                        style="width: 100%">
                         <el-table-column
-                                type="index"
-                                width="90">
+                            type="index"
+                            width="90">
                         </el-table-column>
                         <el-table-column
-                                prop="SearchDXval_5"
-                                label="定向包">
+                            prop="SearchDXval_5"
+                            label="定向包">
                         </el-table-column>
                         <el-table-column
-                                prop="adcreative_template_id"
-                                label="资源位">
+                            prop="adcreative_template_id"
+                            label="资源位">
                         </el-table-column>
                         <el-table-column
-                                label="创意">
+                            label="创意">
                             <template slot-scope="scope">
                                 <section style="display: inline-block;margin: 0 5px"
                                          v-for="item of scope.row.selectImgObj" v-if="item">
@@ -105,7 +106,7 @@
                             </template>
                         </el-table-column>
                         <el-table-column
-                                label="排期与出价"
+                            label="排期与出价"
                         >
                             <template slot-scope="scope">
                                 <p v-if="scope.row.js_betSetInDate === '1'">长期投放，{{ scope.row.js_longStart }}开始</p>
@@ -120,8 +121,8 @@
                             </template>
                         </el-table-column>
                         <el-table-column
-                                label="操作"
-                                width="110"
+                            label="操作"
+                            width="110"
                         >
                             <template slot-scope="scope">
                                 <el-button style="margin-left: 5px" @click="reBuildFn( scope.row )" icon="el-icon-edit"
@@ -159,13 +160,14 @@
                         </el-col>
                         <el-col :span="7">
                             <div class="grid-content bg-purple">
-                                <el-select style="width: 300px" v-model="SearchDXval_5" clearable filterable
+                                <el-select style="width: 300px" v-model="SearchDXval_5" @change="getDXID" clearable
+                                           filterable
                                            placeholder="搜索定向名称">
                                     <el-option
-                                            v-for="item in SearchDXoptions"
-                                            :key="item.targeting_id"
-                                            :label="item.targeting_name"
-                                            :value="item.targeting_id">
+                                        v-for="item in SearchDXoptions"
+                                        :key="item.targeting_id"
+                                        :label="item.targeting_name"
+                                        :value="item.targeting_name">
                                     </el-option>
                                 </el-select>
                                 <ul class="searchDXUL" style="display: none">
@@ -186,31 +188,31 @@
                 <h4>资源位设置</h4>
                 <div v-if="true" class="editRes">
                     <el-table
-                            :data="shopListData"
-                            height="350"
-                            stripe
-                            @cell-click="listResClick"
-                            highlight-current-row
-                            style="width: 100%">
+                        :data="shopListData"
+                        height="350"
+                        stripe
+                        @cell-click="listResClick"
+                        highlight-current-row
+                        style="width: 100%">
                         <el-table-column
-                                prop="adcreative_template_name"
-                                label="广告版位">
+                            prop="adcreative_template_name"
+                            label="广告版位">
                         </el-table-column>
                         <el-table-column
-                                prop="adcreative_template_style"
-                                label="创意形式">
+                            prop="adcreative_template_style"
+                            label="创意形式">
                         </el-table-column>
                         <el-table-column
-                                prop="adcreative_template_desc"
-                                label="描述">
+                            prop="adcreative_template_desc"
+                            label="描述">
                         </el-table-column>
                         <el-table-column
-                                prop="adcreative_template_site"
-                                label="site">
+                            prop="adcreative_template_site"
+                            label="site">
                         </el-table-column>
                         <el-table-column
-                                align="center"
-                                label="当前选择 *">
+                            align="center"
+                            label="当前选择 *">
                             <template slot-scope="scope">
                                 <i v-if="scope.row.adcreative_template_id === currSelShopListID"
                                    class="el-icon-success"></i>
@@ -266,9 +268,9 @@
                                 <span><b style="color: red">*</b> <span class="js_desc">{{ item.desc }}</span> &nbsp;&nbsp;</span>
                                 <el-select v-model="js_test" :placeholder="item.desc">
                                     <el-option
-                                            v-for="op in item.options"
-                                            :label="op.desc"
-                                            :value="op.value">
+                                        v-for="op in item.options"
+                                        :label="op.desc"
+                                        :value="op.value">
                                     </el-option>
                                 </el-select>
                             </section>
@@ -289,26 +291,26 @@
                         <div v-if="js_betSetInDate === '1'">
                             <span style="font-size: 12px">开始日期:</span>
                             <el-date-picker
-                                    v-model="js_longStart"
-                                    type="date"
-                                    size="small"
-                                    value-format="yyyy-MM-dd"
-                                    :picker-options="pickerOptions_Long"
-                                    placeholder="选择投放开始日期">
+                                v-model="js_longStart"
+                                type="date"
+                                size="small"
+                                value-format="yyyy-MM-dd"
+                                :picker-options="pickerOptions_Long"
+                                placeholder="选择投放开始日期">
                             </el-date-picker>
                         </div>
                         <div style="margin-left: 60px" v-if="js_betSetInDate === '2'">
                             <el-date-picker
-                                    size="small"
-                                    v-model="js_betweenStartEnd"
-                                    type="daterange"
-                                    align="right"
-                                    unlink-panels
-                                    value-format="yyyy-MM-dd"
-                                    range-separator="至"
-                                    start-placeholder="开始日期"
-                                    end-placeholder="结束日期"
-                                    :picker-options="pickerOptions">
+                                size="small"
+                                v-model="js_betweenStartEnd"
+                                type="daterange"
+                                align="right"
+                                unlink-panels
+                                value-format="yyyy-MM-dd"
+                                range-separator="至"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期"
+                                :picker-options="pickerOptions">
                             </el-date-picker>
                         </div>
                     </section>
@@ -318,14 +320,14 @@
                         <el-radio v-model="js_betSetInTime" label="2">特定时间段</el-radio>
                         <section style="margin-top: 10px" v-if="js_betSetInTime === '2'">
                             <el-time-picker
-                                    is-range
-                                    size="small"
-                                    value-format="HH:mm:ss"
-                                    v-model="js_showBetTime"
-                                    range-separator="至"
-                                    start-placeholder="开始时间"
-                                    end-placeholder="结束时间"
-                                    placeholder="选择时间范围">
+                                is-range
+                                size="small"
+                                value-format="HH:mm:ss"
+                                v-model="js_showBetTime"
+                                range-separator="至"
+                                start-placeholder="开始时间"
+                                end-placeholder="结束时间"
+                                placeholder="选择时间范围">
                             </el-time-picker>
                         </section>
                     </div>
@@ -355,699 +357,725 @@
 </template>
 
 <script>
-	import {mTypes, aTypes} from '~/store/modules/adminPage'
-	import selectImg from '~/assets/select.jpg'
+    import { mTypes, aTypes } from '~/store/modules/adminPage'
+    import selectImg from '~/assets/select.jpg'
 
-	export default {
-		data () {
-			return {
-				js_isSureImgNum: 0,
-				js_enumOption: [],
-				js_text: [],
-				js_url: [],
-				selectImgObj: {}, // 选者图片用
-				beforeSendPlanArr: [], // 上传之前计划数组
+    export default {
+        data () {
+            return {
+                js_targeting_id: null, //  下拉框的id
 
-				selectImg: selectImg,
-				js_showBetTime: '',
-				js_betweenStartEnd: '',
-				pickerOptions: {
-					shortcuts: [{
-						text: '最近一周',
-						onClick (picker) {
-							const end = new Date()
-							const start = new Date()
-							start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-							picker.$emit('pick', [start, end])
-						}
-					}, {
-						text: '最近一个月',
-						onClick (picker) {
-							const end = new Date()
-							const start = new Date()
-							start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-							picker.$emit('pick', [start, end])
-						}
-					}, {
-						text: '最近三个月',
-						onClick (picker) {
-							const end = new Date()
-							const start = new Date()
-							start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-							picker.$emit('pick', [start, end])
-						}
-					}]
-				},
+                js_isSureImgNum: 0,
+                js_enumOption: [],
+                js_text: [],
+                js_url: [],
+                selectImgObj: {}, // 选者图片用
+                beforeSendPlanArr: [], // 上传之前计划数组
 
-				js_longStart: '',
-				pickerOptions_Long: {
-					disabledDate (time) {
-						return time.getTime() < Date.now()
-					}
-				},
+                selectImg: selectImg,
+                js_showBetTime: '',
+                js_betweenStartEnd: '',
+                pickerOptions: {
+                    shortcuts: [{
+                        text: '最近一周',
+                        onClick (picker) {
+                            const end = new Date()
+                            const start = new Date()
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+                            picker.$emit('pick', [start, end])
+                        }
+                    }, {
+                        text: '最近一个月',
+                        onClick (picker) {
+                            const end = new Date()
+                            const start = new Date()
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+                            picker.$emit('pick', [start, end])
+                        }
+                    }, {
+                        text: '最近三个月',
+                        onClick (picker) {
+                            const end = new Date()
+                            const start = new Date()
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+                            picker.$emit('pick', [start, end])
+                        }
+                    }]
+                },
 
-				currSelShopListID: '', // 选择的资源id
-				currSelShopList: '', // 选择的资源位
-				daily_budget_1: 4000000, // 日消耗限额
-				speed_mode_2: false, // 投放速度模式，
-				js_ldy_3: '1', // 落地页
-				js_ldyName_4: '', // ***
-				SearchDXval_5: '',
-				js_betSetInDate_6: '', //  内部限额
+                js_longStart: '',
+                pickerOptions_Long: {
+                    disabledDate (time) {
+                        return time.getTime() < Date.now()
+                    }
+                },
 
-				js_betSetInDate: '',
-				js_betSetInTime: '',
-				js_betSetStyle: '',
+                currSelShopListID: '', // 选择的资源id
+                currSelShopList: '', // 选择的资源位
+                daily_budget_1: 4000000, // 日消耗限额
+                speed_mode_2: false, // 投放速度模式，
+                js_ldy_3: '1', // 落地页
+                js_ldyName_4: '', // ***
+                SearchDXval_5: '',
+                js_betSetInDate_6: '', //  内部限额
 
-				filterData: [],
+                js_betSetInDate: '',
+                js_betSetInTime: '',
+                js_betSetStyle: '',
 
-				shopListData: [{
-					adcreative_template_name: '天天快报',
-					adcreative_template_style: '230*152单图2',
-					adcreative_template_desc: '新闻信息流，微信',
-					adcreative_template_site: '1000',
-					adcreative_template_id: 2
-				}],
-				setPlanDX: ['性别：男', '年龄：大于等于41岁', '付费用户：电商交易用户', '商业兴趣：生活用品',
-					'联网方式：Wifi、4G',
-					'地理位置：（常住）中国未知（常住）中国未知、北京市、河北省、北京市、河北省（常住）中国未知、北京市、河北省（常住）中国未知、北京市、河北省'],
-				showAttentBox: false,
+                filterData: [],
 
-				SearchDXoptions: [{
-					'targeting_id': '33212772',
-					'targeting_name': 'QQ-582×498单图(文)-2018042032965',
-					'description': '',
-					'targeting': {},
-					'created_time': 1524231147,
-					'last_modified_time': 1524231147,
-					'ad_lock_status': 'ADLOCKSTATUS_UNLOCKED'
-				}],
+                shopListData: [{
+                    adcreative_template_name: '天天快报',
+                    adcreative_template_style: '230*152单图2',
+                    adcreative_template_desc: '新闻信息流，微信',
+                    adcreative_template_site: '1000',
+                    adcreative_template_id: 2
+                }],
+                setPlanDX: ['性别：男', '年龄：大于等于41岁', '付费用户：电商交易用户', '商业兴趣：生活用品',
+                    '联网方式：Wifi、4G',
+                    '地理位置：（常住）中国未知（常住）中国未知、北京市、河北省、北京市、河北省（常住）中国未知、北京市、河北省（常住）中国未知、北京市、河北省'],
+                showAttentBox: false,
 
-				radio: '',
-				value3: '',
-				shopIputId: '',
+                SearchDXoptions: [{
+                    'targeting_id': '33212772',
+                    'targeting_name': 'QQ-582×498单图(文)-2018042032965',
+                    'description': '',
+                    'targeting': {},
+                    'created_time': 1524231147,
+                    'last_modified_time': 1524231147,
+                    'ad_lock_status': 'ADLOCKSTATUS_UNLOCKED'
+                }],
 
-				shopSelList: [{
-					account_id: '2389175',
-					name: '深圳火腿肠店',
-					token: 'e853d16d4f11310fbe9e4222f2830647'
-				}],
-				shopSelListVal: '选择店铺',
-				//                planListData: [{ //  数据模拟
-				//                    planIndex: '1',
-				//                    adgroup_name: '总群包WX',
-				//                    res_name: '腾讯新闻——230* 153',
-				//                    res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
-				//                    conversionCost: 1,
-				//                    shopOperate: '关注中',
-				//                    shopRemark: ''
-				//                }
-				//                ],
-				planListData: [], // 计划列表
-				openAttention: true,
-				isMonitor: false, // 监控
-				isAttention: false, // 关注
-				shopStateVal: '',
+                radio: '',
+                value3: '',
+                shopIputId: '',
 
-				shop_remark: '',
-				remarkBoxVisible: false,
+                shopSelList: [{
+                    account_id: '2389175',
+                    name: '深圳火腿肠店',
+                    token: 'e853d16d4f11310fbe9e4222f2830647'
+                }],
+                shopSelListVal: '选择店铺',
+                //                planListData: [{ //  数据模拟
+                //                    planIndex: '1',
+                //                    adgroup_name: '总群包WX',
+                //                    res_name: '腾讯新闻——230* 153',
+                //                    res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
+                //                    conversionCost: 1,
+                //                    shopOperate: '关注中',
+                //                    shopRemark: ''
+                //                }
+                //                ],
+                planListData: [], // 计划列表
+                openAttention: true,
+                isMonitor: false, // 监控
+                isAttention: false, // 关注
+                shopStateVal: '',
 
-				// new edn
+                shop_remark: '',
+                remarkBoxVisible: false,
 
-				userMoreList: [],
-				userMoreMsg: [],
+                // new edn
 
-				searchUid: null,
+                userMoreList: [],
+                userMoreMsg: [],
 
-				pageCounts: 10,
-				pageNumber: 1,
-				pageSize: 10,
-				currPageNumber: null,
+                searchUid: null,
 
-				js_withdrawMsg: null,
-				currLineData: null,
-				currType: null,
+                pageCounts: 10,
+                pageNumber: 1,
+                pageSize: 10,
+                currPageNumber: null,
 
-				currUserUid: null,
+                js_withdrawMsg: null,
+                currLineData: null,
+                currType: null,
 
-				js_test: '',
-				js_templateVal: '',
-				end_date: ''
-			}
-		},
-		watch: {
-			shopSelListVal (val) {
-				console.log(val)
-				console.log('更新页面数据');
-				this.$router.push('/adminPage/setPlan/' + val)
-			}
-		},
-		methods: {
-			replaceMsg (list, domName) {
-				let flag = 1
-				list.forEach((val, index) => {
-					let currDomName = '.\\#' + domName + index + ' input'
-					let currDomDesc = '.\\#' + domName + index + ' .js_desc'
-					if (document.querySelector(currDomName).value === '') {
-						this.$message({
-							message: '请输入' + document.querySelector(currDomDesc).innerHTML,
-							type: 'error',
-							duration: 1200
-						})
-						flag = 0
-					}
-					if (document.querySelector(currDomName) && this.js_templateVal) {
-						this.js_templateVal = this.js_templateVal.replace('#' + domName + index, document.querySelector(currDomName).value)
-					}
-				})
-				return flag
-			},
-			copyNewPlan () {
-				if (this.planListData.length > 0) {
-					this.planListData.push(this.planListData[this.planListData.length - 1])
-				}
-			},
+                currUserUid: null,
 
-			beforeCopyAllPlan() {
-				this.$prompt('请输入复制数量', '批量复制', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					inputPattern: /^\d+$/,
-					inputErrorMessage: '数量格式不正确'
-				}).then(({value}) => {
-					this.copyNewAllPlan(value);
-				}).catch(() => {
-//					this.$message({
-//						type: 'info',
-//						message: '取消复制计划'
-//					});
-				});
-			},
-			copyNewAllPlan (value) {
-				let lastPlan = null;
-				if (this.planListData.length > 0 && this.planListData.length < 30) {
-					lastPlan = this.planListData[this.planListData.length - 1];
-					value = Number(value);
-					for (let i = 0; i < value; i++) {
-						this.planListData.push(lastPlan)
-					}
-				}
-//					this.planListData = this.planListData.concat(this.planListData)
-			},
-			delBeforPlan (lineData, index) {
-				// 删除 某一列
-				if (Number(index) >= 0) {
-					this.planListData.splice(index, 1)
-				}
-			},
-			async upPlan () {
-				console.log('上传计划')
-				//                let data = {
-				//                    plans: [{
-				//                        'daily_budget': 3000,
-				//                        'speed_mode': 'SPEED_MODE_FAST',
-				//                        'begin_date': '2018-05-10',
-				//                        'end_date': '2018-05-11',
-				//                        'billing_event': 'BILLINGEVENT_CLICK',
-				//                        'bid_amount': 30,
-				//                        'optimization_goal': 'OPTIMIZATIONGOAL_CLICK',
-				//                        'targeting_id': '21316264',
-				//                        'adcreative_name': 'kdkdkk',
-				//                        'adcreative_template_id': 79,
-				//                        'destination_url': 'http://ec.flzhan.cn/?r_id=117575582_b5b9cb0df&pagetype=SINGLE&_bid=2759&qz_gdt=__tracestring__',
-				//                        'adcreative_elements': {
-				//                            'image': '4909742:8edb646a9fbeab563ea8cbb245336937'
-				//
-				//                        }
-				//                    }]
-				//                }
-				let data = {}
-				data.plans = this.planListData
-				if (data.plans.length > 0) {
-					let upPlanMsg = await this.$store.dispatch(aTypes.updatePlanMsg, data)
-					console.log(upPlanMsg)
-					console.log('-------upPlanMsg ')
-					if (upPlanMsg.ok === -2) {
-						this.$message({
-							message: upPlanMsg.message,
-							type: 'error',
-							duration: 1200
-						})
-					} else if (upPlanMsg.ok == 0) {
-						this.$message({
-							message: upPlanMsg.message,
-							type: 'success',
-							duration: 1200
-						})
-					}
-				} else {
-					this.$message({
-						message: '请创建计划',
-						type: 'error',
-						duration: 1200
-					})
-				}
-			},
-			planCYClick (imgData) {
-				// 选择图片
-				this.selectImgObj[imgData.signature] ? this.selectImgObj[imgData.signature] = null : this.selectImgObj[imgData.signature] = imgData
-			},
-			sendDemo () {
-				let sendObj = {}
-				//                格式化处理
+                js_test: '',
+                js_templateVal: '',
+                end_date: ''
+            }
+        },
+        watch: {
+            shopSelListVal (val) {
+                console.log(val)
+                console.log('更新页面数据')
+                this.$router.push('/adminPage/setPlan/' + val)
+            }
+        },
+        methods: {
+            choseSelList (msg) {
+                let obj = {}
+                obj = this.shopSelList.find((item) => { // 这里的userList就是上面遍历的数据源
+                    return item.name === msg// 筛选出匹配数据
+                })
+                this.$store.commit(mTypes.setCurrShopList, obj)
+            },
+            getDXID (msg) {
+                let obj = {}
+                obj = this.SearchDXoptions.find((item) => { // 这里的userList就是上面遍历的数据源
+                    return item.targeting_name === msg// 筛选出匹配数据
+                })
+                this.js_targeting_id = obj.targeting_id
+                console.log(this.js_targeting_id)
+            },
+
+            replaceMsg (list, domName) {
+                let flag = 1
+                list.forEach((val, index) => {
+                    let currDomName = '.\\#' + domName + index + ' input'
+                    let currDomDesc = '.\\#' + domName + index + ' .js_desc'
+                    if (document.querySelector(currDomName).value === '') {
+                        this.$message({
+                            message: '请输入' + document.querySelector(currDomDesc).innerHTML,
+                            type: 'error',
+                            duration: 1200
+                        })
+                        flag = 0
+                    }
+                    if (document.querySelector(currDomName) && this.js_templateVal) {
+                        this.js_templateVal = this.js_templateVal.replace('#' + domName + index, document.querySelector(currDomName).value)
+                    }
+                })
+                return flag
+            },
+            copyNewPlan () {
+                if (this.planListData.length > 0) {
+                    this.planListData.push(this.planListData[this.planListData.length - 1])
+                }
+            },
+            beforeCopyAllPlan () {
+                this.$prompt('请输入复制数量', '批量复制', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputPattern: /^\d+$/,
+                    inputErrorMessage: '数量格式不正确'
+                }).then(({value}) => {
+                    this.copyNewAllPlan(value)
+                }).catch(() => {
+                    //					this.$message({
+                    //						type: 'info',
+                    //						message: '取消复制计划'
+                    //					});
+                })
+            },
+            copyNewAllPlan (value) {
+                let lastPlan = null
+                if (this.planListData.length > 0 && this.planListData.length < 30) {
+                    lastPlan = this.planListData[this.planListData.length - 1]
+                    value = Number(value)
+                    for (let i = 0; i < value; i++) {
+                        this.planListData.push(lastPlan)
+                    }
+                }
+                //					this.planListData = this.planListData.concat(this.planListData)
+            },
+            delBeforPlan (lineData, index) {
+                // 删除 某一列
+                if (Number(index) >= 0) {
+                    this.planListData.splice(index, 1)
+                }
+            },
+            async upPlan () {
+                console.log('上传计划')
+                //                let data = {
+                //                    plans: [{
+                //                        'daily_budget': 3000,
+                //                        'speed_mode': 'SPEED_MODE_FAST',
+                //                        'begin_date': '2018-05-10',
+                //                        'end_date': '2018-05-11',
+                //                        'billing_event': 'BILLINGEVENT_CLICK',
+                //                        'bid_amount': 30,
+                //                        'optimization_goal': 'OPTIMIZATIONGOAL_CLICK',
+                //                        'targeting_id': '21316264',
+                //                        'adcreative_name': 'kdkdkk',
+                //                        'adcreative_template_id': 79,
+                //                        'destination_url': 'http://ec.flzhan.cn/?r_id=117575582_b5b9cb0df&pagetype=SINGLE&_bid=2759&qz_gdt=__tracestring__',
+                //                        'adcreative_elements': {
+                //                            'image': '4909742:8edb646a9fbeab563ea8cbb245336937'
+                //
+                //                        }
+                //                    }]
+                //                }
+                let data = {}
+                data.plans = this.planListData
+                if (data.plans.length > 0) {
+                    let upPlanMsg = await this.$store.dispatch(aTypes.updatePlanMsg, data)
+                    console.log(upPlanMsg)
+                    console.log('-------upPlanMsg ')
+                    if (upPlanMsg.ok === -2) {
+                        this.$message({
+                            message: upPlanMsg.message,
+                            type: 'error',
+                            duration: 1200
+                        })
+                    } else if (upPlanMsg.ok == 0) {
+                        this.$message({
+                            message: upPlanMsg.message,
+                            type: 'success',
+                            duration: 1200
+                        })
+                    }
+                } else {
+                    this.$message({
+                        message: '请创建计划',
+                        type: 'error',
+                        duration: 1200
+                    })
+                }
+            },
+            planCYClick (imgData) {
+                // 选择图片
+                this.selectImgObj[imgData.signature] ? this.selectImgObj[imgData.signature] = null : this.selectImgObj[imgData.signature] = imgData
+            },
+            sendDemo () {
+                let sendObj = {}
+                //                格式化处理
                 /* 投放模式 */
-				if (this.speed_mode_2) {
-					this.speed_mode_2 = 'SPEED_MODE_STANDARD'
-				} else {
-					this.speed_mode_2 = 'SPEED_MODE_FAST'
-				}
-				if (this.daily_budget_1 === '' || Number(this.daily_budget_1) < 0) {
-					this.$message({
-						message: '请输入日限额',
-						type: 'error',
-						duration: 1200
-					})
-				}
-				Object.assign(sendObj, {
-					shopSelListVal: this.shopSelListVal, // 店铺名称
-					daily_budget: Number(this.daily_budget_1),
-					speed_mode: this.speed_mode_2,
-					js_ldy: this.js_ldy_3,
-					js_ldyName: this.js_ldyName_4,
-					SearchDXval_5: this.SearchDXval_5, // 定向名称
-					selectImgObj: this.selectImgObj
+                if (this.speed_mode_2) {
+                    this.speed_mode_2 = 'SPEED_MODE_STANDARD'
+                } else {
+                    this.speed_mode_2 = 'SPEED_MODE_FAST'
+                }
+                if (this.daily_budget_1 === '' || Number(this.daily_budget_1) < 0) {
+                    this.$message({
+                        message: '请输入日限额',
+                        type: 'error',
+                        duration: 1200
+                    })
+                }
+                Object.assign(sendObj, {
+                    shopSelListVal: this.shopSelListVal, // 店铺名称
+                    daily_budget: Number(this.daily_budget_1),
+                    speed_mode: this.speed_mode_2,
+                    js_ldy: this.js_ldy_3,
+                    js_ldyName: this.js_ldyName_4,
+                    SearchDXval_5: this.SearchDXval_5, // 定向名称
+                    selectImgObj: this.selectImgObj
 
-				})
-				console.log(sendObj)
-			},
+                })
+                console.log(sendObj)
+            },
 
-			async listResClick (row) {
-				let filterImgData = null
+            async listResClick (row) {
+                let filterImgData = null
 
-				this.currSelShopListID = row.adcreative_template_id
-				this.currSelShopList = row
+                this.currSelShopListID = row.adcreative_template_id
+                this.currSelShopList = row
 
-				if (row.adcreative_template_style) {
-					if (row.adcreative_template_style.indexOf('×') > -1) {
-						filterImgData = await this.$store.dispatch(aTypes.getFilterImg, row.adcreative_template_style.split('×')[0])
-					}
-				} else {
-					// 无数据
-					this.filterData = []
-				}
+                if (row.adcreative_template_style) {
+                    if (row.adcreative_template_style.indexOf('×') > -1) {
+                        filterImgData = await this.$store.dispatch(aTypes.getFilterImg, row.adcreative_template_style.split('×')[0])
+                    }
+                } else {
+                    // 无数据
+                    this.filterData = []
+                }
 
-				if (filterImgData.code === 0) {
-					this.filterData = filterImgData.data.list
-					this.filterData.forEach((val, index) => {
-						// 设置对象的属性  这样才能双向绑定成功
-						this.$set(this.selectImgObj, val.signature, null)
-					})
+                if (filterImgData.code === 0) {
+                    this.filterData = filterImgData.data.list
+                    this.filterData.forEach((val, index) => {
+                        // 设置对象的属性  这样才能双向绑定成功
+                        this.$set(this.selectImgObj, val.signature, null)
+                    })
                     /* 动态生成结构 */
-					if (row.adcreative_elements) {
-						// 初始化
-						this.js_isSureImgNum = 0
-						this.js_text = []
-						this.js_url = []
-						this.js_enumOption = []
+                    if (row.adcreative_elements) {
+                        // 初始化
+                        this.js_isSureImgNum = 0
+                        this.js_text = []
+                        this.js_url = []
+                        this.js_enumOption = []
 
                         /* 图片要求 */
-						if (row.adcreative_elements.images && row.adcreative_elements.images.length > 0) {
-							this.js_isSureImgNum = row.adcreative_elements.images.length
-						}
+                        if (row.adcreative_elements.images && row.adcreative_elements.images.length > 0) {
+                            this.js_isSureImgNum = row.adcreative_elements.images.length
+                        }
                         /* 输入框要求 */
-						if (row.adcreative_elements.text && row.adcreative_elements.text.length > 0) {
-							this.js_text = row.adcreative_elements.text
-						}
+                        if (row.adcreative_elements.text && row.adcreative_elements.text.length > 0) {
+                            this.js_text = row.adcreative_elements.text
+                        }
                         /* url要求 */
-						if (row.adcreative_elements.url && row.adcreative_elements.url.length > 0) {
-							this.js_url = row.adcreative_elements.url
-						}
+                        if (row.adcreative_elements.url && row.adcreative_elements.url.length > 0) {
+                            this.js_url = row.adcreative_elements.url
+                        }
                         /* option要求 */
-						if (row.adcreative_elements.enum && row.adcreative_elements.enum.length > 0) {
-							this.js_enumOption = row.adcreative_elements.enum
-						}
-					}
-				} else {
-					this.$message({
-						message: filterImgData.message,
-						type: 'error',
-						duration: 1200
-					})
-				}
-			},
-			async setPlanAds () {
-				this.showAttentBox = true
-				let editDXMsg = await this.$store.dispatch(aTypes.getEditDXMsg)
-				console.log(editDXMsg)
-				console.log('-------editDXMsg')
-				if (editDXMsg.code !== 11000) {
-					this.SearchDXoptions = editDXMsg.data.list
-				} else {
-					this.$message({
-						message: editDXMsg.message,
-						type: 'error',
-						duration: 1200
-					})
-				}
-				let editRes = await this.$store.dispatch(aTypes.getEditRes)
-				console.log(editRes)
-				console.log('=====editRes')
-				if (editRes.code === 0) {
-					this.shopListData = editRes.data
-				} else {
-					this.$message({
-						message: editRes.message,
-						type: 'error',
-						duration: 1200
-					})
-				}
-			},
+                        if (row.adcreative_elements.enum && row.adcreative_elements.enum.length > 0) {
+                            this.js_enumOption = row.adcreative_elements.enum
+                        }
+                    }
+                } else {
+                    this.$message({
+                        message: filterImgData.message,
+                        type: 'error',
+                        duration: 1200
+                    })
+                }
+            },
+            async setPlanAds () {
+                this.showAttentBox = true
+                let editDXMsg = await this.$store.dispatch(aTypes.getEditDXMsg)
+                console.log(editDXMsg)
+                console.log('-------editDXMsg')
+                if (editDXMsg.code !== 11000) {
+                    this.SearchDXoptions = editDXMsg.data.list
+                } else {
+                    this.$message({
+                        message: editDXMsg.message,
+                        type: 'error',
+                        duration: 1200
+                    })
+                }
+                let editRes = await this.$store.dispatch(aTypes.getEditRes)
+                console.log(editRes)
+                console.log('=====editRes')
+                if (editRes.code === 0) {
+                    this.shopListData = editRes.data
+                } else {
+                    this.$message({
+                        message: editRes.message,
+                        type: 'error',
+                        duration: 1200
+                    })
+                }
+            },
 
-			jump2adminCenter () {
-				//  返回管理
-				this.$router.push('/adminPage/adminCenter')
-			},
-			async reBuildFn (rowMsg) {
-				//                监控
-				this.showAttentBox = true
-			},
-			async attentionFn (rowMsg) {
-				// 关注
-			},
-			async addRemarkFn (rowMsg) {
-				// 添加备注
-				this.remarkBoxVisible = true
-			},
-			async sureSetPlan () {
-				let currLineObj = {}
-				if (this.SearchDXval_5 === '') {
-					this.$message({
-						message: '请选择定向',
-						type: 'error',
-						duration: 1200
-					})
-					// todo 移到指定锚点
-					return false
-				}
+            jump2adminCenter () {
+                //  返回管理
+                this.$router.push('/adminPage/adminCenter')
+            },
+            async reBuildFn (rowMsg) {
+                //                监控
+                this.showAttentBox = true
+            },
+            async attentionFn (rowMsg) {
+                // 关注
+            },
+            async addRemarkFn (rowMsg) {
+                // 添加备注
+                this.remarkBoxVisible = true
+            },
+            async sureSetPlan () {
+                let currLineObj = {}
+                if (this.SearchDXval_5 === '') {
+                    this.$message({
+                        message: '请选择定向',
+                        type: 'error',
+                        duration: 1200
+                    })
+                    // todo 移到指定锚点
+                    return false
+                }
 
-				if (this.currSelShopList === '') {
-					this.$message({
-						message: '请选择资源位',
-						type: 'error',
-						duration: 1200
-					})
-					return false
-				}
-				let js_selectImgArr = []
-				for (let item in this.selectImgObj) {
-					if (this.selectImgObj[item]) {
-						js_selectImgArr.push(this.selectImgObj[item])
-					}
-				}
-				console.log(js_selectImgArr)
-				if (js_selectImgArr.length === 0) {
-					this.$message({
-						message: '请选择创意图片',
-						type: 'error',
-						duration: 1200
-					})
-					return false
-				}
-				if (this.js_betSetInDate === '') {
-					this.$message({
-						message: '请选择投放日期',
-						type: 'error',
-						duration: 1200
-					})
-					return false
-				}
-				if (this.js_betSetInDate === '1' && this.js_longStart === '') {
-					this.$message({
-						message: '请选择长期投放开始日期',
-						type: 'error',
-						duration: 1200
-					})
-					return false
-				}
-				if (this.js_betSetInDate === '2' && this.js_betweenStartEnd === '') {
-					this.$message({
-						message: '请选择日期范围',
-						type: 'error',
-						duration: 1200
-					})
-					return false
-				}
-				//                if (this.js_betSetInTime === '') {
-				//                    this.$message({
-				//                        message: '请选择投放时间',
-				//                        type: 'error',
-				//                        duration: 1200
-				//                    })
-				//                    return false
-				//                }
-				//                if (this.js_betSetInTime === '2' && this.js_showBetTime === '') {
-				//                    this.$message({
-				//                        message: '请选择时间段',
-				//                        type: 'error',
-				//                        duration: 1200
-				//                    })
-				//                    return false
-				//                }
-				if (this.js_betSetStyle === '') {
-					this.$message({
-						message: '请选择出价方式',
-						type: 'error',
-						duration: 1200
-					})
-					return false
-				}
-				if (this.js_betSetInDate_6 === '' || !parseFloat(this.js_betSetInDate_6)) {
-					this.$message({
-						message: '请选择出价价格',
-						type: 'error',
-						duration: 1200
-					})
-					return false
-				}
-				if (this.daily_budget_1 === '' || Number(this.daily_budget_1) < 0 || isNaN(Number(this.daily_budget_1))) {
-					this.$message({
-						message: '请输入正确的日限额',
-						type: 'error',
-						duration: 1200
-					})
-				}
-				// new  todo
-				if (this.currSelShopList && this.currSelShopList.adcreative_elements) {
-					this.js_templateVal = this.currSelShopList.adcreative_elements.template
-					if (Number(this.js_isSureImgNum) !== js_selectImgArr.length) {
-						this.$message({
-							message: '只能选择' + this.js_isSureImgNum + '张图',
-							type: 'error',
-							duration: 1200
-						})
-						return false
-					}
-					if (js_selectImgArr.length > 0) {
-						js_selectImgArr.forEach((val, index) => {
-							if (this.js_templateVal) {
-								this.js_templateVal = this.js_templateVal.replace('#img_' + index, val.image_id)
-							}
-						})
-					}
-					if (this.js_text.length > 0) {
-						let replaceMsgBack = this.replaceMsg(this.js_text, 'txt_')
-						if (!replaceMsgBack) {
-							return false
-						}
-					}
-					if (this.js_url.length > 0) {
-						let replaceMsgBack = this.replaceMsg(this.js_url, 'url_')
-						if (!replaceMsgBack) {
-							return false
-						}
-					}
-					if (this.js_enumOption.length > 0) {
-						let replaceMsgBack = this.replaceMsg(this.js_enumOption, 'enum_')
-						if (!replaceMsgBack) {
-							return false
-						}
-					}
-				}
-				// new end
-				//                  selectImgObj: this.selectImgObj, // 创意设置
-				console.log(this.js_templateVal)
-				console.log(this.js_templateVal)
+                if (this.currSelShopList === '') {
+                    this.$message({
+                        message: '请选择资源位',
+                        type: 'error',
+                        duration: 1200
+                    })
+                    return false
+                }
+                let js_selectImgArr = []
+                for (let item in this.selectImgObj) {
+                    if (this.selectImgObj[item]) {
+                        js_selectImgArr.push(this.selectImgObj[item])
+                    }
+                }
+                console.log(js_selectImgArr)
+                if (js_selectImgArr.length === 0) {
+                    this.$message({
+                        message: '请选择创意图片',
+                        type: 'error',
+                        duration: 1200
+                    })
+                    return false
+                }
+                if (this.js_betSetInDate === '') {
+                    this.$message({
+                        message: '请选择投放日期',
+                        type: 'error',
+                        duration: 1200
+                    })
+                    return false
+                }
+                if (this.js_betSetInDate === '1' && this.js_longStart === '') {
+                    this.$message({
+                        message: '请选择长期投放开始日期',
+                        type: 'error',
+                        duration: 1200
+                    })
+                    return false
+                }
+                if (this.js_betSetInDate === '2' && this.js_betweenStartEnd === '') {
+                    this.$message({
+                        message: '请选择日期范围',
+                        type: 'error',
+                        duration: 1200
+                    })
+                    return false
+                }
+                //                if (this.js_betSetInTime === '') {
+                //                    this.$message({
+                //                        message: '请选择投放时间',
+                //                        type: 'error',
+                //                        duration: 1200
+                //                    })
+                //                    return false
+                //                }
+                //                if (this.js_betSetInTime === '2' && this.js_showBetTime === '') {
+                //                    this.$message({
+                //                        message: '请选择时间段',
+                //                        type: 'error',
+                //                        duration: 1200
+                //                    })
+                //                    return false
+                //                }
+                if (this.js_betSetStyle === '') {
+                    this.$message({
+                        message: '请选择出价方式',
+                        type: 'error',
+                        duration: 1200
+                    })
+                    return false
+                }
+                if (this.js_betSetInDate_6 === '' || !parseFloat(this.js_betSetInDate_6)) {
+                    this.$message({
+                        message: '请选择出价价格',
+                        type: 'error',
+                        duration: 1200
+                    })
+                    return false
+                }
+                if (this.daily_budget_1 === '' || Number(this.daily_budget_1) < 0 || isNaN(Number(this.daily_budget_1))) {
+                    this.$message({
+                        message: '请输入正确的日限额',
+                        type: 'error',
+                        duration: 1200
+                    })
+                }
+                // new  todo
+                if (this.currSelShopList && this.currSelShopList.adcreative_elements) {
+                    this.js_templateVal = this.currSelShopList.adcreative_elements.template
+                    if (Number(this.js_isSureImgNum) !== js_selectImgArr.length) {
+                        this.$message({
+                            message: '只能选择' + this.js_isSureImgNum + '张图',
+                            type: 'error',
+                            duration: 1200
+                        })
+                        return false
+                    }
+                    if (js_selectImgArr.length > 0) {
+                        js_selectImgArr.forEach((val, index) => {
+                            if (this.js_templateVal) {
+                                this.js_templateVal = this.js_templateVal.replace('#img_' + index, val.image_id)
+                            }
+                        })
+                    }
+                    if (this.js_text.length > 0) {
+                        let replaceMsgBack = this.replaceMsg(this.js_text, 'txt_')
+                        if (!replaceMsgBack) {
+                            return false
+                        }
+                    }
+                    if (this.js_url.length > 0) {
+                        let replaceMsgBack = this.replaceMsg(this.js_url, 'url_')
+                        if (!replaceMsgBack) {
+                            return false
+                        }
+                    }
+                    if (this.js_enumOption.length > 0) {
+                        let replaceMsgBack = this.replaceMsg(this.js_enumOption, 'enum_')
+                        if (!replaceMsgBack) {
+                            return false
+                        }
+                    }
+                }
+                // new end
+                //                  selectImgObj: this.selectImgObj, // 创意设置
+                console.log(this.js_templateVal)
+                console.log(this.js_templateVal)
                 /* 投放模式 */
-				if (this.speed_mode_2) {
-					this.speed_mode_2 = 'SPEED_MODE_STANDARD'
-				} else {
-					this.speed_mode_2 = 'SPEED_MODE_FAST'
-				}
+                if (this.speed_mode_2) {
+                    this.speed_mode_2 = 'SPEED_MODE_STANDARD'
+                } else {
+                    this.speed_mode_2 = 'SPEED_MODE_FAST'
+                }
 
-				if (this.js_betSetInDate === '1') {
-					this.begin_date = this.js_longStart
-					this.end_date = '2019-12-30'
-				} else if (this.js_betSetInDate === '2') {
-					this.begin_date = this.js_betweenStartEnd[0]
-					this.end_date = this.js_betweenStartEnd[1]
-				}
+                if (this.js_betSetInDate === '1') {
+                    this.begin_date = this.js_longStart
+                    this.end_date = '2019-12-30'
+                } else if (this.js_betSetInDate === '2') {
+                    this.begin_date = this.js_betweenStartEnd[0]
+                    this.end_date = this.js_betweenStartEnd[1]
+                }
 
-				Object.assign(currLineObj, {
-					daily_budget: this.daily_budget_1, // 日限额
-					speed_mode: this.speed_mode,
-					begin_date: this.begin_date,
-					end_date: this.end_date,
-					billing_event: 'BILLINGEVENT_CLICK',
-					bid_amount: this.js_betSetInDate_6,
+                Object.assign(currLineObj, {
+                    daily_budget: this.daily_budget_1, // 日限额
+                    speed_mode: this.speed_mode,
+                    begin_date: this.begin_date,
+                    end_date: this.end_date,
+                    billing_event: 'BILLINGEVENT_CLICK',
+                    bid_amount: this.js_betSetInDate_6,
 
-					optimization_goal: 'OPTIMIZATIONGOAL_CLICK',
-					targeting_id: this.SearchDXval_5, // 定向设置,
-					adcreative_template_id: this.currSelShopList.adcreative_template_id,
+                    optimization_goal: 'OPTIMIZATIONGOAL_CLICK',
+                    targeting_id: this.js_targeting_id, // 定向设置 id,
+                    adcreative_template_id: this.currSelShopList.adcreative_template_id,
 
-					destination_url: 'http://ec.flzhan.cn/?r_id=117575582_b5b9cb0df&pagetype=SINGLE&_bid=2759&qz_gdt=__tracestring__',
-					adcreative_elements: JSON.parse(this.js_templateVal),
+                    destination_url: 'http://ec.flzhan.cn/?r_id=117575582_b5b9cb0df&pagetype=SINGLE&_bid=2759&qz_gdt=__tracestring__',
+                    adcreative_elements: JSON.parse(this.js_templateVal),
 
-					SearchDXval_5: this.SearchDXval_5, // 定向设置
-					//                    currSelShopList: this.currSelShopList, // 资源位设置
-					selectImgObj: this.selectImgObj, // 创意设置
+                    SearchDXval_5: this.SearchDXval_5, // 定向设置 name
+                    //                    currSelShopList: this.currSelShopList, // 资源位设置
+                    selectImgObj: this.selectImgObj, // 创意设置
 
-					js_betSetInDate: this.js_betSetInDate, // 投放日期
-					js_longStart: this.js_longStart, // 投放开始日期
+                    js_betSetInDate: this.js_betSetInDate, // 投放日期
+                    js_longStart: this.js_longStart, // 投放开始日期
 
-					js_betweenStartEnd: this.js_betweenStartEnd, // 投放between日期
-					js_betSetInTime: this.js_betSetInTime, // 投放时间
-					js_showBetTime: this.js_showBetTime, // 投放范围时间
-					js_betSetStyle: this.js_betSetStyle, // 出价方式
-					js_betSetInDate_6: this.js_betSetInDate_6 // 出价价格
-					//                    js_templateVal: JSON.parse(this.js_templateVal) // 总的模板
+                    js_betweenStartEnd: this.js_betweenStartEnd, // 投放between日期
+                    js_betSetInTime: this.js_betSetInTime, // 投放时间
+                    js_showBetTime: this.js_showBetTime, // 投放范围时间
+                    js_betSetStyle: this.js_betSetStyle, // 出价方式
+                    js_betSetInDate_6: this.js_betSetInDate_6 // 出价价格
+                    //                    js_templateVal: JSON.parse(this.js_templateVal) // 总的模板
 
-				})
-				//                Object.assign(currLineObj, {
-				//                    SearchDXval_5: this.SearchDXval_5, // 定向设置
-				//                    currSelShopList: this.currSelShopList, // 资源位设置
-				//                    selectImgObj: this.selectImgObj, // 创意设置
-				//                    js_betSetInDate: this.js_betSetInDate, // 投放日期
-				//                    js_longStart: this.js_longStart, // 投放开始日期
-				//                    js_betweenStartEnd: this.js_betweenStartEnd, // 投放between日期
-				//                    js_betSetInTime: this.js_betSetInTime, // 投放时间
-				//                    js_showBetTime: this.js_showBetTime, // 投放范围时间
-				//                    js_betSetStyle: this.js_betSetStyle, // 出价方式
-				//                    js_betSetInDate_6: this.js_betSetInDate_6, // 出价价格
-				//                    daily_budget_1: this.daily_budget_1, // 日限额
-				//                    js_templateVal: JSON.parse(this.js_templateVal) // 总的模板
-				//                })
-				console.log('dialong 所有数据')
-				console.log(currLineObj)
-				// 计划表格
-				this.planListData.push(currLineObj)
-				this.showAttentBox = false
-				//                Object.assign(this.currLineData, {
-				//                    plans: [
-				//                        {
-				//                            campaign_name: 'kkkkkk', // 设置计划名称
-				//                            daily_budget: 5000, // 日消耗限额
-				//                            speed_mode: 'SPEED_MODE_FAST', // 投放速度模式，枚举列表：{ SPEED_MODE_FAST, SPEED_MODE_STANDARD }
-				//                            adgroup_name: 'ddkdkdk', // 设置组名 一般简称广告
-				//                            site: 'SITE_SET_MOBILE_UNION', // 投放站点
-				//                            begin_date: '2018-05-10', // 开始投放日期，日期格式， YYYY-mm-dd
-				//                            end_date: '2018-05-11', // 结束投放日期，日期格式， YYYY-mm-dd
-				//                            billing_event: 'BILLINGEVENT_CLICK', // 计费类型 枚举列表：{ BILLINGEVENT_CLICK, BILLINGEVENT_APP_INSTALL, BILLINGEVENT_IMPRESSION }
-				//                            bid_amount: 10, // 广告出价，单位为分
-				//                            optimization_goal: 'OPTIMIZATIONGOAL_CLICK', // 广告优化目标类型 { OPTIMIZATIONGOAL_CLICK, OPTIMIZATIONGOAL_APP_INSTALL, OPTIMIZATIONGOAL_IMPRESSION, OPTIMIZATIONGOAL_APP_ACTIVATE, OPTIMIZATIONGOAL_APP_REGISTER, OPTIMIZATIONGOAL_PROMOTION_CLICK_KEY_PAGE, OPTIMIZATIONGOAL_ECOMMERCE_ORDER, OPTIMIZATIONGOAL_APP_PURCHASE, OPTIMIZATIONGOAL_ECOMMERCE_CHECKOUT, OPTIMIZATIONGOAL_PAGE_RESERVATION }
-				//                            targeting_id: '33422215', // 定向 id
-				//                            adcreative_name: 'kdkdkk', // 创意名称
-				//                            adcreative_template_id: 2, // 创意模板
-				//                            adcreative_elements: {
-				//                                image: '2389175:b287b6abacdc637cecd86bb017435980', // 图片id
-				//                                title: '腾讯效果推广lichun',
-				//                                description: '不仅有量lichun'
-				//                            },
-				//                            ad_name: '广告名字， 一般取创意'
-				//
-				//                        }
-				//                    ]
-				//                })
-			},
+                })
+                //                Object.assign(currLineObj, {
+                //                    SearchDXval_5: this.SearchDXval_5, // 定向设置
+                //                    currSelShopList: this.currSelShopList, // 资源位设置
+                //                    selectImgObj: this.selectImgObj, // 创意设置
+                //                    js_betSetInDate: this.js_betSetInDate, // 投放日期
+                //                    js_longStart: this.js_longStart, // 投放开始日期
+                //                    js_betweenStartEnd: this.js_betweenStartEnd, // 投放between日期
+                //                    js_betSetInTime: this.js_betSetInTime, // 投放时间
+                //                    js_showBetTime: this.js_showBetTime, // 投放范围时间
+                //                    js_betSetStyle: this.js_betSetStyle, // 出价方式
+                //                    js_betSetInDate_6: this.js_betSetInDate_6, // 出价价格
+                //                    daily_budget_1: this.daily_budget_1, // 日限额
+                //                    js_templateVal: JSON.parse(this.js_templateVal) // 总的模板
+                //                })
+                console.log('dialong 所有数据')
+                console.log(currLineObj)
+                // 计划表格
+                this.planListData.push(currLineObj)
+                this.showAttentBox = false
+                //                Object.assign(this.currLineData, {
+                //                    plans: [
+                //                        {
+                //                            campaign_name: 'kkkkkk', // 设置计划名称
+                //                            daily_budget: 5000, // 日消耗限额
+                //                            speed_mode: 'SPEED_MODE_FAST', // 投放速度模式，枚举列表：{ SPEED_MODE_FAST, SPEED_MODE_STANDARD }
+                //                            adgroup_name: 'ddkdkdk', // 设置组名 一般简称广告
+                //                            site: 'SITE_SET_MOBILE_UNION', // 投放站点
+                //                            begin_date: '2018-05-10', // 开始投放日期，日期格式， YYYY-mm-dd
+                //                            end_date: '2018-05-11', // 结束投放日期，日期格式， YYYY-mm-dd
+                //                            billing_event: 'BILLINGEVENT_CLICK', // 计费类型 枚举列表：{ BILLINGEVENT_CLICK, BILLINGEVENT_APP_INSTALL, BILLINGEVENT_IMPRESSION }
+                //                            bid_amount: 10, // 广告出价，单位为分
+                //                            optimization_goal: 'OPTIMIZATIONGOAL_CLICK', // 广告优化目标类型 { OPTIMIZATIONGOAL_CLICK, OPTIMIZATIONGOAL_APP_INSTALL, OPTIMIZATIONGOAL_IMPRESSION, OPTIMIZATIONGOAL_APP_ACTIVATE, OPTIMIZATIONGOAL_APP_REGISTER, OPTIMIZATIONGOAL_PROMOTION_CLICK_KEY_PAGE, OPTIMIZATIONGOAL_ECOMMERCE_ORDER, OPTIMIZATIONGOAL_APP_PURCHASE, OPTIMIZATIONGOAL_ECOMMERCE_CHECKOUT, OPTIMIZATIONGOAL_PAGE_RESERVATION }
+                //                            targeting_id: '33422215', // 定向 id
+                //                            adcreative_name: 'kdkdkk', // 创意名称
+                //                            adcreative_template_id: 2, // 创意模板
+                //                            adcreative_elements: {
+                //                                image: '2389175:b287b6abacdc637cecd86bb017435980', // 图片id
+                //                                title: '腾讯效果推广lichun',
+                //                                description: '不仅有量lichun'
+                //                            },
+                //                            ad_name: '广告名字， 一般取创意'
+                //
+                //                        }
+                //                    ]
+                //                })
+            },
 
-			async searchShopIdFn () {
-				if (!this.searchUid) {
-					return false
-				}
-				let withDrawMsg = await this.$store.dispatch(aTypes.getWithdrawOrder, {
-					'pageNumber': 1,
-					'pageSize': this.pageSize,
-					'uid': this.searchUid
-				})
-				if (withDrawMsg) {
-					this.pageCounts = Number(withDrawMsg.pages)
-					this.pageNumber = Number(withDrawMsg.currentPage)
-				}
-			}
-		},
-		computed: {},
-		async mounted () {
-			if (this.$route.params.planId != '::planId') {
-				this.shopSelListVal = this.$route.params.planId
-			} else {
-				this.shopSelListVal = '选择店铺'
-			}
-			//   ads_user_list
-			let adsMsg = await
-				this.$store.dispatch(aTypes.getAdsUserList, {
-					'pageNumber': 1,
-					'pageSize': this.pageSize
-				})
-			if (adsMsg) {
-				this.shopSelList = adsMsg.data
-			}
+            async searchShopIdFn () {
+                if (!this.searchUid) {
+                    return false
+                }
+                let withDrawMsg = await this.$store.dispatch(aTypes.getWithdrawOrder, {
+                    'pageNumber': 1,
+                    'pageSize': this.pageSize,
+                    'uid': this.searchUid
+                })
+                if (withDrawMsg) {
+                    this.pageCounts = Number(withDrawMsg.pages)
+                    this.pageNumber = Number(withDrawMsg.currentPage)
+                }
+            }
+        },
+        computed: {
+            currShopList () {
+                return this.$store.state.adminPage.currShopList
+            }
+        },
+        async mounted () {
+            //   ads_user_list
+            let adsMsg = await this.$store.dispatch(aTypes.getAdsUserList, {
+                'pageNumber': 1,
+                'pageSize': this.pageSize
+            })
+            if (adsMsg) {
+                this.shopSelList = adsMsg.data
+            }
 
-			this.js_enumOption.forEach((val, index) => {
-				this.$set(this.js_enumOption, val.id, null)
-			})
-			// 设置对象的属性  这样才能双向绑定成功
-		},
-		filters: {
-			formateBetSetStyle (val) {
-				val = val.toString()
-				switch (val) {
-					case '1':
-						return 'CPC'
+            if (this.$route.params.planId != '::planId') {
+                this.shopSelListVal = this.$route.params.planId
+                let obj = {}
+                obj = this.shopSelList.find((item) => { // 这里的userList就是上面遍历的数据源
+                    return item.name === this.shopSelListVal// 筛选出匹配数据
+                })
+                this.$store.commit(mTypes.setCurrShopList, obj)
+            } else {
+                this.shopSelListVal = '选择店铺'
+            }
 
-						break
-					case '2':
-						return 'CPM'
+            this.js_enumOption.forEach((val, index) => {
+                this.$set(this.js_enumOption, val.id, null)
+            })
+            // 设置对象的属性  这样才能双向绑定成功
+        },
+        filters: {
+            formateBetSetStyle (val) {
+                val = val.toString()
+                switch (val) {
+                case '1':
+                    return 'CPC'
 
-						break
-					case '3':
-						return 'oCPA'
+                    break
+                case '2':
+                    return 'CPM'
 
-						break
-				}
-			},
-			format (time, format = 'yyyy-MM-dd') {
-				let t = new Date(time)
-				let tf = function (i) {
-					return (i < 10 ? '0' : '') + i
-				}
-				return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
-					switch (a) {
-						case 'yyyy':
-							return tf(t.getFullYear())
-						case 'MM':
-							return tf(t.getMonth() + 1)
-						case 'mm':
-							return tf(t.getMinutes())
-						case 'dd':
-							return tf(t.getDate())
-						case 'HH':
-							return tf(t.getHours())
-						case 'ss':
-							return tf(t.getSeconds())
-					}
-				})
-			}
-		}
-	}
+                    break
+                case '3':
+                    return 'oCPA'
+
+                    break
+                }
+            },
+            format (time, format = 'yyyy-MM-dd') {
+                let t = new Date(time)
+                let tf = function (i) {
+                    return (i < 10 ? '0' : '') + i
+                }
+                return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
+                    switch (a) {
+                    case 'yyyy':
+                        return tf(t.getFullYear())
+                    case 'MM':
+                        return tf(t.getMonth() + 1)
+                    case 'mm':
+                        return tf(t.getMinutes())
+                    case 'dd':
+                        return tf(t.getDate())
+                    case 'HH':
+                        return tf(t.getHours())
+                    case 'ss':
+                        return tf(t.getSeconds())
+                    }
+                })
+            }
+        }
+    }
 </script>
 <style scoped>
     .setPlanCY ul li {
