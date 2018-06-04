@@ -60,6 +60,7 @@ export default new VueRouter({
                     path: 'setPlan/:planId?',
                     name: 'setPlan',
                     component: t_setPlan,
+	                hidden: true,
                     meta: {title: '新建计划', icon: 'tree'}
                 },
                 {
