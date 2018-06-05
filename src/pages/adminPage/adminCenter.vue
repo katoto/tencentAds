@@ -194,6 +194,8 @@
 
 <script>
     import { mTypes, aTypes } from '~/store/modules/adminPage'
+    import { wait } from '~/common/util'
+
     export default {
         data () {
             return {
@@ -364,20 +366,36 @@
         computed: {},
         async mounted () {
             //            ads_user_list
-            let adsMsg = await this.$store.dispatch(aTypes.getAdsUserList, {
-                'pageNumber': 1,
-                'pageSize': this.pageSize
-            })
-            console.log(adsMsg)
-            console.log('adsMsg==========')
-            if (adsMsg) {
+            let adsMsg = null;
+
+            if( this.$store.state.userList ){
+                adsMsg = await this.$store.dispatch(aTypes.getAdsUserList, {
+                    'pageNumber': 1,
+                    'pageSize': this.pageSize ,
+                    'agencyId': this.$store.state.userList.agencyId
+                })
+                console.log(adsMsg)
+                console.log('adsMsg==========')
+                if (adsMsg) {
+                    this.$message({
+                        message: '更新列表成功',
+                        type: 'success',
+                        duration: 1200
+                    })
+
+                    this.shopListData = adsMsg.data
+                }
+            }else{
                 this.$message({
-                    message: '更新列表成功',
-                    type: 'success',
+                    message: '请重新登陆',
+                    type: 'error',
                     duration: 1200
                 })
-                this.shopListData = adsMsg.data
+                await wait(500)
+                this.$router.push('/login')
             }
+
+
         },
         filters: {
             format (time, format = 'yyyy-MM-dd') {

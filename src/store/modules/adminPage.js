@@ -7,14 +7,13 @@ import { src, mapMutations, mapActions, getCK, setCK, removeCK, getToken, accoun
 import { Message } from 'element-ui'
 
 const state = {
-    withdrawList: null,
+
     currShopList: null
+
 }
 
 const mutationsInfo = mapMutations({
-    setWithDrawList (state, data) {
-        state.withdrawList = data
-    },
+
     setNationGetRed (state, data) {
         state.nationGetRed = data
     },
@@ -26,11 +25,13 @@ const mutationsInfo = mapMutations({
 
 const actionsInfo = mapActions({
     /* ads adminCenter 列表接口 */
-    async getAdsUserList ({commit, dispatch}, pageData) {
+    async getAdsUserList ({ state , commit, dispatch}, pageData) {
         try {
             let InfoData = null
+            console.log(state)
+            console.log(state)
             if (pageData) {
-                InfoData = await ajax.get(`/users/ads_user_list?pageno=${pageData.pageNumber}&rangeno=${pageData.pageSize}&src=${src}`)
+                InfoData = await ajax.get(`/users/ads_user_list?agencyId=${pageData.agencyId}&pageno=${pageData.pageNumber}&rangeno=${pageData.pageSize}&src=${src}`)
             } else {
                 InfoData = await ajax.get(`/users/ads_user_list`)
             }

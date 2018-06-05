@@ -12,49 +12,15 @@ import ajax from '~common/ajax'
 import { Message } from 'element-ui'
 
 import { wait, refresh_token } from '../common/util'
-
 Vue.use(Vuex)
 
 const state = {
     version: '0.0.1',
-    toast: {
-        msg: '',
-        visible: false
-    },
-    websocket: { // 数据推送相关的
-        ondata: null,
-        connect: null, // 代表当前连接
-        data: null, // websocket 返回来的数据， 用到推送过来的数据的地方 watch一下就好了
-        reconnect: 0 // socket 记录重连次数， 起到辅助作用， 比如websocket断开了连接， 重新请求接口， 避免推送丢失引发的问题
-    },
-    showErrorBox: false
-
+    userList: null
 }
 const mutations = {
-    initSocket (state, {connect}) {
-        state.websocket.connect = connect
-    },
-    addConnectNum (state) {
-        state.websocket.reconnect++
-    },
-    updateSocketData (state, data) {
-        // console.log(JSON.stringify(data))
-        // console.log('------------')
-        if (data && data.method === 'syncGameStatus') {
-            state.newGameGLState = data
-        }
-        state.websocket.data = data
-    },
-    showToast (state, msg) {
-        state.toast.msg = msg
-        state.toast.visible = true
-    },
-    hideToast (state) {
-        state.toast.msg = ''
-        state.toast.visible = false
-    },
-    showErrorBox (state, data) {
-        state.showErrorBox = data
+    setUserList (state, list) {
+        state.userList = list
     }
 }
 const actions = {
@@ -62,6 +28,25 @@ const actions = {
         try {
             let InfoData = null
             InfoData = await ajax.get(`/users/refresh?refresh_token=${refresh_token}`)
+            return InfoData
+        } catch (e) {
+            Message({
+                message: e.message,
+                type: 'error',
+                duration: 3000
+            })
+            return 0
+        }
+    },
+    /*  用户登录  */
+    async login ({commit, dispatch}, data) {
+        try {
+            let InfoData = null
+            data = data || {}
+            InfoData = await ajax.post(`/users/login`, {
+                username: data.name,
+                password: data.pass
+            })
             return InfoData
         } catch (e) {
             Message({
