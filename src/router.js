@@ -19,9 +19,6 @@ const DashBoard_index = () =>
     import
     ('~/pages/dashboard/index' /* webpackChunkName: "chunks/dashboard/index" */)
 
-// betblock 相关的东西
-const bb_withdraw = () => import('~/pages/betblock/withdraw')
-
 // admin page
 const t_adminCenter = () => import('~/pages/adminPage/adminCenter' /* webpackChunkName: "chunks/adminPage/adminCenter" */)
 const t_setPlan = () => import('~/pages/adminPage/setPlan' /* webpackChunkName: "chunks/adminPage/setPlan" */)

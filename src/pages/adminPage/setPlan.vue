@@ -8,7 +8,6 @@
                     <span>返回</span>
                 </button>
             </div>
-            <el-button style="display: none" @click="sendDemo">submit</el-button>
             <section style="float: right;">
                 店铺名称：
                 <el-select size="small" v-model="shopSelListVal" @change="choseSelList" placeholder="选择店铺">
@@ -125,7 +124,8 @@
                             width="110"
                         >
                             <template slot-scope="scope">
-                                <el-button style="margin-left: 5px" @click="reBuildFn( scope.row )" icon="el-icon-edit"
+                                <el-button style="margin-left: 5px" @click="reBuildFn( scope.row , scope.$index)"
+                                           icon="el-icon-edit"
                                            type="primary" size="small">
                                     编辑
                                 </el-button>
@@ -160,7 +160,8 @@
                         </el-col>
                         <el-col :span="7">
                             <div class="grid-content bg-purple">
-                                <el-select style="width: 300px" v-model="SearchDXval_5" @change="getDXID" clearable
+                                <el-select style="width: 300px" ref="attentInput" v-model="SearchDXval_5"
+                                           @change="getDXID" clearable
                                            filterable
                                            placeholder="搜索定向名称">
                                     <el-option
@@ -419,54 +420,23 @@
                 SearchDXval_5: '',
                 js_betSetInDate_6: '', //  内部限额
 
-                js_betSetInDate: '',
+                js_betSetInDate: '1',
                 js_betSetInTime: '',
-                js_betSetStyle: '',
+                js_betSetStyle: 1,
 
                 filterData: [],
 
-                shopListData: [{
-                    adcreative_template_name: '天天快报',
-                    adcreative_template_style: '230*152单图2',
-                    adcreative_template_desc: '新闻信息流，微信',
-                    adcreative_template_site: '1000',
-                    adcreative_template_id: 2
-                }],
-                setPlanDX: ['性别：男', '年龄：大于等于41岁', '付费用户：电商交易用户', '商业兴趣：生活用品',
-                    '联网方式：Wifi、4G',
-                    '地理位置：（常住）中国未知（常住）中国未知、北京市、河北省、北京市、河北省（常住）中国未知、北京市、河北省（常住）中国未知、北京市、河北省'],
+                shopListData: [],
+
                 showAttentBox: false,
 
-                SearchDXoptions: [{
-                    'targeting_id': '33212772',
-                    'targeting_name': 'QQ-582×498单图(文)-2018042032965',
-                    'description': '',
-                    'targeting': {},
-                    'created_time': 1524231147,
-                    'last_modified_time': 1524231147,
-                    'ad_lock_status': 'ADLOCKSTATUS_UNLOCKED'
-                }],
+                SearchDXoptions: [],
 
-                radio: '',
-                value3: '',
                 shopIputId: '',
 
-                shopSelList: [{
-                    account_id: '2389175',
-                    name: '深圳火腿肠店',
-                    token: 'e853d16d4f11310fbe9e4222f2830647'
-                }],
+                shopSelList: [],
                 shopSelListVal: '选择店铺',
-                //                planListData: [{ //  数据模拟
-                //                    planIndex: '1',
-                //                    adgroup_name: '总群包WX',
-                //                    res_name: '腾讯新闻——230* 153',
-                //                    res_img: 'http://img2.kwcdn.kuwo.cn/star/upload/11/11/1452480444427_.jpg',
-                //                    conversionCost: 1,
-                //                    shopOperate: '关注中',
-                //                    shopRemark: ''
-                //                }
-                //                ],
+
                 planListData: [], // 计划列表
                 openAttention: true,
                 isMonitor: false, // 监控
@@ -476,27 +446,17 @@
                 shop_remark: '',
                 remarkBoxVisible: false,
 
-                // new edn
-
-                userMoreList: [],
-                userMoreMsg: [],
-
-                searchUid: null,
-
-                pageCounts: 10,
                 pageNumber: 1,
-                pageSize: 10,
-                currPageNumber: null,
-
-                js_withdrawMsg: null,
-                currLineData: null,
-                currType: null,
-
-                currUserUid: null,
+                pageSize: 20,
 
                 js_test: '',
                 js_templateVal: '',
-                end_date: ''
+                end_date: '',
+                _index: null, // 记录编辑的位置
+
+                setPlanDX: ['性别：男', '年龄：大于等于41岁', '付费用户：电商交易用户', '商业兴趣：生活用品',
+                    '联网方式：Wifi、4G',
+                    '地理位置：（常住）中国未知（常住）中国未知、北京市、河北省、北京市、河北省（常住）中国未知、北京市、河北省（常住）中国未知、北京市、河北省']
             }
         },
         watch: {
@@ -520,9 +480,7 @@
                     return item.targeting_name === msg// 筛选出匹配数据
                 })
                 this.js_targeting_id = obj.targeting_id
-                console.log(this.js_targeting_id)
             },
-
             replaceMsg (list, domName) {
                 let flag = 1
                 list.forEach((val, index) => {
@@ -556,10 +514,6 @@
                 }).then(({value}) => {
                     this.copyNewAllPlan(value)
                 }).catch(() => {
-                    //					this.$message({
-                    //						type: 'info',
-                    //						message: '取消复制计划'
-                    //					});
                 })
             },
             copyNewAllPlan (value) {
@@ -571,7 +525,6 @@
                         this.planListData.push(lastPlan)
                     }
                 }
-                //					this.planListData = this.planListData.concat(this.planListData)
             },
             delBeforPlan (lineData, index) {
                 // 删除 某一列
@@ -580,32 +533,19 @@
                 }
             },
             async upPlan () {
-                console.log('上传计划')
-                //                let data = {
-                //                    plans: [{
-                //                        'daily_budget': 3000,
-                //                        'speed_mode': 'SPEED_MODE_FAST',
-                //                        'begin_date': '2018-05-10',
-                //                        'end_date': '2018-05-11',
-                //                        'billing_event': 'BILLINGEVENT_CLICK',
-                //                        'bid_amount': 30,
-                //                        'optimization_goal': 'OPTIMIZATIONGOAL_CLICK',
-                //                        'targeting_id': '21316264',
-                //                        'adcreative_name': 'kdkdkk',
-                //                        'adcreative_template_id': 79,
-                //                        'destination_url': 'http://ec.flzhan.cn/?r_id=117575582_b5b9cb0df&pagetype=SINGLE&_bid=2759&qz_gdt=__tracestring__',
-                //                        'adcreative_elements': {
-                //                            'image': '4909742:8edb646a9fbeab563ea8cbb245336937'
-                //
-                //                        }
-                //                    }]
-                //                }
+                const loading = this.$loading({
+                    lock: true,
+                    text: '上传中...',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.6)'
+                })
                 let data = {}
                 data.plans = this.planListData
                 if (data.plans.length > 0) {
                     let upPlanMsg = await this.$store.dispatch(aTypes.updatePlanMsg, data)
                     console.log(upPlanMsg)
                     console.log('-------upPlanMsg ')
+                    loading.close()
                     if (upPlanMsg.ok === -2) {
                         this.$message({
                             message: upPlanMsg.message,
@@ -630,34 +570,6 @@
             planCYClick (imgData) {
                 // 选择图片
                 this.selectImgObj[imgData.signature] ? this.selectImgObj[imgData.signature] = null : this.selectImgObj[imgData.signature] = imgData
-            },
-            sendDemo () {
-                let sendObj = {}
-                //                格式化处理
-                /* 投放模式 */
-                if (this.speed_mode_2) {
-                    this.speed_mode_2 = 'SPEED_MODE_STANDARD'
-                } else {
-                    this.speed_mode_2 = 'SPEED_MODE_FAST'
-                }
-                if (this.daily_budget_1 === '' || Number(this.daily_budget_1) < 0) {
-                    this.$message({
-                        message: '请输入日限额',
-                        type: 'error',
-                        duration: 1200
-                    })
-                }
-                Object.assign(sendObj, {
-                    shopSelListVal: this.shopSelListVal, // 店铺名称
-                    daily_budget: Number(this.daily_budget_1),
-                    speed_mode: this.speed_mode_2,
-                    js_ldy: this.js_ldy_3,
-                    js_ldyName: this.js_ldyName_4,
-                    SearchDXval_5: this.SearchDXval_5, // 定向名称
-                    selectImgObj: this.selectImgObj
-
-                })
-                console.log(sendObj)
             },
 
             async listResClick (row) {
@@ -717,8 +629,10 @@
             async setPlanAds () {
                 this.showAttentBox = true
                 let editDXMsg = await this.$store.dispatch(aTypes.getEditDXMsg)
-                console.log(editDXMsg)
-                console.log('-------editDXMsg')
+                // 获得焦点 默认打开
+                this.$nextTick(function () {
+                    this.$refs.attentInput.$el.querySelector('input').focus()
+                })
                 if (editDXMsg.code !== 11000) {
                     this.SearchDXoptions = editDXMsg.data.list
                 } else {
@@ -741,21 +655,15 @@
                     })
                 }
             },
-
             jump2adminCenter () {
-                //  返回管理
+                //  返回
                 this.$router.push('/adminPage/adminCenter')
             },
-            async reBuildFn (rowMsg) {
-                //                监控
+            async reBuildFn (rowMsg, index) {
+                //  编辑 todo
+                this._index = index
+                console.log(rowMsg)
                 this.showAttentBox = true
-            },
-            async attentionFn (rowMsg) {
-                // 关注
-            },
-            async addRemarkFn (rowMsg) {
-                // 添加备注
-                this.remarkBoxVisible = true
             },
             async sureSetPlan () {
                 let currLineObj = {}
@@ -893,8 +801,7 @@
                     }
                 }
                 // new end
-                //                  selectImgObj: this.selectImgObj, // 创意设置
-                console.log(this.js_templateVal)
+                //  selectImgObj: this.selectImgObj, // 创意设置
                 console.log(this.js_templateVal)
                 /* 投放模式 */
                 if (this.speed_mode_2) {
@@ -941,67 +848,17 @@
                     //                    js_templateVal: JSON.parse(this.js_templateVal) // 总的模板
 
                 })
-                //                Object.assign(currLineObj, {
-                //                    SearchDXval_5: this.SearchDXval_5, // 定向设置
-                //                    currSelShopList: this.currSelShopList, // 资源位设置
-                //                    selectImgObj: this.selectImgObj, // 创意设置
-                //                    js_betSetInDate: this.js_betSetInDate, // 投放日期
-                //                    js_longStart: this.js_longStart, // 投放开始日期
-                //                    js_betweenStartEnd: this.js_betweenStartEnd, // 投放between日期
-                //                    js_betSetInTime: this.js_betSetInTime, // 投放时间
-                //                    js_showBetTime: this.js_showBetTime, // 投放范围时间
-                //                    js_betSetStyle: this.js_betSetStyle, // 出价方式
-                //                    js_betSetInDate_6: this.js_betSetInDate_6, // 出价价格
-                //                    daily_budget_1: this.daily_budget_1, // 日限额
-                //                    js_templateVal: JSON.parse(this.js_templateVal) // 总的模板
-                //                })
                 console.log('dialong 所有数据')
                 console.log(currLineObj)
                 // 计划表格
                 this.planListData.push(currLineObj)
                 this.showAttentBox = false
-                //                Object.assign(this.currLineData, {
-                //                    plans: [
-                //                        {
-                //                            campaign_name: 'kkkkkk', // 设置计划名称
-                //                            daily_budget: 5000, // 日消耗限额
-                //                            speed_mode: 'SPEED_MODE_FAST', // 投放速度模式，枚举列表：{ SPEED_MODE_FAST, SPEED_MODE_STANDARD }
-                //                            adgroup_name: 'ddkdkdk', // 设置组名 一般简称广告
-                //                            site: 'SITE_SET_MOBILE_UNION', // 投放站点
-                //                            begin_date: '2018-05-10', // 开始投放日期，日期格式， YYYY-mm-dd
-                //                            end_date: '2018-05-11', // 结束投放日期，日期格式， YYYY-mm-dd
-                //                            billing_event: 'BILLINGEVENT_CLICK', // 计费类型 枚举列表：{ BILLINGEVENT_CLICK, BILLINGEVENT_APP_INSTALL, BILLINGEVENT_IMPRESSION }
-                //                            bid_amount: 10, // 广告出价，单位为分
-                //                            optimization_goal: 'OPTIMIZATIONGOAL_CLICK', // 广告优化目标类型 { OPTIMIZATIONGOAL_CLICK, OPTIMIZATIONGOAL_APP_INSTALL, OPTIMIZATIONGOAL_IMPRESSION, OPTIMIZATIONGOAL_APP_ACTIVATE, OPTIMIZATIONGOAL_APP_REGISTER, OPTIMIZATIONGOAL_PROMOTION_CLICK_KEY_PAGE, OPTIMIZATIONGOAL_ECOMMERCE_ORDER, OPTIMIZATIONGOAL_APP_PURCHASE, OPTIMIZATIONGOAL_ECOMMERCE_CHECKOUT, OPTIMIZATIONGOAL_PAGE_RESERVATION }
-                //                            targeting_id: '33422215', // 定向 id
-                //                            adcreative_name: 'kdkdkk', // 创意名称
-                //                            adcreative_template_id: 2, // 创意模板
-                //                            adcreative_elements: {
-                //                                image: '2389175:b287b6abacdc637cecd86bb017435980', // 图片id
-                //                                title: '腾讯效果推广lichun',
-                //                                description: '不仅有量lichun'
-                //                            },
-                //                            ad_name: '广告名字， 一般取创意'
-                //
-                //                        }
-                //                    ]
-                //                })
             },
 
             async searchShopIdFn () {
-                if (!this.searchUid) {
-                    return false
-                }
-                let withDrawMsg = await this.$store.dispatch(aTypes.getWithdrawOrder, {
-                    'pageNumber': 1,
-                    'pageSize': this.pageSize,
-                    'uid': this.searchUid
-                })
-                if (withDrawMsg) {
-                    this.pageCounts = Number(withDrawMsg.pages)
-                    this.pageNumber = Number(withDrawMsg.currentPage)
-                }
+
             }
+
         },
         computed: {
             currShopList () {
@@ -1029,10 +886,10 @@
                 this.shopSelListVal = '选择店铺'
             }
 
+            // 设置对象的属性  这样才能双向绑定成功  图片选择
             this.js_enumOption.forEach((val, index) => {
                 this.$set(this.js_enumOption, val.id, null)
             })
-            // 设置对象的属性  这样才能双向绑定成功
         },
         filters: {
             formateBetSetStyle (val) {
