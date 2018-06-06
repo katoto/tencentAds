@@ -250,7 +250,8 @@
                         <div v-if="js_text.length>0">
                             <section v-for="item in js_text" :class="item.id">
                                 <span><b style="color: red">*</b> <span class="js_desc">{{ item.desc }}</span> &nbsp;&nbsp;</span>
-                                <el-input style="width: 280px" size="small" :placeholder="item.desc"></el-input>
+                                <el-input v-if="item.valueTest" :value="item.valueTest" style="width: 280px" size="small" :placeholder="item.desc"></el-input>
+                                <el-input v-else style="width: 280px" size="small" :placeholder="item.desc"></el-input>
                                 <br/>
                             </section>
                         </div>
@@ -507,7 +508,8 @@
                         flag = 0
                     }
                     if (document.querySelector(currDomName) && this.js_templateVal) {
-                        this.js_templateVal = this.js_templateVal.replace('#' + domName + index, document.querySelector(currDomName).value)
+                        this.js_templateVal = this.js_templateVal.replace('#' + domName + index, document.querySelector(currDomName).value);
+                        val.valueTest = document.querySelector(currDomName).value;
                     }
                 })
                 return flag
@@ -644,6 +646,7 @@
                 this.rebuildMsg = rowMsg
 
                 /* 动态生成结构 */
+                console.log(rowMsg.currSelShopList.adcreative_elements)
                 if (rowMsg.currSelShopList.adcreative_elements) {
                     // 初始化
                     this.js_isSureImgNum = 0
