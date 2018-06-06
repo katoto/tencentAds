@@ -460,55 +460,38 @@
 
                 setPlanDX: ['性别：男', '年龄：大于等于41岁', '付费用户：电商交易用户', '商业兴趣：生活用品',
                     '联网方式：Wifi、4G',
-                    '地理位置：（常住）中国未知（常住）中国未知、北京市、河北省、北京市、河北省（常住）中国未知、北京市、河北省（常住）中国未知、北京市、河北省']
+                    '地理位置：（常住）中国未知（常住）中国未知、北京市、河北省、北京市']
             }
         },
         watch: {
             shopSelListVal (val) {
-                console.log(val)
                 console.log('更新页面数据')
                 this.$router.push('/adminPage/setPlan/' + val)
             }
         },
         methods: {
             initBeforePlan () {
-                // 初始化 编辑msg
+                // 初始化 编辑msg todo
                 this.SearchDXval_5 = ''
-
                 this.shopListData = []
                 this.currSelShopListID = ''
 
-                this.js_isSureImgNum = 0;
+                this.js_isSureImgNum = 0
 
-                this.filterData = [];
-                this.selectImgObj = {};
+                this.filterData = []
+                this.selectImgObj = {}
 
-                this.js_enumOption = [];
-                this.js_text = [];
-                this.js_url = [];
+                this.js_enumOption = []
+                this.js_text = []
+                this.js_url = []
 
                 this.js_betSetInDate = '1'
-                this.js_longStart = '';
-                this.js_betweenStartEnd = '';
-                this.js_betweenStartEnd = [];
+                this.js_longStart = ''
+                this.js_betweenStartEnd = ''
+                this.js_betweenStartEnd = []
 
-                this.js_betSetStyle = 1;
-                this.js_betSetInDate_6 = '';
-
-            },
-            choseSelList (msg) {
-                let obj = {}
-                obj = this.shopSelList.find((item) => { // 这里的userList就是上面遍历的数据源
-                    return item.name === msg// 筛选出匹配数据
-                })
-                this.$store.commit(mTypes.setCurrShopList, obj)
-            },
-            getDXID (msg) {
-                let obj = {}
-                obj = this.SearchDXoptions.find((item) => { // 这里的userList就是上面遍历的数据源
-                    return item.targeting_name === msg// 筛选出匹配数据
-                })
-                this.js_targeting_id = obj.targeting_id
+                this.js_betSetStyle = 1
+                this.js_betSetInDate_6 = ''
             },
             replaceMsg (list, domName) {
                 let flag = 1
@@ -528,38 +511,6 @@
                     }
                 })
                 return flag
-            },
-            copyNewPlan () {
-                if (this.planListData.length > 0) {
-                    this.planListData.push(this.planListData[this.planListData.length - 1])
-                }
-            },
-            beforeCopyAllPlan () {
-                this.$prompt('请输入复制数量', '批量复制', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    inputPattern: /^\d+$/,
-                    inputErrorMessage: '数量格式不正确'
-                }).then(({value}) => {
-                    this.copyNewAllPlan(value)
-                }).catch(() => {
-                })
-            },
-            copyNewAllPlan (value) {
-                let lastPlan = null
-                if (this.planListData.length > 0 && this.planListData.length < 30) {
-                    lastPlan = this.planListData[this.planListData.length - 1]
-                    value = Number(value)
-                    for (let i = 0; i < value; i++) {
-                        this.planListData.push(lastPlan)
-                    }
-                }
-            },
-            delBeforPlan (lineData, index) {
-                // 删除 某一列
-                if (Number(index) >= 0) {
-                    this.planListData.splice(index, 1)
-                }
             },
             async upPlan () {
                 const loading = this.$loading({
@@ -600,7 +551,6 @@
                 // 选择图片
                 this.selectImgObj[imgData.signature] ? this.selectImgObj[imgData.signature] = null : this.selectImgObj[imgData.signature] = imgData
             },
-
             async listResClick (row) {
                 let filterImgData = null
 
@@ -719,12 +669,12 @@
                 }
                 if (Object.keys(rowMsg).length > 0) {
                     this.daily_budget_1 = rowMsg.daily_budget
-                    this.speed_mode = rowMsg.speed_mode;
-                    this.begin_date = rowMsg.begin_date;
-                    this.end_date = rowMsg.end_date;
-                    this.billing_event = rowMsg.billing_event;
-                    this.js_betSetInDate_6 = rowMsg.bid_amount;
-                    this.optimization_goal = rowMsg.optimization_goal;
+                    this.speed_mode = rowMsg.speed_mode
+                    this.begin_date = rowMsg.begin_date
+                    this.end_date = rowMsg.end_date
+                    this.billing_event = rowMsg.billing_event
+                    this.js_betSetInDate_6 = rowMsg.bid_amount
+                    this.optimization_goal = rowMsg.optimization_goal
                     this.js_targeting_id = rowMsg.targeting_id
                     this.currSelShopList = rowMsg.currSelShopList
                     this.destination_url = rowMsg.destination_url
@@ -739,13 +689,12 @@
                     this.js_betSetInDate_6 = rowMsg.js_betSetInDate_6
                     this.filterData = rowMsg.filterData
                     this.shopListData = rowMsg.shopListData
-                    this.currSelShopListID = rowMsg.currSelShopListID;
+                    this.currSelShopListID = rowMsg.currSelShopListID
                 }
-                this.showAttentBox = true;
-
+                this.showAttentBox = true
             },
             async sureSetPlan () {
-              // 设置计划
+                // 设置计划
                 let currLineObj = {}
                 if (this.SearchDXval_5 === '') {
                     this.$message({
@@ -895,13 +844,13 @@
                     this.end_date = this.js_betweenStartEnd[1]
                 }
 
-//                let selectImgUrl = [];
-//                for( let item in this.selectImgObj){
-//                    if( this.selectImgObj[item] && this.selectImgObj[item].preview_url ){
-//                        selectImgUrl.push( this.selectImgObj[item].preview_url )
-//                    }
-//                }
-//                selectImgUrl:selectImgUrl,
+                //                let selectImgUrl = [];
+                //                for( let item in this.selectImgObj){
+                //                    if( this.selectImgObj[item] && this.selectImgObj[item].preview_url ){
+                //                        selectImgUrl.push( this.selectImgObj[item].preview_url )
+                //                    }
+                //                }
+                //                selectImgUrl:selectImgUrl,
 
                 Object.assign(currLineObj, {
                     daily_budget: this.daily_budget_1, // 日限额
@@ -916,7 +865,7 @@
                     adcreative_template_id: this.currSelShopList.adcreative_template_id,
                     currSelShopList: this.currSelShopList,
                     destination_url: 'http://ec.flzhan.cn/?r_id=117575582_b5b9cb0df&pagetype=SINGLE&_bid=2759&qz_gdt=__tracestring__',
-                    adcreative_elements: JSON.parse(this.js_templateVal), //总的模板
+                    adcreative_elements: JSON.parse(this.js_templateVal), // 总的模板
 
                     SearchDXval_5: this.SearchDXval_5, // 定向设置 name
                     //                    currSelShopList: this.currSelShopList, // 资源位设置
@@ -928,7 +877,7 @@
                     js_betSetInTime: this.js_betSetInTime, // 投放时间
                     js_showBetTime: this.js_showBetTime, // 投放范围时间
                     js_betSetStyle: this.js_betSetStyle, // 出价方式
-                    js_betSetInDate_6: this.js_betSetInDate_6,// 出价价格
+                    js_betSetInDate_6: this.js_betSetInDate_6, // 出价价格
 
                     filterData: this.filterData,
                     shopListData: this.shopListData,
@@ -939,20 +888,64 @@
                 console.log(currLineObj)
                 // 计划表格
                 console.log(this._index)
-                if( this._index === undefined || this._index === null ){
+                if (this._index === undefined || this._index === null) {
                     this.planListData.push(currLineObj)
-                }else{
-//                    替换数组
-                    this.planListData.splice( Number( this._index ),1 , currLineObj )
+                } else {
+                //                    替换数组
+                    this.planListData.splice(Number(this._index), 1, currLineObj)
                     console.log(this._index)
                     console.log(this._index)
                 }
                 this.showAttentBox = false
             },
-
             async searchShopIdFn () {
+            },
+            choseSelList (msg) {
+                let obj = {}
+                obj = this.shopSelList.find((item) => { // 这里的userList就是上面遍历的数据源
+                    return item.name === msg// 筛选出匹配数据
+                })
+                this.$store.commit(mTypes.setCurrShopList, obj)
+            },
+            getDXID (msg) {
+                let obj = {}
+                obj = this.SearchDXoptions.find((item) => { // 这里的userList就是上面遍历的数据源
+                    return item.targeting_name === msg// 筛选出匹配数据
+                })
+                this.js_targeting_id = obj.targeting_id
+            },
+            copyNewPlan () {
+                if (this.planListData.length > 0) {
+                    this.planListData.push(this.planListData[this.planListData.length - 1])
+                }
+            },
+            beforeCopyAllPlan () {
+                this.$prompt('请输入复制数量', '批量复制', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputPattern: /^\d+$/,
+                    inputErrorMessage: '数量格式不正确'
+                }).then(({value}) => {
+                    this.copyNewAllPlan(value)
+                }).catch(() => {
+                })
+            },
+            copyNewAllPlan (value) {
+                let lastPlan = null
+                if (this.planListData.length > 0 && this.planListData.length < 30) {
+                    lastPlan = this.planListData[this.planListData.length - 1]
+                    value = Number(value)
+                    for (let i = 0; i < value; i++) {
+                        this.planListData.push(lastPlan)
+                    }
+                }
+            },
+            delBeforPlan (lineData, index) {
+                // 删除 某一列
+                if (Number(index) >= 0) {
+                    this.planListData.splice(index, 1)
+                }
             }
-
         },
         computed: {
             currShopList () {
@@ -1002,18 +995,18 @@
             formateBetSetStyle (val) {
                 val = val.toString()
                 switch (val) {
-                    case '1':
-                        return 'CPC'
+                case '1':
+                    return 'CPC'
 
-                        break
-                    case '2':
-                        return 'CPM'
+                    break
+                case '2':
+                    return 'CPM'
 
-                        break
-                    case '3':
-                        return 'oCPA'
+                    break
+                case '3':
+                    return 'oCPA'
 
-                        break
+                    break
                 }
             },
             format (time, format = 'yyyy-MM-dd') {
@@ -1023,18 +1016,18 @@
                 }
                 return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
                     switch (a) {
-                        case 'yyyy':
-                            return tf(t.getFullYear())
-                        case 'MM':
-                            return tf(t.getMonth() + 1)
-                        case 'mm':
-                            return tf(t.getMinutes())
-                        case 'dd':
-                            return tf(t.getDate())
-                        case 'HH':
-                            return tf(t.getHours())
-                        case 'ss':
-                            return tf(t.getSeconds())
+                    case 'yyyy':
+                        return tf(t.getFullYear())
+                    case 'MM':
+                        return tf(t.getMonth() + 1)
+                    case 'mm':
+                        return tf(t.getMinutes())
+                    case 'dd':
+                        return tf(t.getDate())
+                    case 'HH':
+                        return tf(t.getHours())
+                    case 'ss':
+                        return tf(t.getSeconds())
                     }
                 })
             }
