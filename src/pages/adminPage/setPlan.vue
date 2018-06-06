@@ -468,6 +468,12 @@
         methods: {
         	initBeforePlan(){
                 // 初始化 编辑msg
+                this.SearchDXval_5 = '';
+
+                this.shopListData = [];
+                this.currSelShopListID = '';
+
+                this.js_isSureImgNum = 0;
             },
             choseSelList (msg) {
                 let obj = {}
