@@ -6,14 +6,14 @@
 <script>
 	import {wait, setToken} from '../common/util'
 	export default {
-		data () {
-			return {}
-		},
-		computed: {},
-		methods: {},
-		async mounted () {
+	    data () {
+	        return {}
+	    },
+	    computed: {},
+	    methods: {},
+	    async mounted () {
 
-		}
+	    }
 	}
 </script>
 <style>

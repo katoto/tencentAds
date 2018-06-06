@@ -246,14 +246,13 @@
                 ],
                 shop_remark: '',
                 remarkBoxVisible: false,
-	            showAttentBox: false ,
+	            showAttentBox: false,
 
                 // new edn
                 pageCounts: 1,
                 pageNumber: 1,
                 pageSize: 10,
-                currPageNumber: null,
-
+                currPageNumber: null
 
             }
         },
@@ -357,11 +356,11 @@
         computed: {},
         async mounted () {
             //            ads_user_list
-            let adsMsg = null;
-            if( this.$store.state.userList ){
+            let adsMsg = null
+            if (this.$store.state.userList) {
                 adsMsg = await this.$store.dispatch(aTypes.getAdsUserList, {
                     'pageNumber': 1,
-                    'pageSize': this.pageSize ,
+                    'pageSize': this.pageSize,
                     'agencyId': this.$store.state.userList.agencyId
                 })
                 console.log(adsMsg)
@@ -374,7 +373,7 @@
                     })
                     this.shopListData = adsMsg.data
                 }
-            }else{
+            } else {
                 this.$message({
                     message: '请重新登陆',
                     type: 'error',
@@ -383,8 +382,6 @@
                 await wait(500)
                 this.$router.push('/login')
             }
-
-
         },
         filters: {
             format (time, format = 'yyyy-MM-dd') {

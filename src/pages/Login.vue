@@ -20,7 +20,6 @@
 </template>
 
 <script>
-
     import { wait } from '../common/util'
     export default {
         data () {
@@ -61,41 +60,41 @@
                         (async () => {
                             try {
                                 console.log(this.ruleForm2)
-                                let loginMsg = await this.$store.dispatch('login', this.ruleForm2);
+                                let loginMsg = await this.$store.dispatch('login', this.ruleForm2)
                                 console.log(loginMsg)
-                                if( loginMsg.code === 200 ){
+                                if (loginMsg.code === 200) {
                                     this.$message({
                                         message: '登录成功',
                                         type: 'success',
                                         duration: 1200
                                     })
-                                    this.$store.commit('setUserList' , loginMsg.data)
+                                    this.$store.commit('setUserList', loginMsg.data)
                                     await wait(500)
                                     this.$router.replace('/adminPage/adminCenter')
-                                }else{
+                                } else {
                                     this.$message({
                                         message: loginMsg.message,
                                         type: 'error',
                                         duration: 1200
-                                    });
+                                    })
                                     this.ruleForm2.pass = ''
                                 }
-//                                if (this.ruleForm2.name === 'admin123' && this.ruleForm2.pass === 'a123456') {
-//                                    this.$message({
-//                                        message: '登录成功',
-//                                        type: 'success',
-//                                        duration: 1200
-//                                    })
-//                                    await wait(1200)
-//                                    this.$router.replace('/adminPage/adminCenter')
-//                                } else {
-//                                    this.$message({
-//                                        message: '账号或密码错误',
-//                                        type: 'error',
-//                                        duration: 1200
-//                                    })
-//                                    await wait(1200)
-//                                }
+                                //                                if (this.ruleForm2.name === 'admin123' && this.ruleForm2.pass === 'a123456') {
+                                //                                    this.$message({
+                                //                                        message: '登录成功',
+                                //                                        type: 'success',
+                                //                                        duration: 1200
+                                //                                    })
+                                //                                    await wait(1200)
+                                //                                    this.$router.replace('/adminPage/adminCenter')
+                                //                                } else {
+                                //                                    this.$message({
+                                //                                        message: '账号或密码错误',
+                                //                                        type: 'error',
+                                //                                        duration: 1200
+                                //                                    })
+                                //                                    await wait(1200)
+                                //                                }
 
                                 return false
                             } catch (e) {

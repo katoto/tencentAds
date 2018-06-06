@@ -22,7 +22,7 @@ const mutationsInfo = mapMutations({
 
 const actionsInfo = mapActions({
     /* ads adminCenter 列表接口 */
-    async getAdsUserList ({ state , commit, dispatch}, pageData) {
+    async getAdsUserList ({ state, commit, dispatch}, pageData) {
         try {
             let InfoData = null
             if (pageData) {

@@ -99,8 +99,8 @@
                             label="创意">
                             <template slot-scope="scope">
                                 <section style="display: inline-block;margin: 0 5px"
-                                         v-for="item of scope.row.selectImgObj" v-if="item">
-                                    <img v-if="item" class="reg_imgStyle" :src="item.preview_url" alt="">
+                                         v-for="item of scope.row.selectImgUrl" v-if="item">
+                                    <img v-if="item" class="reg_imgStyle" :src="item" alt="">
                                 </section>
                             </template>
                         </el-table-column>
@@ -230,8 +230,7 @@
                 <h4>创意设置</h4>
                 <div class="setPlanCY">
                     <section>
-                        <span v-if="filterData.length > 0"><i style="color: red">*</i> 请选择{{ js_isSureImgNum
-                            }}张图：</span>
+                        <span v-if="filterData.length > 0"><i style="color: red">*</i> 请选择{{ js_isSureImgNum }}张图：</span>
                         <ul class="clear" v-if="filterData.length > 0">
                             <li v-for="( img ) in filterData" @click="planCYClick( img )">
                                 <img class="goodsImg" :class="{opacityImg : !!selectImgObj[img.signature] }"
@@ -352,6 +351,7 @@
                 <el-button @click="showAttentBox=false">取 消</el-button>
             </div>
         </el-dialog>
+        <el-button @click="initBeforePlan">初始化</el-button>
     </div>
 </template>
 
@@ -359,6 +359,7 @@
     import { mTypes, aTypes } from '~/store/modules/adminPage'
     import selectImg from '~/assets/select.jpg'
 
+    import { wait } from '~/common/util'
     export default {
         data () {
             return {
@@ -369,7 +370,7 @@
                 js_text: [],
                 js_url: [],
                 selectImgObj: {}, // 选者图片用
-//                beforeSendPlanArr: [], // 上传之前计划数组
+                //                beforeSendPlanArr: [], // 上传之前计划数组
 
                 selectImg: selectImg,
                 js_showBetTime: '',
@@ -452,6 +453,10 @@
                 end_date: '',
                 _index: null, // 记录编辑的位置
 
+                rebuildMsg: {}, // build
+                billing_event: '',
+                optimization_goal: '',
+                destination_url: '',
 
                 setPlanDX: ['性别：男', '年龄：大于等于41岁', '付费用户：电商交易用户', '商业兴趣：生活用品',
                     '联网方式：Wifi、4G',
@@ -466,14 +471,30 @@
             }
         },
         methods: {
-        	initBeforePlan(){
+            initBeforePlan () {
                 // 初始化 编辑msg
-                this.SearchDXval_5 = '';
+                this.SearchDXval_5 = ''
 
-                this.shopListData = [];
-                this.currSelShopListID = '';
+                this.shopListData = []
+                this.currSelShopListID = ''
 
                 this.js_isSureImgNum = 0;
+
+                this.filterData = [];
+                this.selectImgObj = {};
+
+                this.js_enumOption = [];
+                this.js_text = [];
+                this.js_url = [];
+
+                this.js_betSetInDate = '1'
+                this.js_longStart = '';
+                this.js_betweenStartEnd = '';
+                this.js_betweenStartEnd = [];
+
+                this.js_betSetStyle = 1;
+                this.js_betSetInDate_6 = '';
+
             },
             choseSelList (msg) {
                 let obj = {}
@@ -670,10 +691,61 @@
             async reBuildFn (rowMsg, index) {
                 //  编辑 todo
                 this._index = index
-                console.log(rowMsg)
-                this.showAttentBox = true
+                this.rebuildMsg = rowMsg
+
+                /* 动态生成结构 */
+                if (rowMsg.currSelShopList.adcreative_elements) {
+                    // 初始化
+                    this.js_isSureImgNum = 0
+                    this.js_text = []
+                    this.js_url = []
+                    this.js_enumOption = []
+                    /* 图片要求 */
+                    if (rowMsg.currSelShopList.adcreative_elements.images && rowMsg.currSelShopList.adcreative_elements.images.length > 0) {
+                        this.js_isSureImgNum = rowMsg.currSelShopList.adcreative_elements.images.length
+                    }
+                    /* 输入框要求 */
+                    if (rowMsg.currSelShopList.adcreative_elements.text && rowMsg.currSelShopList.adcreative_elements.text.length > 0) {
+                        this.js_text = rowMsg.currSelShopList.adcreative_elements.text
+                    }
+                    /* url要求 */
+                    if (rowMsg.currSelShopList.adcreative_elements.url && rowMsg.currSelShopList.adcreative_elements.url.length > 0) {
+                        this.js_url = rowMsg.currSelShopList.adcreative_elements.url
+                    }
+                    /* option要求 */
+                    if (rowMsg.currSelShopList.adcreative_elements.enum && rowMsg.currSelShopList.adcreative_elements.enum.length > 0) {
+                        this.js_enumOption = rowMsg.currSelShopList.adcreative_elements.enum
+                    }
+                }
+                if (Object.keys(rowMsg).length > 0) {
+                    this.daily_budget_1 = rowMsg.daily_budget
+                    this.speed_mode = rowMsg.speed_mode;
+                    this.begin_date = rowMsg.begin_date;
+                    this.end_date = rowMsg.end_date;
+                    this.billing_event = rowMsg.billing_event;
+                    this.js_betSetInDate_6 = rowMsg.bid_amount;
+                    this.optimization_goal = rowMsg.optimization_goal;
+                    this.js_targeting_id = rowMsg.targeting_id
+                    this.currSelShopList = rowMsg.currSelShopList
+                    this.destination_url = rowMsg.destination_url
+                    this.adcreative_elements = rowMsg.adcreative_elements
+                    this.SearchDXval_5 = rowMsg.SearchDXval_5
+                    this.selectImgObj = rowMsg.selectImgObj
+                    this.js_betSetInDate = rowMsg.js_betSetInDate
+                    this.js_longStart = rowMsg.js_longStart
+                    this.js_betweenStartEnd = rowMsg.js_betweenStartEnd
+                    this.js_betSetInTime = rowMsg.js_betSetInTime
+                    this.js_betSetStyle = rowMsg.js_betSetStyle
+                    this.js_betSetInDate_6 = rowMsg.js_betSetInDate_6
+                    this.filterData = rowMsg.filterData
+                    this.shopListData = rowMsg.shopListData
+                    this.currSelShopListID = rowMsg.currSelShopListID;
+                }
+                this.showAttentBox = true;
+
             },
             async sureSetPlan () {
+              // 设置计划
                 let currLineObj = {}
                 if (this.SearchDXval_5 === '') {
                     this.$message({
@@ -808,9 +880,6 @@
                         }
                     }
                 }
-                // new end
-                //  selectImgObj: this.selectImgObj, // 创意设置
-                console.log(this.js_templateVal)
                 /* 投放模式 */
                 if (this.speed_mode_2) {
                     this.speed_mode_2 = 'SPEED_MODE_STANDARD'
@@ -826,9 +895,17 @@
                     this.end_date = this.js_betweenStartEnd[1]
                 }
 
+//                let selectImgUrl = [];
+//                for( let item in this.selectImgObj){
+//                    if( this.selectImgObj[item] && this.selectImgObj[item].preview_url ){
+//                        selectImgUrl.push( this.selectImgObj[item].preview_url )
+//                    }
+//                }
+//                selectImgUrl:selectImgUrl,
+
                 Object.assign(currLineObj, {
                     daily_budget: this.daily_budget_1, // 日限额
-                    speed_mode: this.speed_mode,
+                    speed_mode: this.speed_mode_2,
                     begin_date: this.begin_date,
                     end_date: this.end_date,
                     billing_event: 'BILLINGEVENT_CLICK',
@@ -837,14 +914,13 @@
                     optimization_goal: 'OPTIMIZATIONGOAL_CLICK',
                     targeting_id: this.js_targeting_id, // 定向设置 id,
                     adcreative_template_id: this.currSelShopList.adcreative_template_id,
-
+                    currSelShopList: this.currSelShopList,
                     destination_url: 'http://ec.flzhan.cn/?r_id=117575582_b5b9cb0df&pagetype=SINGLE&_bid=2759&qz_gdt=__tracestring__',
-                    adcreative_elements: JSON.parse(this.js_templateVal),
+                    adcreative_elements: JSON.parse(this.js_templateVal), //总的模板
 
                     SearchDXval_5: this.SearchDXval_5, // 定向设置 name
                     //                    currSelShopList: this.currSelShopList, // 资源位设置
-                    selectImgObj: this.selectImgObj, // 创意设置
-
+                    selectImgObj: this.selectImgObj, //  创意设置
                     js_betSetInDate: this.js_betSetInDate, // 投放日期
                     js_longStart: this.js_longStart, // 投放开始日期
 
@@ -852,19 +928,29 @@
                     js_betSetInTime: this.js_betSetInTime, // 投放时间
                     js_showBetTime: this.js_showBetTime, // 投放范围时间
                     js_betSetStyle: this.js_betSetStyle, // 出价方式
-                    js_betSetInDate_6: this.js_betSetInDate_6 // 出价价格
-                    //                    js_templateVal: JSON.parse(this.js_templateVal) // 总的模板
+                    js_betSetInDate_6: this.js_betSetInDate_6,// 出价价格
+
+                    filterData: this.filterData,
+                    shopListData: this.shopListData,
+                    currSelShopListID: this.currSelShopListID
 
                 })
                 console.log('dialong 所有数据')
                 console.log(currLineObj)
                 // 计划表格
-                this.planListData.push(currLineObj)
+                console.log(this._index)
+                if( this._index === undefined || this._index === null ){
+                    this.planListData.push(currLineObj)
+                }else{
+//                    替换数组
+                    this.planListData.splice( Number( this._index ),1 , currLineObj )
+                    console.log(this._index)
+                    console.log(this._index)
+                }
                 this.showAttentBox = false
             },
 
             async searchShopIdFn () {
-
             }
 
         },
@@ -875,12 +961,25 @@
         },
         async mounted () {
             //   ads_user_list
-            let adsMsg = await this.$store.dispatch(aTypes.getAdsUserList, {
-                'pageNumber': 1,
-                'pageSize': this.pageSize
-            })
-            if (adsMsg) {
-                this.shopSelList = adsMsg.data
+            let adsMsg = null
+            if (this.$store.state.userList) {
+                adsMsg = await this.$store.dispatch(aTypes.getAdsUserList, {
+                    'pageNumber': 1,
+                    'pageSize': this.pageSize,
+                    'agencyId': this.$store.state.userList.agencyId
+                })
+                if (adsMsg) {
+                    this.shopSelList = adsMsg.data
+                }
+            } else {
+                this.$message({
+                    message: '请重新登陆',
+                    type: 'error',
+                    duration: 1200
+                })
+                await wait(500)
+                this.$router.push('/login')
+                return false
             }
 
             if (this.$route.params.planId != '::planId') {
@@ -903,18 +1002,18 @@
             formateBetSetStyle (val) {
                 val = val.toString()
                 switch (val) {
-                case '1':
-                    return 'CPC'
+                    case '1':
+                        return 'CPC'
 
-                    break
-                case '2':
-                    return 'CPM'
+                        break
+                    case '2':
+                        return 'CPM'
 
-                    break
-                case '3':
-                    return 'oCPA'
+                        break
+                    case '3':
+                        return 'oCPA'
 
-                    break
+                        break
                 }
             },
             format (time, format = 'yyyy-MM-dd') {
@@ -924,18 +1023,18 @@
                 }
                 return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
                     switch (a) {
-                    case 'yyyy':
-                        return tf(t.getFullYear())
-                    case 'MM':
-                        return tf(t.getMonth() + 1)
-                    case 'mm':
-                        return tf(t.getMinutes())
-                    case 'dd':
-                        return tf(t.getDate())
-                    case 'HH':
-                        return tf(t.getHours())
-                    case 'ss':
-                        return tf(t.getSeconds())
+                        case 'yyyy':
+                            return tf(t.getFullYear())
+                        case 'MM':
+                            return tf(t.getMonth() + 1)
+                        case 'mm':
+                            return tf(t.getMinutes())
+                        case 'dd':
+                            return tf(t.getDate())
+                        case 'HH':
+                            return tf(t.getHours())
+                        case 'ss':
+                            return tf(t.getSeconds())
                     }
                 })
             }
