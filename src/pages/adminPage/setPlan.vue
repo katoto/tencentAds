@@ -341,11 +341,9 @@
                             <el-radio :label="3">oCPA</el-radio>
                         </el-radio-group>
                     </div>
-
                     <span style="margin-left: 36px"><b style="color: red">*</b> 出价额度 &nbsp;&nbsp;</span>
                     <el-input style="width: 130px" size="small" v-model="js_betSetInDate_6"
                               placeholder="出价"></el-input>
-
                     元 <span style="margin-left: 20px;color: #adb6c0">建议出价<b style="color: #1f2d3d">0.58 ~ 0.81</b> 元/点击</span>
                 </div>
             </section>
@@ -371,7 +369,7 @@
                 js_text: [],
                 js_url: [],
                 selectImgObj: {}, // 选者图片用
-                beforeSendPlanArr: [], // 上传之前计划数组
+//                beforeSendPlanArr: [], // 上传之前计划数组
 
                 selectImg: selectImg,
                 js_showBetTime: '',
@@ -453,6 +451,7 @@
                 js_templateVal: '',
                 end_date: '',
                 _index: null, // 记录编辑的位置
+
 
                 setPlanDX: ['性别：男', '年龄：大于等于41岁', '付费用户：电商交易用户', '商业兴趣：生活用品',
                     '联网方式：Wifi、4G',

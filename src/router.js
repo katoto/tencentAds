@@ -8,16 +8,11 @@ import VueRouter from 'vue-router'
 /* Layout */
 import Layout from '~/pages/layout/Layout'
 
-const Login = () => import
-('~pages/Login' /* webpackChunkName: "chunks/Login" */)
+const Login = () => import ('~pages/Login' /* webpackChunkName: "chunks/Login" */)
 // 404  ok
-const page_404 = () =>
-    import
-    ('~/pages/404.vue' /* webpackChunkName: "chunks/page404" */)
+const page_404 = () => import ('~/pages/404.vue' /* webpackChunkName: "chunks/page404" */)
 
-const DashBoard_index = () =>
-    import
-    ('~/pages/dashboard/index' /* webpackChunkName: "chunks/dashboard/index" */)
+const DashBoard_index = () => import ('~/pages/dashboard/index' /* webpackChunkName: "chunks/dashboard/index" */)
 
 // admin page
 const t_adminCenter = () => import('~/pages/adminPage/adminCenter' /* webpackChunkName: "chunks/adminPage/adminCenter" */)

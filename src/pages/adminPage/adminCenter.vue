@@ -246,17 +246,14 @@
                 ],
                 shop_remark: '',
                 remarkBoxVisible: false,
+	            showAttentBox: false ,
 
                 // new edn
-
                 pageCounts: 1,
                 pageNumber: 1,
                 pageSize: 10,
                 currPageNumber: null,
 
-                currLineData: null,
-                currType: null,
-                showAttentBox: false
 
             }
         },
@@ -275,11 +272,6 @@
                     this.$router.push('/adminPage/setPlan/:planId')
                 }
                 this.$store.commit(mTypes.setCurrShopList, row)
-                //                if (row.account_id) {
-                //                    this.$router.push('/adminPage/setPlan/'+ row.account_id)
-                //                } else {
-                //                    this.$router.push('/adminPage/setPlan/:planId')
-                //                }
             },
 
             async monitorFn (rowMsg) {
@@ -339,8 +331,8 @@
                 //                    this.pageNumber = Number(withDrawMsg.currentPage)
                 //                }
             },
-
             async handleCurrentChange (val) {
+            	// todo 多页的情况
                 let withDrawMsg = null
                 this.currPageNumber = Number(val)
                 if (this.searchShopId !== '') {
@@ -361,13 +353,11 @@
                     this.pageCounts = Number(withDrawMsg.pages)
                 }
             }
-
         },
         computed: {},
         async mounted () {
             //            ads_user_list
             let adsMsg = null;
-
             if( this.$store.state.userList ){
                 adsMsg = await this.$store.dispatch(aTypes.getAdsUserList, {
                     'pageNumber': 1,
@@ -382,7 +372,6 @@
                         type: 'success',
                         duration: 1200
                     })
-
                     this.shopListData = adsMsg.data
                 }
             }else{
