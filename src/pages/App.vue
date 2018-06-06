@@ -1,39 +1,22 @@
 <template>
     <div id="app" class="l-full">
-        <router-view v-if="isGetToken"></router-view>
+        <router-view></router-view>
     </div>
 </template>
 <script>
-    import { wait, setToken, access_token } from '../common/util'
-    export default {
-        data () {
-            return {
-                isGetToken: false
-            }
-        },
-        computed: {},
-        methods: {},
-        async mounted () {
-            setToken(access_token)
+	import {wait, setToken} from '../common/util'
+	export default {
+		data () {
+			return {}
+		},
+		computed: {},
+		methods: {},
+		async mounted () {
 
-            //            let tokenData = await this.$store.dispatch('getFreshToken')
-            //            if (tokenData && tokenData.data.access_token) {
-            //                setToken(tokenData.data.access_token)
-            //            } else {
-            //                this.$message({
-            //                    message: '更新Token失败',
-            //                    type: 'success',
-            //                    duration: 1200
-            //                })
-            //            }
-
-            this.isGetToken = true
-        }
-    }
+		}
+	}
 </script>
 <style>
-
-
     body,
     p,
     h1, h2,

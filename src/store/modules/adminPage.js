@@ -7,13 +7,10 @@ import { src, mapMutations, mapActions, getCK, setCK, removeCK, getToken, accoun
 import { Message } from 'element-ui'
 
 const state = {
-
     currShopList: null
-
 }
 
 const mutationsInfo = mapMutations({
-
     setNationGetRed (state, data) {
         state.nationGetRed = data
     },
@@ -28,8 +25,6 @@ const actionsInfo = mapActions({
     async getAdsUserList ({ state , commit, dispatch}, pageData) {
         try {
             let InfoData = null
-            console.log(state)
-            console.log(state)
             if (pageData) {
                 InfoData = await ajax.get(`/users/ads_user_list?agencyId=${pageData.agencyId}&pageno=${pageData.pageNumber}&rangeno=${pageData.pageSize}&src=${src}`)
             } else {
