@@ -68,7 +68,7 @@
                             </el-button>
                         </el-col>
                         <el-col :span="9">
-                            <!--"-->
+                            <!-- -->
                             <el-button @click="beforeCopyAllPlan"
                                        style="width: 100%;height: 100%" type="primary"
                                        :disabled="planListData.length === 0">批量复制计划
@@ -466,6 +466,9 @@
             }
         },
         methods: {
+        	initBeforePlan(){
+                // 初始化 编辑msg
+            },
             choseSelList (msg) {
                 let obj = {}
                 obj = this.shopSelList.find((item) => { // 这里的userList就是上面遍历的数据源
