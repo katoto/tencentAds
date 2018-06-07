@@ -26,7 +26,7 @@ const actionsInfo = mapActions({
         try {
             let InfoData = null
             if (pageData) {
-                InfoData = await ajax.get(`/users/ads_user_list?agencyId=${pageData.agencyId}&pageno=${pageData.pageNumber}&rangeno=${pageData.pageSize}&src=${src}`)
+                InfoData = await ajax.get(`/users/ads_user_list?qqUsername=${pageData.qqUsername}&pageno=${pageData.pageNumber}&rangeno=${pageData.pageSize}&src=${src}`)
             } else {
                 InfoData = await ajax.get(`/users/ads_user_list`)
             }

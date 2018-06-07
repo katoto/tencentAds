@@ -361,7 +361,7 @@
                 adsMsg = await this.$store.dispatch(aTypes.getAdsUserList, {
                     'pageNumber': 1,
                     'pageSize': this.pageSize,
-                    'agencyId': this.$store.state.userList.agencyId
+                    'qqUsername': this.$store.state.userList.qqUsername.trim()
                 })
                 console.log(adsMsg)
                 console.log('adsMsg==========')
