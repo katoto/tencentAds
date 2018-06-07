@@ -945,7 +945,7 @@
 					lastPlan = this.planListData[this.planListData.length - 1]
 					value = Number(value)
 					for (let i = 0; i < value; i++) {
-						this.planListData.push(lastPlan)
+						this.planListData.push(JSON.parse(JSON.stringify(lastPlan)))
 					}
 				}
 			},
@@ -968,7 +968,7 @@
 				adsMsg = await this.$store.dispatch(aTypes.getAdsUserList, {
 					'pageNumber': 1,
 					'pageSize': this.pageSize,
-					'agencyId': this.$store.state.userList.agencyId
+					'qqUsername': this.$store.state.userList.qqUsername.trim()
 				})
 				if (adsMsg) {
 					this.shopSelList = adsMsg.data
