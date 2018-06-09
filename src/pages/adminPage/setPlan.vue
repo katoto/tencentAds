@@ -157,7 +157,7 @@
                                     <template v-for="(val , key) in setPlanDX">
                                         <div v-if="key ==='gender' || key ==='age'||key ==='network_type'">
                                             <p v-if="key ==='gender'" style="margin-top: 10px">性别： <span
-                                                v-for="item in val">{{ item }}</span></p>
+                                                v-for="item in val">{{ item | formateMan }}、</span></p>
                                             <p v-if="key ==='age'" style="margin-top: 10px">年龄： <span
                                                 v-for="item in val">{{ item }}</span></p>
                                             <p v-if="key ==='network_type'" style="margin-top: 10px">联网方式： <span
@@ -361,9 +361,9 @@
                     <el-input style="width: 130px" size="small" v-model="js_betSetInDate_6"
                               placeholder="出价"></el-input>
                     元 <span style="margin-left: 20px;color: #adb6c0">建议出价
-                    <span v-if="js_betSetStyle === 1"><b style="color: #1f2d3d">0.58 ~ 0.81</b> 元/点击</span>
-                    <span v-if="js_betSetStyle === 2"><b style="color: #1f2d3d">0.98 ~ 1.5</b> 元/点击</span>
-                    <span v-if="js_betSetStyle === 3"><b style="color: #1f2d3d">10 ~ 20</b> /点击</span>
+                    <span v-if="js_betSetStyle === 1"><b style="color: #1f2d3d">0.58 ~ 100</b> 元/点击</span>
+                    <span v-if="js_betSetStyle === 2"><b style="color: #1f2d3d">1.5 ~ 1000</b> 元/点击</span>
+                    <span v-if="js_betSetStyle === 3"><b style="color: #1f2d3d">10 ~ 20</b> /点击 ？？？</span>
                 </span>
                 </div>
             </section>
@@ -488,7 +488,7 @@
         },
         watch: {
             shopSelListVal (val) {
-            //	            console.log('更新页面数据')
+                //	            console.log('更新页面数据')
                 this.$router.push('/adminPage/setPlan/' + val)
             }
         },
@@ -538,13 +538,26 @@
             },
             async upPlan () {
                 let data = {}
-                data.plans = this.planListData
+                data.plans = JSON.parse(JSON.stringify(this.planListData))
+
                 if (data.plans.length > 0) {
                     const loading = this.$loading({
                         lock: true,
                         text: '上传计划中...',
                         spinner: 'el-icon-loading',
                         background: 'rgba(0, 0, 0, 0.6)'
+                    })
+                    console.log('==========')
+                    data.plans.forEach((val, index) => {
+                        if( val.bid_amount !== undefined ){
+                            val.bid_amount = Number( val.bid_amount ) * 100
+                        }
+                        delete val.filterData
+                        delete val.shopListData
+                        delete val.selectImgObj
+                        delete val.currSelShopList
+                        delete val.js_betSetInDate_6
+                        delete val.SearchDXval_5
                     })
                     let upPlanMsg = await this.$store.dispatch(aTypes.updatePlanMsg, data)
                     loading.close()
@@ -998,21 +1011,30 @@
             })
         },
         filters: {
+            formateMan(val){
+//                FEMALE
+                if (val === 'MALE') {
+                    return '男'
+                } else if (val === 'FEMALE') {
+                    return '女'
+                }
+                return '暂无描述~'
+            },
             formateBetSetStyle (val) {
                 val = val.toString()
                 switch (val) {
-                case '1':
-                    return 'CPC'
+                    case '1':
+                        return 'CPC'
 
-                    break
-                case '2':
-                    return 'CPM'
+                        break
+                    case '2':
+                        return 'CPM'
 
-                    break
-                case '3':
-                    return 'oCPA'
+                        break
+                    case '3':
+                        return 'oCPA'
 
-                    break
+                        break
                 }
             },
             format (time, format = 'yyyy-MM-dd') {
@@ -1022,18 +1044,18 @@
                 }
                 return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
                     switch (a) {
-                    case 'yyyy':
-                        return tf(t.getFullYear())
-                    case 'MM':
-                        return tf(t.getMonth() + 1)
-                    case 'mm':
-                        return tf(t.getMinutes())
-                    case 'dd':
-                        return tf(t.getDate())
-                    case 'HH':
-                        return tf(t.getHours())
-                    case 'ss':
-                        return tf(t.getSeconds())
+                        case 'yyyy':
+                            return tf(t.getFullYear())
+                        case 'MM':
+                            return tf(t.getMonth() + 1)
+                        case 'mm':
+                            return tf(t.getMinutes())
+                        case 'dd':
+                            return tf(t.getDate())
+                        case 'HH':
+                            return tf(t.getHours())
+                        case 'ss':
+                            return tf(t.getSeconds())
                     }
                 })
             }
