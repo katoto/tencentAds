@@ -13,8 +13,8 @@
                     </el-select>
                 </div>
                 <div style="float: right">
-                    <el-input v-model="searchShopId" size="small" placeholder="搜索店铺ID"></el-input>
-                    <el-button style="margin-left: 10px" @click="searchShopIdFn()" type="primary" plain
+                    <el-input disabled v-model="searchShopId" size="small" placeholder="搜索店铺ID"></el-input>
+                    <el-button style="margin-left: 10px" @click="searchShopIdFn()" type="primary" plain disabled
                                size="small">
                         查询
                     </el-button>
@@ -54,12 +54,12 @@
                     <template slot-scope="scope">
                         <!--el-icon-star-on-->
                         <!--<i class="el-icon-star-off" ></i>-->
-                        <el-button v-if="!isAttention" @click="attentionFn( scope.row ,'1' )" icon="el-icon-star-off"
+                        <el-button v-if="!isAttention" @click="attentionFn( scope.row ,'1' )" icon="el-icon-star-off" disabled
                                    type="primary"
                                    size="small">
                             关注
                         </el-button>
-                        <el-button v-else @click="attentionFn( scope.row , '0' )" icon="el-icon-star-on" type="primary"
+                        <el-button v-else @click="attentionFn( scope.row , '0' )" icon="el-icon-star-on" type="primary" disabled
                                    size="small">
                             取消关注
                         </el-button>
@@ -70,11 +70,11 @@
                     width="110"
                 >
                     <template slot-scope="scope">
-                        <el-button v-if="!isMonitor" @click="monitorFn( scope.row )" icon="el-icon-news"
+                        <el-button v-if="!isMonitor" @click="monitorFn( scope.row )" icon="el-icon-news" disabled
                                    type="warning" size="small">
                             监控
                         </el-button>
-                        <el-button v-else @click="monitorFn( scope.row )" icon="el-icon-news" type="warning"
+                        <el-button v-else @click="monitorFn( scope.row )" icon="el-icon-news" type="warning" disabled
                                    size="small">
                             监控中
                         </el-button>
@@ -96,7 +96,7 @@
                     width="110"
                 >
                     <template slot-scope="scope">
-                        <el-button @click="addRemarkFn( scope.row )" icon="el-icon-edit" type="primary"
+                        <el-button @click="addRemarkFn( scope.row )" icon="el-icon-edit" type="primary" disabled
                                    size="small">
                             备注
                         </el-button>

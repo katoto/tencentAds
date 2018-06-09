@@ -17,7 +17,7 @@ Vue.use(Vuex)
 const state = {
     version: '0.0.1',
     userList: null,
-    userInfo: null,
+    userInfo: null
 }
 const mutations = {
     setUserList (state, list) {
@@ -50,8 +50,8 @@ const actions = {
             InfoData = await ajax.post(`/users/login`, {
                 username: data.name,
                 password: data.pass
-            });
-            if(InfoData.code === 200) {
+            })
+            if (InfoData.code === 200) {
                 commit('setUserInfo', InfoData.data)
             }
             return InfoData

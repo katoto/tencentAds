@@ -48,15 +48,19 @@
                         落地页：
                         <el-radio v-model="js_ldy_3" label="1">单品页</el-radio>
                         <el-radio v-model="js_ldy_3" disabled label="2">聚合页</el-radio>
-                        <div class="block" style="margin-top: 10px">
-                            <el-cascader placeholder="选择落地页"
-                                         size="small"
-                                         :options="ldy_Options"
-                                         v-model="destination_Arr"
-                                         :props="ldyProps"
-                                         @change="ldy_changeSel">
-                            </el-cascader>
-                        </div>
+                        <section style="position: relative" class="clear">
+                            <div class="block" style="margin-top: 10px;float: left">
+                                <el-cascader placeholder="选择落地页"
+                                             size="small"
+                                             :options="ldy_Options"
+                                             v-model="destination_Arr"
+                                             :props="ldyProps"
+                                             @change="ldy_changeSel">
+                                </el-cascader>
+                            </div>
+                            <p class="css_ldy_p"> 当前选择的落地页： <a target="_blank"
+                                                               :href="destination_url">{{ destination_url }}</a></p>
+                        </section>
 
                     </div>
                 </div>
@@ -169,9 +173,6 @@
                                             <p v-if="key ==='network_type'" style="margin-top: 10px">联网方式： <span
                                                 v-for="item in val">{{ item }}、 </span></p>
                                         </div>
-                                        <!--<div v-else>-->
-                                        <!--<p style="margin-top: 10px"> 暂无描述~</p>-->
-                                        <!--</div>-->
                                     </template>
                                 </section>
                             </div>
@@ -269,9 +270,11 @@
                         <div v-if="js_text.length>0">
                             <section v-for="item in js_text" :class="item.id">
                                 <span><b style="color: red">*</b> <span class="js_desc">{{ item.desc }}</span> &nbsp;&nbsp;</span>
-                                <el-input :key="item.id" v-if="item.valueTest" :value="item.valueTest"
+                                <el-input :key="item.id" v-if="item.valueTest" @blur="js_TextTest( item , $event )"
+                                          :value="item.valueTest"
                                           style="width: 280px" size="small" :placeholder="item.desc"></el-input>
-                                <el-input v-else :key="item.desc" style="width: 280px" size="small"
+                                <el-input v-else :key="item.desc" @blur="js_TextTest( item , $event )"
+                                          style="width: 280px" size="small"
                                           :placeholder="item.desc"></el-input>
                                 <br/>
                             </section>
@@ -280,7 +283,7 @@
                         <div v-if="js_url.length>0">
                             <section v-for="item in js_url" :class="item.id">
                                 <span><b style="color: red">*</b> <span class="js_desc">{{ item.desc }}</span> &nbsp;&nbsp;</span>
-                                <el-input :key="item.id" style="width: 280px" size="small"
+                                <el-input @blur="js_UrlTest" :key="item.id" style="width: 280px" size="small"
                                           :placeholder="item.desc"></el-input>
                                 <br/>
                             </section>
@@ -365,6 +368,7 @@
                     </div>
                     <span style="margin-left: 36px"><b style="color: red">*</b> 出价额度 &nbsp;&nbsp;</span>
                     <el-input style="width: 130px" size="small" v-model="js_betSetInDate_6"
+                              @input="check_SetInDate( $event )"
                               placeholder="出价"></el-input>
                     元 <span style="margin-left: 20px;color: #adb6c0">建议出价
                     <span v-if="js_betSetStyle === 1"><b style="color: #1f2d3d">0.58 ~ 100</b> 元/点击</span>
@@ -390,6 +394,7 @@
     export default {
         data () {
             return {
+                test_textArr: [],
                 ldyProps: {
                     // 配置字段
                     label: 'productName',
@@ -517,6 +522,40 @@
             }
         },
         methods: {
+            check_SetInDate (_evt) {
+                let reg = /^[0-9]+([.]{1}[0-9]+){0,1}$/
+                if (!reg.test(_evt)) {
+                    this.$message({
+                        message: '请输入正确的价格',
+                        type: 'error',
+                        duration: 2000
+                    })
+                }
+            },
+            js_TextTest (currItem, _this) {
+                if (currItem && _this && _this.target) {
+                    if (_this.target.value.length < currItem.min || _this.target.value.length > currItem.max) {
+                        this.$message({
+                            message: currItem.desc + ' 要求' + currItem.min + '~' + currItem.max + '个文字',
+                            type: 'error',
+                            duration: 2000
+                        })
+                        return false
+                    }
+                }
+            },
+            js_UrlTest (currItem, _this) {
+                if (currItem && _this && _this.target) {
+                    if (!currItem.reg(_this.target.value)) {
+                        this.$message({
+                            message: currItem.desc + '格式不正确',
+                            type: 'error',
+                            duration: 2000
+                        })
+                        return false
+                    }
+                }
+            },
             ldy_changeSel (ldy) {
                 if (ldy[1]) {
                     this.destination_url = ldy[1]
@@ -545,12 +584,13 @@
                 this.js_betSetStyle = 1
                 this.js_betSetInDate_6 = ''
             },
-            replaceMsg (list, domName) {
+            replaceMsg (list, domName, requireTextArr) {
                 let flag = 1
                 list.forEach((val, index) => {
                     let currDomName = '.\\#' + domName + index + ' input'
                     let currDomDesc = '.\\#' + domName + index + ' .js_desc'
-                    if (document.querySelector(currDomName).value === '') {
+                    let js_inputVal = document.querySelector(currDomName).value
+                    if (js_inputVal === '') {
                         this.$message({
                             message: '请输入' + document.querySelector(currDomDesc).innerHTML,
                             type: 'error',
@@ -558,9 +598,21 @@
                         })
                         flag = 0
                     }
+
+                    if (domName === 'txt_' && requireTextArr[index]) {
+                        if (js_inputVal.length < requireTextArr[index].min || js_inputVal.length > requireTextArr[index].max) {
+                            this.$message({
+                                message: requireTextArr[index].desc + '要求' + requireTextArr[index].min + '~' + requireTextArr[index].min + '个字符',
+                                type: 'error',
+                                duration: 2000
+                            })
+                            flag = 0
+                        }
+                    }
+
                     if (document.querySelector(currDomName) && this.js_templateVal) {
-                        this.js_templateVal = this.js_templateVal.replace('#' + domName + index, document.querySelector(currDomName).value)
-                        val.valueTest = document.querySelector(currDomName).value
+                        this.js_templateVal = this.js_templateVal.replace('#' + domName + index, js_inputVal)
+                        val.valueTest = js_inputVal
                     }
                 })
                 return flag
@@ -586,8 +638,7 @@
                         delete val.js_betSetInDate_6
                         delete val.SearchDXval_5
                     })
-                    let upPlanMsg = await
-                        this.$store.dispatch(aTypes.updatePlanMsg, data)
+                    let upPlanMsg = await this.$store.dispatch(aTypes.updatePlanMsg, data)
                     loading.close()
                     if (upPlanMsg.ok === -2) {
                         this.$message({
@@ -601,6 +652,8 @@
                             type: 'success',
                             duration: 1200
                         })
+
+                        this.planListData = []
                     }
                 } else {
                     this.$message({
@@ -623,7 +676,7 @@
                 if (row.adcreative_template_style) {
                     if (row.adcreative_template_style.indexOf('×') > -1) {
                         filterImgData = await
-                            this.$store.dispatch(aTypes.getFilterImg, row.adcreative_template_style.split('×')[0])
+                        this.$store.dispatch(aTypes.getFilterImg, row.adcreative_template_style.split('×')[0])
                     }
                 } else {
                     // 无数据
@@ -672,7 +725,7 @@
             async setPlanAds () {
                 this.showAttentBox = true
                 let editDXMsg = await
-                    this.$store.dispatch(aTypes.getEditDXMsg)
+                this.$store.dispatch(aTypes.getEditDXMsg)
                 // 获得焦点 默认打开
                 this.$nextTick(function () {
                     this.$refs.attentInput.$el.querySelector('input').focus()
@@ -845,6 +898,7 @@
                 // new  todo
                 if (this.currSelShopList && this.currSelShopList.adcreative_elements) {
                     this.js_templateVal = this.currSelShopList.adcreative_elements.template
+                    this.test_textArr = this.currSelShopList.adcreative_elements.text
                     if (Number(this.js_isSureImgNum) !== js_selectImgArr.length) {
                         this.$message({
                             message: '只能选择' + this.js_isSureImgNum + '张图',
@@ -860,7 +914,7 @@
                         })
                     }
                     if (this.js_text.length > 0) {
-                        let replaceMsgBack = this.replaceMsg(this.js_text, 'txt_')
+                        let replaceMsgBack = this.replaceMsg(this.js_text, 'txt_', this.test_textArr)
                         if (!replaceMsgBack) {
                             return false
                         }
@@ -935,8 +989,9 @@
                     currSelShopListID: this.currSelShopListID
 
                 })
-                //	            console.log('dialong 所有数据')
-                //	            console.log(currLineObj)
+                console.log('dialong 所有数据')
+                console.log(currLineObj)
+
                 // 计划表格
                 if (this._index === undefined || this._index === null) {
                     this.planListData.push(currLineObj)
@@ -956,6 +1011,7 @@
                 })
                 this.$store.commit(mTypes.setCurrShopList, obj)
                 this.upLdyList()
+                this.planListData = [] // 置空
             },
             getDXID (msg) {
                 let obj = {}
@@ -1076,18 +1132,18 @@
             formateBetSetStyle (val) {
                 val = val.toString()
                 switch (val) {
-                    case '1':
-                        return 'CPC'
+                case '1':
+                    return 'CPC'
 
-                        break
-                    case '2':
-                        return 'CPM'
+                    break
+                case '2':
+                    return 'CPM'
 
-                        break
-                    case '3':
-                        return 'oCPA'
+                    break
+                case '3':
+                    return 'oCPA'
 
-                        break
+                    break
                 }
             },
             format (time, format = 'yyyy-MM-dd') {
@@ -1097,18 +1153,18 @@
                 }
                 return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
                     switch (a) {
-                        case 'yyyy':
-                            return tf(t.getFullYear())
-                        case 'MM':
-                            return tf(t.getMonth() + 1)
-                        case 'mm':
-                            return tf(t.getMinutes())
-                        case 'dd':
-                            return tf(t.getDate())
-                        case 'HH':
-                            return tf(t.getHours())
-                        case 'ss':
-                            return tf(t.getSeconds())
+                    case 'yyyy':
+                        return tf(t.getFullYear())
+                    case 'MM':
+                        return tf(t.getMonth() + 1)
+                    case 'mm':
+                        return tf(t.getMinutes())
+                    case 'dd':
+                        return tf(t.getDate())
+                    case 'HH':
+                        return tf(t.getHours())
+                    case 'ss':
+                        return tf(t.getSeconds())
                     }
                 })
             }
@@ -1116,6 +1172,19 @@
     }
 </script>
 <style scoped>
+    .css_ldy_p {
+        float: right;
+        height: 40px;
+        line-height: 40px;
+        margin-left: 10px;
+        margin-top: 5px;
+        font-size: 12px;
+    }
+
+    .css_ldy_p a:hover {
+        color: #6dbbff;
+    }
+
     .setPlanCY ul li {
         border: 2px solid #a9a9a9;
         position: relative;
