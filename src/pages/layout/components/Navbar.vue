@@ -5,6 +5,7 @@
         <!--<breadcrumb></breadcrumb>-->
         <el-dropdown class="avatar-container" trigger="click">
             <div class="avatar-wrapper">
+                <p v-if="userList" style="position: absolute;right: 40px;width: 170px">用户名：{{ userList.qqUsername }}</p>
                 <img class="user-avatar" :src="headImg">
                 <i class="el-icon-caret-bottom"></i>
             </div>
@@ -14,11 +15,11 @@
                         setting
                     </el-dropdown-item>
                 </router-link>
-                <router-link class="inlineBlock" to="/">
-                    <el-dropdown-item>
-                        Home
-                    </el-dropdown-item>
-                </router-link>
+                <!--<router-link class="inlineBlock" to="/">-->
+                    <!--<el-dropdown-item>-->
+                        <!--Home-->
+                    <!--</el-dropdown-item>-->
+                <!--</router-link>-->
                 <el-dropdown-item divided>
                     <span @click="logout" style="display:block;">LogOut</span>
                 </el-dropdown-item>
@@ -43,6 +44,9 @@
             Hamburger
         },
         computed: {
+            userList () {
+                return this.$store.state.userList
+            },
             ...mapGetters([
                 'sidebar'
             ])
@@ -52,9 +56,8 @@
                 this.$store.dispatch('ToggleSideBar')
             },
             logout () {
-                this.$store.dispatch('LogOut').then(() => {
-                    location.reload() // 为了重新实例化vue-router对象 避免bug
-                })
+                this.$store.commit('setUserList', null);
+                this.$router.push('/login')
             }
         }
     }
