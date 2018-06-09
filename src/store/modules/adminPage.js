@@ -108,6 +108,28 @@ const actionsInfo = mapActions({
         }
     },
 
+    /*  获取 落地页接口  */
+    async getldyList ({commit, dispatch}) {
+        try {
+            let InfoData = null
+            if (state && state.currShopList) {
+                InfoData = await ajax.get(`/users/urls_info?token=${state.currShopList.token}&account_id=${state.currShopList.account_id}`)
+            } else {
+                Message({
+                    message: 'getldyList 取token error',
+                    type: 'error'
+                })
+            }
+            return InfoData
+        } catch (e) {
+            Message({
+                message: e.message,
+                type: 'error'
+            })
+            return 0
+        }
+    },
+
     /*  上传 设置数据  */
     async updatePlanMsg ({commit, dispatch}, data) {
         try {

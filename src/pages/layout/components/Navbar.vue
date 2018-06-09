@@ -56,7 +56,7 @@
                 this.$store.dispatch('ToggleSideBar')
             },
             logout () {
-                this.$store.commit('setUserList', null);
+                this.$store.commit('setUserList', null)
                 this.$router.push('/login')
             }
         }

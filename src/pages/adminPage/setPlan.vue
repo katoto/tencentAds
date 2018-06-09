@@ -48,10 +48,16 @@
                         落地页：
                         <el-radio v-model="js_ldy_3" label="1">单品页</el-radio>
                         <el-radio v-model="js_ldy_3" disabled label="2">聚合页</el-radio>
-                        <el-select style="margin-left: 10px" size="small" v-model="js_ldyName_4" placeholder="活动区域">
-                            <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option>
-                        </el-select>
+                        <div class="block" style="margin-top: 10px">
+                            <el-cascader placeholder="选择落地页"
+                                         size="small"
+                                         :options="ldy_Options"
+                                         v-model="destination_Arr"
+                                         :props="ldyProps"
+                                         @change="ldy_changeSel">
+                            </el-cascader>
+                        </div>
+
                     </div>
                 </div>
                 <div style="float: right;margin: 20px">
@@ -384,6 +390,27 @@
     export default {
         data () {
             return {
+                ldyProps: {
+                    // 配置字段
+                    label: 'productName',
+                    value: 'pageUrl',
+                    children: 'pages'
+                },
+                destination_url: '', // ***
+                destination_Arr: [], // ***
+                ldy_Options: [{
+                    productName: '资源',
+                    pageUrl: 'axure',
+                    pages: [{
+                        pageUrl: 'axure',
+                        productName: 'Axure Components'
+                    }, {
+                        productName: 'Sketch Templates'
+                    }, {
+                        pageUrl: 'jiaohu',
+                        productName: '组件交互文档'
+                    }]
+                }],
                 js_targeting_id: null, //  下拉框的id
 
                 js_isSureImgNum: 0,
@@ -436,10 +463,8 @@
                 daily_budget_1: 4000000, // 日消耗限额
                 speed_mode_2: false, // 投放速度模式，
                 js_ldy_3: '1', // 落地页
-                js_ldyName_4: '', // ***
                 SearchDXval_5: '',
                 js_betSetInDate_6: '', //  内部限额
-
                 js_betSetInDate: '1',
                 js_betSetInTime: '',
                 js_betSetStyle: 1,
@@ -477,7 +502,6 @@
                 rebuildMsg: {}, // build
                 billing_event: '',
                 optimization_goal: '',
-                destination_url: '',
 
                 setPlanDX: {
                     age: ['暂无描述~'],
@@ -488,11 +512,16 @@
         },
         watch: {
             shopSelListVal (val) {
-                //	            console.log('更新页面数据')
+                //	  console.log('更新页面数据')
                 this.$router.push('/adminPage/setPlan/' + val)
             }
         },
         methods: {
+            ldy_changeSel (ldy) {
+                if (ldy[1]) {
+                    this.destination_url = ldy[1]
+                }
+            },
             initBeforePlan () {
                 // 初始化 编辑msg todo
                 this.SearchDXval_5 = ''
@@ -539,7 +568,6 @@
             async upPlan () {
                 let data = {}
                 data.plans = JSON.parse(JSON.stringify(this.planListData))
-
                 if (data.plans.length > 0) {
                     const loading = this.$loading({
                         lock: true,
@@ -547,10 +575,9 @@
                         spinner: 'el-icon-loading',
                         background: 'rgba(0, 0, 0, 0.6)'
                     })
-                    console.log('==========')
                     data.plans.forEach((val, index) => {
-                        if( val.bid_amount !== undefined ){
-                            val.bid_amount = Number( val.bid_amount ) * 100
+                        if (val.bid_amount !== undefined) {
+                            val.bid_amount = Number(val.bid_amount) * 100
                         }
                         delete val.filterData
                         delete val.shopListData
@@ -559,7 +586,8 @@
                         delete val.js_betSetInDate_6
                         delete val.SearchDXval_5
                     })
-                    let upPlanMsg = await this.$store.dispatch(aTypes.updatePlanMsg, data)
+                    let upPlanMsg = await
+                        this.$store.dispatch(aTypes.updatePlanMsg, data)
                     loading.close()
                     if (upPlanMsg.ok === -2) {
                         this.$message({
@@ -594,7 +622,8 @@
 
                 if (row.adcreative_template_style) {
                     if (row.adcreative_template_style.indexOf('×') > -1) {
-                        filterImgData = await this.$store.dispatch(aTypes.getFilterImg, row.adcreative_template_style.split('×')[0])
+                        filterImgData = await
+                            this.$store.dispatch(aTypes.getFilterImg, row.adcreative_template_style.split('×')[0])
                     }
                 } else {
                     // 无数据
@@ -642,7 +671,8 @@
             },
             async setPlanAds () {
                 this.showAttentBox = true
-                let editDXMsg = await this.$store.dispatch(aTypes.getEditDXMsg)
+                let editDXMsg = await
+                    this.$store.dispatch(aTypes.getEditDXMsg)
                 // 获得焦点 默认打开
                 this.$nextTick(function () {
                     this.$refs.attentInput.$el.querySelector('input').focus()
@@ -883,7 +913,7 @@
                     adcreative_template_id: this.currSelShopList.adcreative_template_id,
                     adcreative_template_desc: this.currSelShopList.adcreative_template_desc,
                     currSelShopList: this.currSelShopList,
-                    destination_url: 'http://ec.flzhan.cn/?r_id=117575582_b5b9cb0df&pagetype=SINGLE&_bid=2759&qz_gdt=__tracestring__',
+                    destination_url: this.destination_url,
                     adcreative_elements: JSON.parse(this.js_templateVal), // 总的模板
 
                     SearchDXval_5: this.SearchDXval_5, // 定向设置 name
@@ -919,11 +949,13 @@
             async searchShopIdFn () {
             },
             choseSelList (msg) {
+                // 代理商变化
                 let obj = {}
                 obj = this.shopSelList.find((item) => {
                     return item.name === msg// 筛选出匹配数据
                 })
                 this.$store.commit(mTypes.setCurrShopList, obj)
+                this.upLdyList()
             },
             getDXID (msg) {
                 let obj = {}
@@ -935,7 +967,7 @@
             },
             copyNewPlan () {
                 if (this.planListData.length > 0) {
-                    this.planListData.push(JSON.parse(JSON.stringify(this.planListData[this.planListData.length - 1])))
+                    this.planListData.unshift(JSON.parse(JSON.stringify(this.planListData[this.planListData.length - 1])))
                 }
             },
             beforeCopyAllPlan () {
@@ -955,7 +987,7 @@
                     lastPlan = this.planListData[this.planListData.length - 1]
                     value = Number(value)
                     for (let i = 0; i < value; i++) {
-                        this.planListData.push(JSON.parse(JSON.stringify(lastPlan)))
+                        this.planListData.unshift(JSON.parse(JSON.stringify(lastPlan)))
                     }
                 }
             },
@@ -964,6 +996,25 @@
                 if (Number(index) >= 0) {
                     this.planListData.splice(index, 1)
                 }
+            },
+            async upLdyList () {
+                let ldyMsg = await this.$store.dispatch(aTypes.getldyList)
+                if (ldyMsg) {
+                    if (ldyMsg.data.length > 0) {
+                        ldyMsg.data.forEach((val, index) => {
+                            if (val.pages[0]) {
+                                val.pageUrl = val.pages[0].pageId
+                            } else {
+                                val.pageUrl = val.productId
+                            }
+                        })
+                    }
+                    if (ldyMsg.data[0] && ldyMsg.data[0].pages) {
+                        this.destination_url = ldyMsg.data[0].pages[0].pageUrl
+                        this.destination_Arr = [ldyMsg.data[0].pageUrl, ldyMsg.data[0].pages[0].pageUrl]
+                    }
+                    this.ldy_Options = ldyMsg.data
+                }
             }
         },
         computed: {
@@ -971,7 +1022,8 @@
                 return this.$store.state.adminPage.currShopList
             }
         },
-        async mounted () {
+        async
+        mounted () {
             //   ads_user_list
             let adsMsg = null
             if (this.$store.state.userList) {
@@ -1001,18 +1053,19 @@
                     return item.name === this.shopSelListVal// 筛选出匹配数据
                 })
                 this.$store.commit(mTypes.setCurrShopList, obj)
+                // 更新落地页 模板
+                this.upLdyList()
             } else {
                 this.shopSelListVal = '选择店铺'
             }
-
             // 设置对象的属性  这样才能双向绑定成功  图片选择
             this.js_enumOption.forEach((val, index) => {
                 this.$set(this.js_enumOption, val.id, null)
             })
         },
         filters: {
-            formateMan(val){
-//                FEMALE
+            formateMan (val) {
+                //                FEMALE
                 if (val === 'MALE') {
                     return '男'
                 } else if (val === 'FEMALE') {
