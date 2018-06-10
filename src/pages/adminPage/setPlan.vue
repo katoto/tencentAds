@@ -373,7 +373,7 @@
                     元 <span style="margin-left: 20px;color: #adb6c0">建议出价
                     <span v-if="js_betSetStyle === 1"><b style="color: #1f2d3d">0.58 ~ 100</b> 元/点击</span>
                     <span v-if="js_betSetStyle === 2"><b style="color: #1f2d3d">1.5 ~ 1000</b> 元/点击</span>
-                    <span v-if="js_betSetStyle === 3">自动出价，按照点击或展示扣费。</span>
+                    <span v-if="js_betSetStyle === 3">（ 自动出价，按照点击或展示扣费 ）</span>
                 </span>
                 </div>
             </section>
@@ -684,7 +684,6 @@
             },
             async listResClick (row) {
                 let filterImgData = null;
-
                 this.currSelShopListID = row.adcreative_template_id
                 this.currSelShopList = row
                 if (row.adcreative_template_style) {
@@ -738,8 +737,7 @@
             },
             async setPlanAds () {
                 this.showAttentBox = true
-                let editDXMsg = await
-                this.$store.dispatch(aTypes.getEditDXMsg)
+                let editDXMsg = await this.$store.dispatch(aTypes.getEditDXMsg)
                 // 获得焦点 默认打开
                 this.$nextTick(function () {
                     this.$refs.attentInput.$el.querySelector('input').focus()
