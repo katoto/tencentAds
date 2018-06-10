@@ -651,13 +651,14 @@
                     })
                     let upPlanMsg = await this.$store.dispatch(aTypes.updatePlanMsg, data)
                     loading.close()
-                    if (upPlanMsg.ok === -2) {
+                    if (upPlanMsg.code !== 200) {
+                        console.error(upPlanMsg.data);
                         this.$message({
                             message: upPlanMsg.message,
                             type: 'error',
                             duration: 1200
                         })
-                    } else if (upPlanMsg.ok == 0) {
+                    } else{
                         this.$message({
                             message: upPlanMsg.message,
                             type: 'success',
