@@ -248,15 +248,17 @@
             <section style="margin-top: 10px;border-top: 2px solid #ccc;padding-top: 10px">
                 <h4>创意设置</h4>
                 <div class="setPlanCY">
-                    <section>
-                        <span v-if="filterData.length > 0"><i
-                            style="color: red">*</i> 请选择{{ js_isSureImgNum }}张图：</span>
+                    <section v-for="(filterData, idx) in filterDataList">
+
+
+
+                        <span><i style="color: red">*</i> 请选择{{ js_isSureImgNumList[idx] }}张{{currSelShopList.adcreative_elements.images[idx]&&(currSelShopList.adcreative_elements.images[idx].width + '*'+ currSelShopList.adcreative_elements.images[idx].height)}}分辨率的{{currSelShopList.adcreative_elements.images[idx].desc||'图片'}}：</span>
                         <ul class="clear" v-if="filterData.length > 0">
-                            <li v-for="( img ) in filterData" @click="planCYClick( img )">
-                                <img class="goodsImg" :class="{opacityImg : !!selectImgObj[img.signature] }"
+                            <li v-for="( img ) in filterData" @click="planCYClick( img, idx )">
+                                <img class="goodsImg" :class="{opacityImg : !!selectImgObjList[idx][img.signature] }"
                                      :src="img.preview_url"
                                      alt="">
-                                <p v-if="!!selectImgObj[img.signature]" class="activeSelTip">
+                                <p v-if="!!selectImgObjList[idx][img.signature]" class="activeSelTip">
                                     <img :src="selectImg" alt="">
                                 </p>
                             </li>
@@ -419,11 +421,14 @@
                 js_targeting_id: null, //  下拉框的id
 
                 js_isSureImgNum: 0,
+                js_isSureImgNumList: [],
                 js_enumOption: [],
                 js_text: [],
                 js_url: [],
                 selectImgObj: {}, // 选者图片用
                 //                beforeSendPlanArr: [], // 上传之前计划数组
+
+                selectImgObjList: [],
 
                 selectImg: selectImg,
                 js_showBetTime: '',
@@ -476,6 +481,7 @@
 
                 filterData: [],
 
+                filterDataList: [],
                 shopListData: [],
 
                 showAttentBox: false,
@@ -568,9 +574,12 @@
                 this.currSelShopListID = ''
                 this.currSelShopList = ''
                 this.js_isSureImgNum = 0
+                this.js_isSureImgNumList = []
 
                 this.filterData = []
+                this.filterDataList = []
                 this.selectImgObj = {}
+                this.selectImgObjList = []
 
                 this.js_enumOption = []
                 this.js_text = []
@@ -632,8 +641,10 @@
                             val.bid_amount = Number(val.bid_amount) * 100
                         }
                         delete val.filterData
+                        delete val.filterDataList
                         delete val.shopListData
                         delete val.selectImgObj
+                        delete val.selectImgObjList
                         delete val.currSelShopList
                         delete val.js_betSetInDate_6
                         delete val.SearchDXval_5
@@ -663,76 +674,75 @@
                     })
                 }
             },
-            planCYClick (imgData) {
+            planCYClick (imgData, idx) {
                 // 选择图片
                 let js_selectImgArr = []
-                if( !this.selectImgObj[imgData.signature] ){
-                    for (let item in this.selectImgObj) {
-                        if (this.selectImgObj[item]) {
-                            js_selectImgArr.push(this.selectImgObj[item])
+                if( !this.selectImgObjList[idx][imgData.signature] ){
+                    for (let item in this.selectImgObjList[idx]) {
+                        if (this.selectImgObjList[idx][item]) {
+                            js_selectImgArr.push(this.selectImgObjList[idx][item])
                         }
                     }
-                    if (Number(this.js_isSureImgNum) === js_selectImgArr.length) {
+                    if (Number(this.js_isSureImgNumList[idx]) === js_selectImgArr.length) {
                         this.$message({
-                            message: '只能选择' + this.js_isSureImgNum + '张图',
+                            message: '只能选择' + this.js_isSureImgNumList[idx] + '张图',
                             type: 'error'
                         })
                         return false
                     }
                 }
-                this.selectImgObj[imgData.signature] ? this.selectImgObj[imgData.signature] = null : this.selectImgObj[imgData.signature] = imgData;
+                this.selectImgObjList[idx][imgData.signature] ? this.selectImgObjList[idx][imgData.signature] = null : this.selectImgObjList[idx][imgData.signature] = imgData;
             },
             async listResClick (row) {
                 let filterImgData = null;
+                let filterImgList = [];
                 this.currSelShopListID = row.adcreative_template_id
                 this.currSelShopList = row
-                if (row.adcreative_template_style) {
-                    if (row.adcreative_template_style.indexOf('×') > -1) {
-                        filterImgData = await this.$store.dispatch(aTypes.getFilterImg, row.adcreative_template_style.split('×'))
-                    }
-                } else {
-                    // 无数据
-                    this.filterData = []
+
+
+                if(row.adcreative_elements.images) {
+                    filterImgList = await Promise.all(
+                        row.adcreative_elements.images.map(imgs => this.$store.dispatch(aTypes.getFilterImg, [imgs.width, imgs.height]))
+                    )
                 }
-                if (filterImgData.code === 0 || filterImgData.code === '200') {
-                    this.filterData = filterImgData.data.list
-                    this.filterData.forEach((val, index) => {
+
+                this.filterDataList = filterImgList.map(filter => filter.data.list);
+
+                let selectImgObjList = []
+                this.filterDataList.forEach(filterData => {
+                    let selectImgObj = {}
+
+                    filterData.forEach((val, index) => {
                         // 设置对象的属性  这样才能双向绑定成功
-                        this.$set(this.selectImgObj, val.signature, null)
+                        selectImgObj[val.signature] = null
+
                     })
-                    /* 动态生成结构 */
-                    if (row.adcreative_elements) {
-                        // 初始化
-                        this.js_isSureImgNum = 0
-                        this.js_text = []
-                        this.js_url = []
-                        this.js_enumOption = []
-                        /* 图片要求 */
-                        console.log('===')
-                        console.log( row.adcreative_elements.images )
-                        console.log('===')
-                        if (row.adcreative_elements.images && row.adcreative_elements.images.length > 0) {
-                            this.js_isSureImgNum = row.adcreative_elements.images.length
-                        }
-                        /* 输入框要求 */
-                        if (row.adcreative_elements.text && row.adcreative_elements.text.length > 0) {
-                            this.js_text = row.adcreative_elements.text
-                        }
-                        /* url要求 */
-                        if (row.adcreative_elements.url && row.adcreative_elements.url.length > 0) {
-                            this.js_url = row.adcreative_elements.url
-                        }
-                        /* option要求 */
-                        if (row.adcreative_elements.enum && row.adcreative_elements.enum.length > 0) {
-                            this.js_enumOption = row.adcreative_elements.enum
-                        }
+                    selectImgObjList.push(selectImgObj);
+                })
+                this.selectImgObjList = selectImgObjList
+                /* 动态生成结构 */
+                if (row.adcreative_elements) {
+                    // 初始化
+                    this.js_isSureImgNumList = []
+                    this.js_text = []
+                    this.js_url = []
+                    this.js_enumOption = []
+                    /* 图片要求 */
+                    if (row.adcreative_elements.images && row.adcreative_elements.images.length > 0) {
+                        this.js_isSureImgNumList = row.adcreative_elements.images.map(item => item.ids.length)
                     }
-                } else {
-                    this.$message({
-                        message: filterImgData.message,
-                        type: 'error',
-                        duration: 1200
-                    })
+                    /* 输入框要求 */
+                    if (row.adcreative_elements.text && row.adcreative_elements.text.length > 0) {
+                        this.js_text = row.adcreative_elements.text
+                    }
+                    /* url要求 */
+                    if (row.adcreative_elements.url && row.adcreative_elements.url.length > 0) {
+                        this.js_url = row.adcreative_elements.url
+                    }
+                    /* option要求 */
+                    if (row.adcreative_elements.enum && row.adcreative_elements.enum.length > 0) {
+                        this.js_enumOption = row.adcreative_elements.enum
+                    }
                 }
             },
             async setPlanAds () {
@@ -775,12 +785,18 @@
                 if (rowMsg.currSelShopList.adcreative_elements) {
                     // 初始化
                     this.js_isSureImgNum = 0
+                    this.js_isSureImgNumList = []
                     this.js_text = []
                     this.js_url = []
                     this.js_enumOption = []
                     /* 图片要求 */
                     if (rowMsg.currSelShopList.adcreative_elements.images && rowMsg.currSelShopList.adcreative_elements.images.length > 0) {
                         this.js_isSureImgNum = rowMsg.currSelShopList.adcreative_elements.images.length
+                    }
+                    /* 图片要求 */
+                    if (rowMsg.currSelShopList.adcreative_elements.images && rowMsg.currSelShopList.adcreative_elements.images.length > 0) {
+                        this.js_isSureImgNumList = rowMsg.currSelShopList.adcreative_elements.images.map(item => item.ids.length)
+
                     }
                     /* 输入框要求 */
                     if (rowMsg.currSelShopList.adcreative_elements.text && rowMsg.currSelShopList.adcreative_elements.text.length > 0) {
@@ -809,12 +825,14 @@
                     this.adcreative_elements = rowMsg.adcreative_elements
                     this.SearchDXval_5 = rowMsg.SearchDXval_5
                     this.selectImgObj = rowMsg.selectImgObj
+                    this.selectImgObjList = rowMsg.selectImgObjList
                     this.js_betSetInDate = rowMsg.js_betSetInDate
                     this.js_longStart = rowMsg.js_longStart
                     this.js_betweenStartEnd = rowMsg.js_betweenStartEnd
                     this.js_betSetInTime = rowMsg.js_betSetInTime
                     this.js_betSetStyle = rowMsg.js_betSetStyle
                     this.filterData = rowMsg.filterData
+                    this.filterDataList = rowMsg.filterDataList
                     this.shopListData = rowMsg.shopListData
                     this.currSelShopListID = rowMsg.currSelShopListID
                 }
@@ -839,19 +857,28 @@
                     })
                     return false
                 }
-                let js_selectImgArr = []
-                for (let item in this.selectImgObj) {
-                    if (this.selectImgObj[item]) {
-                        js_selectImgArr.push(this.selectImgObj[item])
+
+                let imgflag = false;
+                this.selectImgObjList.some(selectImgObj => {
+                    let js_selectImgArr = []
+                    for (let item in selectImgObj) {
+                        if (selectImgObj[item]) {
+                            js_selectImgArr.push(selectImgObj[item])
+                        }
                     }
-                }
-                if (js_selectImgArr.length === 0) {
-                    this.$message({
-                        message: '请选择创意图片',
-                        type: 'error'
-                    })
+                    if (js_selectImgArr.length === 0) {
+                        this.$message({
+                            message: '请选择创意图片',
+                            type: 'error'
+                        });
+                        imgflag = true;
+                        return true
+                    }
+                })
+                if(imgflag) {
                     return false
                 }
+
                 if (this.js_betSetInDate === '') {
                     this.$message({
                         message: '请选择投放日期',
@@ -907,24 +934,40 @@
                         type: 'error'
                     })
                 }
+
+                let selectImgUrl = []
                 // new  todo
                 if (this.currSelShopList && this.currSelShopList.adcreative_elements) {
+                    let images = this.currSelShopList.adcreative_elements.images
                     this.js_templateVal = this.currSelShopList.adcreative_elements.template
                     this.test_textArr = this.currSelShopList.adcreative_elements.text
-                    if (Number(this.js_isSureImgNum) !== js_selectImgArr.length) {
-                        this.$message({
-                            message: '只能选择' + this.js_isSureImgNum + '张图',
-                            type: 'error'
-                        })
-                        return false
-                    }
-                    if (js_selectImgArr.length > 0) {
-                        js_selectImgArr.forEach((val, index) => {
-                            if (this.js_templateVal) {
-                                this.js_templateVal = this.js_templateVal.replace('#img_' + index, val.image_id)
+
+
+                    let imgflag = false;
+                    this.selectImgObjList.forEach((selectImgObj, idx) => {
+                        let js_selectImgArr = []
+                        Object.keys(selectImgObj).forEach(key => {
+                            if(selectImgObj[key]) {
+                                selectImgUrl.push(selectImgObj[key].preview_url)
+                                js_selectImgArr.push(selectImgObj[key]);
+                                images[idx].ids.forEach((id, index) => {
+                                    this.js_templateVal = this.js_templateVal.replace(id, selectImgObj[key].image_id)
+                                })
                             }
-                        })
-                    }
+                        });
+
+
+                        if (Number(this.js_isSureImgNumList[idx]) !== js_selectImgArr.length) {
+                            this.$message({
+                                message: `只能选择${this.js_isSureImgNum}张${images[idx].width}*${images[idx].height}分辨率的图`,
+                                type: 'error'
+                            })
+                            imgflag = true;
+                            return true
+                        }
+                    });
+                    if(imgflag) return false;
+
                     if (this.js_text.length > 0) {
                         let replaceMsgBack = this.replaceMsg(this.js_text, 'txt_', this.test_textArr)
                         if (!replaceMsgBack) {
@@ -959,13 +1002,6 @@
                     this.end_date = this.js_betweenStartEnd[1]
                 }
 
-                let selectImgUrl = []
-                for (let item in this.selectImgObj) {
-                    if (this.selectImgObj[item] && this.selectImgObj[item].preview_url) {
-                        selectImgUrl.push(this.selectImgObj[item].preview_url)
-                    }
-                }
-
                 Object.assign(currLineObj, {
                     daily_budget: this.daily_budget_1, // 日限额
                     speed_mode: this.speed_mode_2,
@@ -985,6 +1021,7 @@
                     SearchDXval_5: this.SearchDXval_5, // 定向设置 name
                     //                    currSelShopList: this.currSelShopList, // 资源位设置
                     selectImgObj: this.selectImgObj, //  创意设置
+                    selectImgObjList: this.selectImgObjList, //  创意设置
                     selectImgUrl: selectImgUrl,
 
                     js_betSetInDate: this.js_betSetInDate, // 投放日期
@@ -997,11 +1034,12 @@
                     js_betSetInDate_6: this.js_betSetInDate_6, // 出价价格
 
                     filterData: this.filterData,
+                    filterDataList: this.filterDataList,
                     shopListData: this.shopListData,
                     currSelShopListID: this.currSelShopListID
 
                 })
-                console.log('dialong 所有数据')
+                console.log('dialog 所有数据')
                 console.log(currLineObj)
                 // 计划表格
                 if (this._index === undefined || this._index === null) {
