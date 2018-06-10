@@ -19,8 +19,8 @@
                 </el-select>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 当前UID：<span style="color: #606266" v-if="currShopList">{{ currShopList.account_id }}</span>
-                <el-input size="small" style="margin-left: 20px" v-model="shopIputId" placeholder="搜索店铺ID">
-                    <i slot="prefix" class="el-input__icon el-icon-search"></i>
+                <el-input size="small" disabled style="margin-left: 20px" v-model="shopIputId" placeholder="搜索店铺ID">
+                    <i slot="prefix" disabled class="el-input__icon el-icon-search"></i>
                 </el-input>
                 <!--@click="onSubmit"-->
                 <el-button size="small" style="margin-left: 10px" type="primary">搜索</el-button>
@@ -665,7 +665,22 @@
             },
             planCYClick (imgData) {
                 // 选择图片
-                this.selectImgObj[imgData.signature] ? this.selectImgObj[imgData.signature] = null : this.selectImgObj[imgData.signature] = imgData
+                let js_selectImgArr = []
+                if( !this.selectImgObj[imgData.signature] ){
+                    for (let item in this.selectImgObj) {
+                        if (this.selectImgObj[item]) {
+                            js_selectImgArr.push(this.selectImgObj[item])
+                        }
+                    }
+                    if (Number(this.js_isSureImgNum) === js_selectImgArr.length) {
+                        this.$message({
+                            message: '只能选择' + this.js_isSureImgNum + '张图',
+                            type: 'error'
+                        })
+                        return false
+                    }
+                }
+                this.selectImgObj[imgData.signature] ? this.selectImgObj[imgData.signature] = null : this.selectImgObj[imgData.signature] = imgData;
             },
             async listResClick (row) {
                 let filterImgData = null
@@ -991,7 +1006,6 @@
                 })
                 console.log('dialong 所有数据')
                 console.log(currLineObj)
-
                 // 计划表格
                 if (this._index === undefined || this._index === null) {
                     this.planListData.push(currLineObj)
@@ -1078,8 +1092,7 @@
                 return this.$store.state.adminPage.currShopList
             }
         },
-        async
-        mounted () {
+        async mounted () {
             //   ads_user_list
             let adsMsg = null
             if (this.$store.state.userList) {
@@ -1134,16 +1147,10 @@
                 switch (val) {
                 case '1':
                     return 'CPC'
-
-                    break
                 case '2':
                     return 'CPM'
-
-                    break
                 case '3':
                     return 'oCPA'
-
-                    break
                 }
             },
             format (time, format = 'yyyy-MM-dd') {
