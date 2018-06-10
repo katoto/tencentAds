@@ -40,6 +40,23 @@ const actionsInfo = mapActions({
         }
     },
 
+    /* ads adminCenter 列表接口 */
+    async getAdsUserListRefresh ({ state, commit, dispatch}, pageData) {
+        try {
+            let InfoData = null
+            if (pageData.qqUsername) {
+                InfoData = await ajax.get(`/users/ads_user_refresh?qqUsername=${pageData.qqUsername}`)
+            }
+            return InfoData
+        } catch (e) {
+            Message({
+                message: e.message,
+                type: 'error',
+                duration: 5 * 1000
+            })
+        }
+    },
+
     /* 获取定向设置 列表数据 */
     async getEditDXMsg ({state, commit, dispatch}, data) {
         try {

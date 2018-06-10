@@ -68,7 +68,8 @@
                                         type: 'success',
                                         duration: 1200
                                     })
-                                    this.$store.commit('setUserList', loginMsg.data)
+                                    this.$store.commit('setUserList', loginMsg.data);
+                                    await this.$store.dispatch('adminModule/getAdsUserListRefresh', {qqUsername:this.ruleForm2.name })
                                     await wait(500)
                                     this.$router.replace('/adminPage/adminCenter')
                                 } else {
