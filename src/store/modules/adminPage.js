@@ -85,11 +85,12 @@ const actionsInfo = mapActions({
     },
 
     /* 获取 过滤的图片 */
-    async getFilterImg ({commit, dispatch}, data) {
+    async getFilterImg ({commit, dispatch}, imgArr) {
         try {
             let InfoData = null
+
             if (state && state.currShopList) {
-                InfoData = await ajax.get(`/tx/images?token=${state.currShopList.token}&account_id=${state.currShopList.account_id}&filtering=[{"field":"image_width","operator":"EQUALS","values":[${Number(data)}]}]`)
+                InfoData = await ajax.get(`/tx/images?token=${state.currShopList.token}&account_id=${state.currShopList.account_id}&filtering=[{"field":"image_width","operator":"EQUALS","values":[${Number(imgArr[0])}]},{"field":"image_height","operator":"EQUALS","values":[${parseFloat(imgArr[1])}]}]`)
             } else {
                 Message({
                     message: 'getFilterImg 取token error',

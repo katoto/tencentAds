@@ -58,7 +58,7 @@
                                              @change="ldy_changeSel">
                                 </el-cascader>
                             </div>
-                            <p class="css_ldy_p"> 当前选择的落地页： <a target="_blank"
+                            <p class="css_ldy_p"> 当前落地页： <a target="_blank"
                                                                :href="destination_url">{{ destination_url }}</a></p>
                         </section>
 
@@ -373,7 +373,7 @@
                     元 <span style="margin-left: 20px;color: #adb6c0">建议出价
                     <span v-if="js_betSetStyle === 1"><b style="color: #1f2d3d">0.58 ~ 100</b> 元/点击</span>
                     <span v-if="js_betSetStyle === 2"><b style="color: #1f2d3d">1.5 ~ 1000</b> 元/点击</span>
-                    <span v-if="js_betSetStyle === 3"><b style="color: #1f2d3d">10 ~ 20</b> /点击 ？？？</span>
+                    <span v-if="js_betSetStyle === 3">自动出价，按照点击或展示扣费。</span>
                 </span>
                 </div>
             </section>
@@ -683,21 +683,18 @@
                 this.selectImgObj[imgData.signature] ? this.selectImgObj[imgData.signature] = null : this.selectImgObj[imgData.signature] = imgData;
             },
             async listResClick (row) {
-                let filterImgData = null
+                let filterImgData = null;
 
                 this.currSelShopListID = row.adcreative_template_id
                 this.currSelShopList = row
-
                 if (row.adcreative_template_style) {
                     if (row.adcreative_template_style.indexOf('×') > -1) {
-                        filterImgData = await
-                        this.$store.dispatch(aTypes.getFilterImg, row.adcreative_template_style.split('×')[0])
+                        filterImgData = await this.$store.dispatch(aTypes.getFilterImg, row.adcreative_template_style.split('×'))
                     }
                 } else {
                     // 无数据
                     this.filterData = []
                 }
-
                 if (filterImgData.code === 0 || filterImgData.code === '200') {
                     this.filterData = filterImgData.data.list
                     this.filterData.forEach((val, index) => {
@@ -711,8 +708,10 @@
                         this.js_text = []
                         this.js_url = []
                         this.js_enumOption = []
-
                         /* 图片要求 */
+                        console.log('===')
+                        console.log( row.adcreative_elements.images )
+                        console.log('===')
                         if (row.adcreative_elements.images && row.adcreative_elements.images.length > 0) {
                             this.js_isSureImgNum = row.adcreative_elements.images.length
                         }
