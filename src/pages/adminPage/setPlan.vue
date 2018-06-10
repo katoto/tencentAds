@@ -706,7 +706,7 @@
                     )
                 }
 
-                this.filterDataList = filterImgList.map(filter => filter.data.list);
+                this.filterDataList = filterImgList.map(filter => filter.data.list).map((item, idx) => (item.map(item=>item).filter(it => it.file_size<row.adcreative_elements.images[idx].maxsize)));
 
                 let selectImgObjList = []
                 this.filterDataList.forEach(filterData => {
