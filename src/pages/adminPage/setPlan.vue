@@ -1002,6 +1002,7 @@
                     this.end_date = this.js_betweenStartEnd[1]
                 }
 
+                console.log(this.js_templateVal)
                 Object.assign(currLineObj, {
                     daily_budget: this.daily_budget_1, // 日限额
                     speed_mode: this.speed_mode_2,
