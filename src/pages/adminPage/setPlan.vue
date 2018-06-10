@@ -373,8 +373,8 @@
                               @input="check_SetInDate( $event )"
                               placeholder="出价"></el-input>
                     元 <span style="margin-left: 20px;color: #adb6c0">建议出价
-                    <span v-if="js_betSetStyle === 1"><b style="color: #1f2d3d">0.58 ~ 100</b> 元/点击</span>
-                    <span v-if="js_betSetStyle === 2"><b style="color: #1f2d3d">1.5 ~ 1000</b> 元/点击</span>
+                    <span v-if="js_betSetStyle === 1"><b style="color: #1f2d3d">0.6 ~ 1.28</b> 元/点击</span>
+                    <span v-if="js_betSetStyle === 2"><b style="color: #1f2d3d">15 ~ 15.4</b> 元/千次曝光</span>
                     <span v-if="js_betSetStyle === 3">（ 自动出价，按照点击或展示扣费 ）</span>
                 </span>
                 </div>
@@ -399,7 +399,7 @@
                 test_textArr: [],
                 ldyProps: {
                     // 配置字段
-                    label: 'productName',
+                    label: 'pageName',
                     value: 'pageUrl',
                     children: 'pages'
                 },
@@ -439,7 +439,7 @@
                         onClick (picker) {
                             const end = new Date()
                             const start = new Date()
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 7)
                             picker.$emit('pick', [start, end])
                         }
                     }, {
@@ -447,7 +447,7 @@
                         onClick (picker) {
                             const end = new Date()
                             const start = new Date()
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 30)
                             picker.$emit('pick', [start, end])
                         }
                     }, {
@@ -455,13 +455,13 @@
                         onClick (picker) {
                             const end = new Date()
                             const start = new Date()
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 90)
                             picker.$emit('pick', [start, end])
                         }
                     }]
                 },
 
-                js_longStart: '',
+                js_longStart: new Date(),
                 pickerOptions_Long: {
                     disabledDate (time) {
                         return time.getTime() < Date.now()
@@ -471,7 +471,7 @@
                 currSelShopListID: '', // 选择的资源id
                 currSelShopList: '', // 选择的资源位
                 daily_budget_1: 4000000, // 日消耗限额
-                speed_mode_2: false, // 投放速度模式，
+                speed_mode_2: true, // 投放速度模式，
                 js_ldy_3: '1', // 落地页
                 SearchDXval_5: '',
                 js_betSetInDate_6: '', //  内部限额
@@ -483,11 +483,8 @@
 
                 filterDataList: [],
                 shopListData: [],
-
                 showAttentBox: false,
-
                 SearchDXoptions: [],
-
                 shopIputId: '',
 
                 shopSelList: [],
@@ -1110,10 +1107,11 @@
                     if (ldyMsg.data.length > 0) {
                         ldyMsg.data.forEach((val, index) => {
                             if (val.pages[0]) {
-                                val.pageUrl = val.pages[0].pageId
+                                val.pageUrl = val.pages[0].pageId;
                             } else {
-                                val.pageUrl = val.productId
+                                val.pageUrl = val.productId;
                             }
+                            val.pageName = val.productName;
                         })
                     }
                     if (ldyMsg.data[0] && ldyMsg.data[0].pages) {
