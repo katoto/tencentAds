@@ -252,7 +252,7 @@
 
 
 
-                        <span><i style="color: red">*</i> 请选择{{ js_isSureImgNumList[idx] }}张{{currSelShopList.adcreative_elements.images[idx]&&(currSelShopList.adcreative_elements.images[idx].width + '*'+ currSelShopList.adcreative_elements.images[idx].height)}}分辨率的{{currSelShopList.adcreative_elements.images[idx].desc||'图片'}}：</span>
+                        <span><i style="color: red">*</i> 请选择{{ js_isSureImgNumList[idx] }}张{{currSelShopList.adcreative_elements.images[idx]&&(currSelShopList.adcreative_elements.images[idx].width + '*'+ currSelShopList.adcreative_elements.images[idx].height)}}分辨率的{{currSelShopList.adcreative_elements.images[idx]&&currSelShopList.adcreative_elements.images[idx].desc||'图片'}}：</span>
                         <ul class="clear" v-if="filterData.length > 0">
                             <li v-for="( img ) in filterData" @click="planCYClick( img, idx )">
                                 <img class="goodsImg" :class="{opacityImg : !!selectImgObjList[idx][img.signature] }"
@@ -1020,7 +1020,7 @@
 
                     SearchDXval_5: this.SearchDXval_5, // 定向设置 name
                     //                    currSelShopList: this.currSelShopList, // 资源位设置
-                    selectImgObj: this.selectImgObj, //  创意设置
+                    // selectImgObj: this.selectImgObj, //  创意设置
                     selectImgObjList: this.selectImgObjList, //  创意设置
                     selectImgUrl: selectImgUrl,
 
