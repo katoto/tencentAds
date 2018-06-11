@@ -461,7 +461,7 @@
                     }]
                 },
 
-                js_longStart: new Date(),
+                js_longStart: new Date( new Date().getTime() + 3600 * 1000 * 24 ),
                 pickerOptions_Long: {
                     disabledDate (time) {
                         return time.getTime() < Date.now()
