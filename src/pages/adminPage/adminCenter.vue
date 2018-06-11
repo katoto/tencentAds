@@ -43,10 +43,15 @@
                     width="100">
                 </el-table-column>
                 <el-table-column
-                    prop="conversionCost"
-                    label="转化成本"
-                    width="100">
+                        prop="account_id"
+                        label="广告主ID"
+                        width="100">
                 </el-table-column>
+                <!--<el-table-column-->
+                    <!--prop="conversionCost"-->
+                    <!--label="转化成本"-->
+                    <!--width="100">-->
+                <!--</el-table-column>-->
                 <el-table-column
                     label="关注"
                     width="110"

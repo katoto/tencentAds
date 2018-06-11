@@ -36,7 +36,7 @@
                         <el-input style="width: 130px" size="small" v-model="daily_budget_1"
                                   placeholder="日限额"></el-input>
                         元
-                        <span style="margin-left: 30px">投放模式：</span>
+                        <span style="margin-left: 30px">投放模式{{speed_mode_2}}：</span>
                         <el-switch style="color: #606266"
                                    size="small"
                                    v-model="speed_mode_2"
@@ -163,7 +163,7 @@
                                 <p style="padding-bottom: 10px;font-weight: bold">所选定向：<span>{{ SearchDXval_5 }}</span>
                                 </p>
                                 <section class="planEditDXContent"
-                                         style="width: 100%;height: 300px;overflow-y: scroll;border-top: 1px solid #ebfafa">
+                                         style="width: 100%;height: 160px;overflow-y: scroll;border-top: 1px solid #ebfafa">
                                     <template v-for="(val , key) in setPlanDX">
                                         <div v-if="key ==='gender' || key ==='age'||key ==='network_type'">
                                             <p v-if="key ==='gender'" style="margin-top: 10px">性别： <span
@@ -636,6 +636,17 @@
                         if (val.bid_amount !== undefined) {
                             val.bid_amount = Number(val.bid_amount) * 100
                         }
+	                    if (val.daily_budget !== undefined) {
+		                    val.daily_budget = Number(val.daily_budget) * 100
+	                    }
+	                    if (val.speed_mode !== undefined) {
+		                    if (val.speed_mode) {
+			                    val.speed_mode = 'SPEED_MODE_STANDARD'
+		                    } else {
+			                    val.speed_mode = 'SPEED_MODE_FAST'
+		                    }
+	                    }
+
                         delete val.filterData
                         delete val.filterDataList
                         delete val.shopListData
@@ -984,12 +995,7 @@
                         }
                     }
                 }
-                /* 投放模式 */
-                if (this.speed_mode_2) {
-                    this.speed_mode_2 = 'SPEED_MODE_STANDARD'
-                } else {
-                    this.speed_mode_2 = 'SPEED_MODE_FAST'
-                }
+
 
                 if (this.js_betSetInDate === '1') {
                     this.begin_date = this.js_longStart
