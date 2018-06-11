@@ -1261,8 +1261,8 @@
 
     .setPlanCY ul li .goodsImg {
         display: block;
-        width: 130px;
-        height: 130px;
+        width: 110px;
+        height: 110px;
     }
 
     .setPlanCY .opacityImg {
@@ -1290,8 +1290,8 @@
     }
 
     .setPlanCY ul li {
-        width: 130px;
-        height: 130px;
+        width: 110px;
+        height: 110px;
         border: 1px solid transparent;
         float: left;
         margin-left: 20px;
