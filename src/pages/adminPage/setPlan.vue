@@ -761,7 +761,7 @@
                     this.$refs.attentInput.$el.querySelector('input').focus()
                 })
                 if (editDXMsg.code !== 11000) {
-                    this.SearchDXoptions = editDXMsg.data.list
+                    this.SearchDXoptions = editDXMsg.data.list.filter(item=> item.targeting_name.length<25)
                 } else {
                     this.$message({
                         message: editDXMsg.message,
