@@ -62,7 +62,7 @@ const actionsInfo = mapActions({
         try {
             let InfoData = null
             if (state && state.currShopList) {
-                InfoData = await ajax.get(`/tx/targeting?token=${state.currShopList.token}&account_id=${state.currShopList.account_id}`)
+                InfoData = await ajax.get(`/tx/targeting?token=${state.currShopList.token}&account_id=${state.currShopList.account_id}&page_size=50`)
             } else {
                 Message({
                     message: 'getEditDXMsg 取token error',
@@ -107,7 +107,7 @@ const actionsInfo = mapActions({
             let InfoData = null
 
             if (state && state.currShopList) {
-                InfoData = await ajax.get(`/tx/images?token=${state.currShopList.token}&account_id=${state.currShopList.account_id}&filtering=[{"field":"image_width","operator":"EQUALS","values":[${Number(imgArr[0])}]},{"field":"image_height","operator":"EQUALS","values":[${parseFloat(imgArr[1])}]}]`)
+                InfoData = await ajax.get(`/tx/images?token=${state.currShopList.token}&account_id=${state.currShopList.account_id}&&page_size=50&filtering=[{"field":"image_width","operator":"EQUALS","values":[${Number(imgArr[0])}]},{"field":"image_height","operator":"EQUALS","values":[${parseFloat(imgArr[1])}]}]`)
             } else {
                 Message({
                     message: 'getFilterImg 取token error',
