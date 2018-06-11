@@ -461,13 +461,12 @@
                     }]
                 },
 
-                js_longStart: new Date( new Date().getTime() + 3600 * 1000 * 24 ),
+                js_longStart: this.format( new Date()),
                 pickerOptions_Long: {
                     disabledDate (time) {
                         return time.getTime() < Date.now()
                     }
                 },
-
                 currSelShopListID: '', // 选择的资源id
                 currSelShopList: '', // 选择的资源位
                 daily_budget_1: 4000000, // 日消耗限额
@@ -1120,7 +1119,29 @@
                     }
                     this.ldy_Options = ldyMsg.data
                 }
-            }
+            },
+	        format (time, format = 'yyyy-MM-dd') {
+		        let t = new Date(time)
+		        let tf = function (i) {
+			        return (i < 10 ? '0' : '') + i
+		        }
+		        return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
+			        switch (a) {
+				        case 'yyyy':
+					        return tf(t.getFullYear())
+				        case 'MM':
+					        return tf(t.getMonth() + 1)
+				        case 'mm':
+					        return tf(t.getMinutes())
+				        case 'dd':
+					        return tf(t.getDate())
+				        case 'HH':
+					        return tf(t.getHours())
+				        case 'ss':
+					        return tf(t.getSeconds())
+			        }
+		        })
+	        }
         },
         computed: {
             currShopList () {
