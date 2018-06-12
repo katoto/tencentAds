@@ -365,7 +365,7 @@
                         <el-radio-group v-model="js_betSetStyle">
                             <el-radio :label="1">CPC</el-radio>
                             <el-radio :label="2">CPM</el-radio>
-                            <el-radio :label="3">oCPA</el-radio>
+                            <el-radio :label="3" :disabled="!surpportOcpa">oCPA</el-radio>
                         </el-radio-group>
                     </div>
                     <span style="margin-left: 36px"><b style="color: red">*</b> 出价额度 &nbsp;&nbsp;</span>
@@ -477,6 +477,7 @@
                 js_betSetInDate: '1',
                 js_betSetInTime: '',
                 js_betSetStyle: 1,
+                surpportOcpa: false,
 
                 filterData: [],
 
@@ -564,6 +565,7 @@
                 }
             },
             initBeforePlan () {
+                this.surpportOcpa = false;
                 // 初始化 编辑msg todo
                 this.SearchDXval_5 = ''
                 this.shopListData = []
@@ -702,6 +704,16 @@
                 this.selectImgObjList[idx][imgData.signature] ? this.selectImgObjList[idx][imgData.signature] = null : this.selectImgObjList[idx][imgData.signature] = imgData;
             },
             async listResClick (row) {
+                this.js_betSetStyle = 1; //恢复默认
+                this.surpportOcpa = false;
+                if (row.adcreative_template_site === 'SITE_SET_MOBILE_INNER'||
+                    row.adcreative_template_site === 'SITE_SET_MOBILE_UNION'||
+                    row.adcreative_template_site === 'SITE_SET_TENCENT_NEWS'||
+                    row.adcreative_template_site === 'SITE_SET_TENCENT_VIDEO'||
+                    row.adcreative_template_site === 'SITE_SET_TENCENT_KUAIBAO') {
+                    this.surpportOcpa = true
+                }
+
                 let filterImgData = null;
                 let filterImgList = [];
                 this.currSelShopListID = row.adcreative_template_id
@@ -1005,16 +1017,29 @@
                     this.end_date = this.js_betweenStartEnd[1]
                 }
 
-                console.log(this.js_templateVal)
+
+                let billing_event = 'BILLINGEVENT_CLICK';
+                let optimization_goal = 'OPTIMIZATIONGOAL_CLICK';
+                if(this.js_betSetStyle===2) {
+                    billing_event = 'BILLINGEVENT_IMPRESSION';
+                    optimization_goal = 'OPTIMIZATIONGOAL_IMPRESSIONS'
+                } else if(this.js_betSetStyle===3) {
+                    billing_event = 'BILLINGEVENT_CLICK';
+                    optimization_goal = 'OPTIMIZATIONGOAL_ECOMMERCE_ORDER';
+                }
+
+
+
+
                 Object.assign(currLineObj, {
                     daily_budget: this.daily_budget_1, // 日限额
                     speed_mode: this.speed_mode_2,
                     begin_date: this.begin_date,
                     end_date: this.end_date,
-                    billing_event: 'BILLINGEVENT_CLICK',
+                    billing_event,
                     bid_amount: this.js_betSetInDate_6,
 
-                    optimization_goal: 'OPTIMIZATIONGOAL_CLICK',
+                    optimization_goal,
                     targeting_id: this.js_targeting_id, // 定向设置 id,
                     adcreative_template_id: this.currSelShopList.adcreative_template_id,
                     adcreative_template_desc: this.currSelShopList.adcreative_template_desc,
