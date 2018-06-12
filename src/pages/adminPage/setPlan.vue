@@ -163,7 +163,7 @@
                                 <p style="padding-bottom: 10px;font-weight: bold">所选定向：<span>{{ SearchDXval_5 }}</span>
                                 </p>
                                 <section class="planEditDXContent"
-                                         style="width: 100%;height: 160px;overflow-y: scroll;border-top: 1px solid #ebfafa">
+                                         style="width: 100%;height: 150px;overflow-y: scroll;border-top: 1px solid #ebfafa">
                                     <template v-for="(val , key) in setPlanDX">
                                         <div v-if="key ==='gender' || key ==='age'||key ==='network_type'">
                                             <p v-if="key ==='gender'" style="margin-top: 10px">性别： <span
@@ -1308,9 +1308,9 @@
     }
 
     .setPlanCY ul {
-        padding: 30px 10px;
+        padding: 10px 5px;
         border: 1px solid #d5d5d5;
-        height: 300px;
+        height: 280px;
         overflow-y: scroll;
     }
 
@@ -1319,7 +1319,7 @@
         height: 110px;
         border: 1px solid transparent;
         float: left;
-        margin-left: 20px;
+        margin-left: 15px;
         margin-top: 10px;
         cursor: pointer;
     }
