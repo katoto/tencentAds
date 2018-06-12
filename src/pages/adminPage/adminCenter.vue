@@ -29,7 +29,12 @@
                 style="width: 100%">
                 <el-table-column
                     prop="name"
-                    label="店铺名称">
+                    label="广告主名称">
+                </el-table-column>
+                <el-table-column
+                    prop="account_id"
+                    label="广告主ID"
+                    width="100">
                 </el-table-column>
                 <el-table-column
                     prop="totalConsume"
@@ -40,12 +45,7 @@
                 <el-table-column
                     prop="banlance"
                     label="余额"
-                    width="100">
-                </el-table-column>
-                <el-table-column
-                        prop="account_id"
-                        label="广告主ID"
-                        width="100">
+                    width="90">
                 </el-table-column>
                 <!--<el-table-column-->
                     <!--prop="conversionCost"-->
@@ -107,16 +107,16 @@
                         </el-button>
                     </template>
                 </el-table-column>
-                <el-table-column
-                    prop="shopOperate"
-                    label="当前店铺状态"
-                    width="130"
-                >
-                </el-table-column>
+                <!--<el-table-column-->
+                    <!--prop="shopOperate"-->
+                    <!--label="当前店铺状态"-->
+                    <!--width="130"-->
+                <!--&gt;-->
+                <!--</el-table-column>-->
                 <el-table-column
                     prop="shopRemark"
                     label="备注"
-                    width="130"
+                    width="100"
                 >
                 </el-table-column>
             </el-table>

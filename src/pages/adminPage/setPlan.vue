@@ -641,14 +641,14 @@
 	                    if (val.daily_budget !== undefined) {
 		                    val.daily_budget = Number(val.daily_budget) * 100
 	                    }
+
 	                    if (val.speed_mode !== undefined) {
-		                    if (val.speed_mode) {
-			                    val.speed_mode = 'SPEED_MODE_STANDARD'
+		                    if (this.speed_mode_2) {
+                                val.speed_mode = 'SPEED_MODE_FAST'
 		                    } else {
-			                    val.speed_mode = 'SPEED_MODE_FAST'
+                                val.speed_mode = 'SPEED_MODE_STANDARD'
 		                    }
 	                    }
-
                         delete val.filterData
                         delete val.filterDataList
                         delete val.shopListData
