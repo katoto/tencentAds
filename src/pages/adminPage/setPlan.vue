@@ -36,7 +36,7 @@
                         <el-input style="width: 130px" size="small" v-model="daily_budget_1"
                                   placeholder="日限额"></el-input>
                         元
-                        <span style="margin-left: 30px">投放模式{{speed_mode_2}}：</span>
+                        <span style="margin-left: 30px">投放模式：</span>
                         <el-switch style="color: #606266"
                                    size="small"
                                    v-model="speed_mode_2"
