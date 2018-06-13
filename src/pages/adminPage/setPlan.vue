@@ -478,6 +478,7 @@
                 js_betSetInTime: '',
                 js_betSetStyle: 1,
                 surpportOcpa: false,
+                surpportOcm: true,
 
                 filterData: [],
 
@@ -513,6 +514,7 @@
 
                 setPlanDX: {
                     age: ['暂无描述~'],
+                    gender: ['暂无描述~'],
                     gender: ['暂无描述~'],
                     network_type: ['暂无描述~']
                 }
@@ -566,6 +568,7 @@
             },
             initBeforePlan () {
                 this.surpportOcpa = false;
+                this.surpportOcm = true;
                 // 初始化 编辑msg todo
                 this.SearchDXval_5 = ''
                 this.shopListData = []
@@ -712,6 +715,10 @@
                     row.adcreative_template_site === 'SITE_SET_TENCENT_VIDEO'||
                     row.adcreative_template_site === 'SITE_SET_TENCENT_KUAIBAO') {
                     this.surpportOcpa = true
+                }
+                this.surpportOcm = true
+                if(row.adcreative_template_site === 'SITE_SET_WECHAT') {
+                    this.surpportOcm = false
                 }
 
                 let filterImgData = null;
