@@ -667,8 +667,9 @@
                     loading.close()
                     if (upPlanMsg.code !== 200) {
                         console.error(upPlanMsg.data);
+                        let messages = upPlanMsg.data.map(item => item.msg).join('\n')
                         this.$message({
-                            message: upPlanMsg.message,
+                            message: messages,
                             type: 'error',
                             duration: 1200
                         })
