@@ -363,8 +363,8 @@
                     <div class="planEditBottom">
                         出价方式：
                         <el-radio-group v-model="js_betSetStyle">
-                            <el-radio :label="1">CPC</el-radio>
-                            <el-radio :label="2" :disabled="!surpportOcm">CPM</el-radio>
+                            <el-radio :label="1" :disabled="!surpportCpc">CPC</el-radio>
+                            <el-radio :label="2" :disabled="!surpportCpm">CPM</el-radio>
                             <el-radio :label="3" :disabled="!surpportOcpa">oCPA</el-radio>
                         </el-radio-group>
                     </div>
@@ -478,7 +478,8 @@
                 js_betSetInTime: '',
                 js_betSetStyle: 1,
                 surpportOcpa: false,
-                surpportOcm: true,
+                surpportCpm: true,
+                surpportCpc: true,
 
                 filterData: [],
 
@@ -568,7 +569,8 @@
             },
             initBeforePlan () {
                 this.surpportOcpa = false;
-                this.surpportOcm = true;
+                this.surpportCpm = true;
+                this.surpportCpc = true;
                 // 初始化 编辑msg todo
                 this.SearchDXval_5 = ''
                 this.shopListData = []
@@ -716,9 +718,9 @@
                     row.adcreative_template_site === 'SITE_SET_TENCENT_KUAIBAO') {
                     this.surpportOcpa = true
                 }
-                this.surpportOcm = true
+                this.surpportCpm = true
                 if(row.adcreative_template_site === 'SITE_SET_WECHAT') {
-                    this.surpportOcm = false
+                    this.surpportCpm = false
                 }
 
                 let filterImgData = null;
