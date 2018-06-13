@@ -989,7 +989,7 @@
 
                         if (Number(this.js_isSureImgNumList[idx]) !== js_selectImgArr.length) {
                             this.$message({
-                                message: `只能选择${this.js_isSureImgNum}张${images[idx].width}*${images[idx].height}分辨率的图`,
+                                message: `只能选择${this.js_isSureImgNum[idx]}张${images[idx].width}*${images[idx].height}分辨率的图`,
                                 type: 'error'
                             })
                             imgflag = true;
