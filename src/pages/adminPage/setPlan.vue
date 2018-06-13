@@ -715,7 +715,9 @@
                     row.adcreative_template_site === 'SITE_SET_MOBILE_UNION'||
                     row.adcreative_template_site === 'SITE_SET_TENCENT_NEWS'||
                     row.adcreative_template_site === 'SITE_SET_TENCENT_VIDEO'||
-                    row.adcreative_template_site === 'SITE_SET_TENCENT_KUAIBAO') {
+                    row.adcreative_template_site === 'SITE_SET_TENCENT_KUAIBAO'||
+                    row.adcreative_template_site === 'SITE_SET_WECHAT'
+                ) {
                     this.surpportOcpa = true
                 }
                 this.surpportCpm = true
