@@ -1022,7 +1022,7 @@
                 let optimization_goal = 'OPTIMIZATIONGOAL_CLICK';
                 if(this.js_betSetStyle===2) {
                     billing_event = 'BILLINGEVENT_IMPRESSION';
-                    optimization_goal = 'OPTIMIZATIONGOAL_IMPRESSIONS'
+                    optimization_goal = 'OPTIMIZATIONGOAL_IMPRESSION'
                 } else if(this.js_betSetStyle===3) {
                     billing_event = 'BILLINGEVENT_CLICK';
                     optimization_goal = 'OPTIMIZATIONGOAL_ECOMMERCE_ORDER';
