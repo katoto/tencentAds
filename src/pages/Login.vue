@@ -1,7 +1,7 @@
 <template>
     <el-container>
         <el-main>
-            <p class="loginTitle">广点通助手</p>
+            <p class="loginTitle">飞马智能营销系统</p>
             <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="70px"
                      class="demo-ruleForm">
                 <el-form-item label="账号" prop="name">
