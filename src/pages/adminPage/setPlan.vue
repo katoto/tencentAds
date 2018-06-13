@@ -364,7 +364,7 @@
                         出价方式：
                         <el-radio-group v-model="js_betSetStyle">
                             <el-radio :label="1">CPC</el-radio>
-                            <el-radio :label="2">CPM</el-radio>
+                            <el-radio :label="2" :disabled="!surpportOcm">CPM</el-radio>
                             <el-radio :label="3" :disabled="!surpportOcpa">oCPA</el-radio>
                         </el-radio-group>
                     </div>
